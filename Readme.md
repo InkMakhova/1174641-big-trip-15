@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Inna Makhova](https://up.htmlacademy.ru/ecmascript/15/user/1174641).
-* Наставник: `Неизвестно`.
+* Наставник: [Кристина Жиделягина](https://htmlacademy.ru/profile/id575159).
 
 ---
 
