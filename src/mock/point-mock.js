@@ -6,8 +6,8 @@ const generateTypePoint = () => {
   return POINT_TYPES[randomIndex];
 };
 
-const generateCityPoint = () => {
-  const cities = [
+const generateDestinationPoint = () => {
+  const destinations = [
     'Amsterdam',
     'Munich',
     'Vienna',
@@ -22,6 +22,6 @@ const generateCityPoint = () => {
     'San Francisco',
   ];
 
-  const randomIndex = getRandomInteger(0, cities.length - 1);
-  return cities[randomIndex];
+  const randomIndex = getRandomInteger(0, destinations.length - 1);
+  return destinations[randomIndex];
 };
