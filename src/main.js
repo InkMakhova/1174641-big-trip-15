@@ -7,6 +7,8 @@ import {createPointListTemplate} from './view/point-list';
 import {createEditPointTemplate} from './view/edit-point-form.js';
 import {createNewPointTemplate} from './view/new-point-form';
 import {createPointTemplate} from './view/point.js';
+//import {generatePointDescription} from './mock/point-mock.js';
+//import { formats } from 'dayjs/locale/*';
 
 const POINTS = 3;
 
