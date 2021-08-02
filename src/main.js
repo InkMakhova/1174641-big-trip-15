@@ -7,10 +7,10 @@ import {createPointListTemplate} from './view/point-list';
 import {createEditPointTemplate} from './view/edit-point-form.js';
 import {createNewPointTemplate} from './view/new-point-form';
 import {createPointTemplate} from './view/point.js';
-//import {generatePointDescription} from './mock/point-mock.js';
-//import { formats } from 'dayjs/locale/*';
+import {generateDataPoint} from './mock/point-mock.js';
+//import {formats} from 'dayjs/locale/*';
 
-const POINTS = 3;
+const POINTS_NUMBER = 20;
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -40,7 +40,21 @@ const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__li
 render(tripEnventsListElement, createEditPointTemplate());
 render(tripEnventsListElement, createNewPointTemplate());
 
-for (let i = 0; i < POINTS; i++) {
+for (let i = 0; i < POINTS_NUMBER; i++) {
   render(tripEnventsListElement, createPointTemplate());
 }
 
+const loadData = (onSuccess, onFail) => {
+  fetch('https://15.ecmascript.pages.academy/big-trip/points', {
+    headers: {
+      Authorization: 'Basic kTy9gIdsz2317rD.',
+    }}).then((response) => response.json())
+    .then(onSuccess)
+    .catch(onFail);
+};
+
+loadData((data) => {console.log(data);});
+
+const points = new Array(POINTS_NUMBER).fill(null).map(() => generateDataPoint());
+
+console.log(points);
