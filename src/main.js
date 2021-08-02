@@ -40,8 +40,9 @@ const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__li
 render(tripEnventsListElement, createEditPointTemplate());
 render(tripEnventsListElement, createNewPointTemplate());
 
+const somePoint = generateDataPoint();
 for (let i = 0; i < POINTS_NUMBER; i++) {
-  render(tripEnventsListElement, createPointTemplate());
+  render(tripEnventsListElement, createPointTemplate(somePoint));
 }
 
 const loadData = (onSuccess, onFail) => {
