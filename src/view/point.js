@@ -21,13 +21,33 @@ const createOffersList = (dataOffers) => {
   return '';
 };
 
-const createTimeDurationElement = (duration) => (
-  `${humanizedTimeDuration(duration).days === 0 ? '' : `${humanizedTimeDuration(duration).days}D `}${humanizedTimeDuration(duration).hours === 0 ? '' : `${humanizedTimeDuration(duration).hours}H `}${humanizedTimeDuration(duration).minutes === 0 ? '' : `${humanizedTimeDuration(duration).minutes}M`}`);
+const createTimeDurationElement = (duration) => {
+  let days = '';
+  let hours = '';
+  let minutes = '';
+
+  if (humanizedTimeDuration(duration).days !== 0) {
+    days = `0${humanizedTimeDuration(duration).days}D `.slice(-4);
+    hours = '00H ';
+  }
+
+  if (humanizedTimeDuration(duration).hours !== 0) {
+    hours = `0${humanizedTimeDuration(duration).hours}H `.slice(-4);
+  }
+
+  minutes = `0${humanizedTimeDuration(duration).minutes}M`.slice(-3);
+
+  return `${days}${hours}${minutes}`;
+};
 
 export const createPointTemplate = (dataPoint) => {
   const dateFrom = dayjs(dataPoint.dateFrom);
   const dateTo = dayjs(dataPoint.dateTo);
-  const diffMinutes = dateTo.diff(dateFrom, 'minute');
+  const diffTime = {
+    diffDays: dateTo.diff(dateFrom, 'day'),
+    diffHours: dateTo.diff(dateFrom, 'hour'),
+    diffMinutes: dateTo.diff(dateFrom, 'minute'),
+  };
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -42,7 +62,7 @@ export const createPointTemplate = (dataPoint) => {
           &mdash;
           <time class="event__end-time" datetime=${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}>${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}</time>
         </p>
-        <p class="event__duration">${createTimeDurationElement(diffMinutes)}</p>
+        <p class="event__duration">${createTimeDurationElement(diffTime)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${dataPoint.basePrice}</span>
