@@ -35,10 +35,11 @@ render(tripEventsElement, createPointListTemplate());
 
 const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__list');
 
-render(tripEnventsListElement, createEditPointTemplate());
+const points = new Array(POINTS_NUMBER).fill(null).map(() => generateDataPoint());
+
+render(tripEnventsListElement, createEditPointTemplate(points[0]));
 render(tripEnventsListElement, createNewPointTemplate());
 
-const points = new Array(POINTS_NUMBER).fill(null).map(() => generateDataPoint());
 points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
 
 const loadData = (onSuccess, onFail) => {
