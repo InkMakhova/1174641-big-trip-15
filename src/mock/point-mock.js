@@ -298,9 +298,7 @@ export const generateDataPoint = () => {
       description: generatePointDescription(),
       pictures: generatePointPictures(),
     },
-    offer: {
-      offers: offerPoint.offers.slice(randomNumber),
-    },
+    offer: offerPoint.offers.slice(randomNumber),
     type: offerPoint.type,
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
