@@ -28,7 +28,8 @@ const createPointTypesTemplate = (currentType) => (
   </div>`).join(''));
 
 const createDestinationsList = () => (
-  DESTINATIONS.map((destination) => `<option value="${destination}"></option>`).join('')
+  DESTINATIONS.map((destination) => `<option value="${destination}"></option>`)
+    .join('')
 );
 
 const createOffersSection = (dataObject, eventType) => {

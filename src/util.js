@@ -26,6 +26,9 @@ export const humanizedTimeDuration = (durationObject) => {
   };
 };
 
-export const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalizeFirstLetter = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
-export const getKeyByValue = (object, value) => Object.keys(object).find((key) => object[key] === value);
+export const getKeyByValue = (object, value) =>
+  Object.keys(object)
+    .find((key) => object[key] === value);
