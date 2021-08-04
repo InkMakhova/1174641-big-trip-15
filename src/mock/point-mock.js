@@ -92,21 +92,24 @@ export const generateDataPoint = () => {
   const offerPoint = generateOfferPoint();
   const randomNumber = getRandomInteger(0, offerPoint.offers.length - 1);
 
-  const randomDateTime = generateDateTime();
-
   const maxDaysIndex = 2;
   const maxHoursIndex = 23;
   const maxMinutesIndex = 59;
 
+  const dateFrom = dayjs(generateDateTime());
+  const dateTo = dayjs(dayjs(dateFrom)
+    .add(getRandomInteger(0, maxDaysIndex), 'd')
+    .add(getRandomInteger(0, maxHoursIndex), 'h')
+    .add(getRandomInteger(0, maxMinutesIndex), 'm')
+    .toDate());
+  const duration = dateTo.diff(dateFrom, 'minute');
+
   const point = {
     id: getRandomInteger(1, MAX_RANDOM_NUMBER),
     basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
-    dateFrom: randomDateTime,
-    dateTo: dayjs(randomDateTime)
-      .add(getRandomInteger(0, maxDaysIndex), 'd')
-      .add(getRandomInteger(0, maxHoursIndex), 'h')
-      .add(getRandomInteger(0, maxMinutesIndex), 'm')
-      .toDate(),
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    duration: duration,
     destination: {
       name: generatePointName(),
       description: generatePointDescription(),
