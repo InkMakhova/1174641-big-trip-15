@@ -117,8 +117,6 @@ const getOffersObject = (offersByTypeArray, type) => {
   return offerFound;
 };
 
-const getFavoriteClass = (dataPoint) => dataPoint.isFavorite === false ? '' : ' event__favorite-btn--active';
-
 export const createPointFormTemplate = (eventType, dataPoint) => {
   const isNewPoint = (eventType === 'new');
 
