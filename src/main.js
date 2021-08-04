@@ -68,6 +68,27 @@ const filterPoints = (evt) => {
   }
 };
 
+const sortPoints = (evt) => {
+  tripEnventsListElement.innerHTML = '';
+  if (evt.target.value === 'sort-price') {
+    points.sort((a, b) => b.basePrice - a.basePrice)
+      .map((point) => {
+        render(tripEnventsListElement, createPointTemplate(point));
+      });
+  }
+  if (evt.target.value === 'sort-time') {
+    points.sort((a, b) => b.duration - a.duration)
+      .map((point) => {
+        render(tripEnventsListElement, createPointTemplate(point));
+      });
+  }
+  if (evt.target.value === 'sort-day') {
+    points.map((point) => {
+      render(tripEnventsListElement, createPointTemplate(point));
+    });
+  }
+};
+
 const addNewPointForm = () => {
   render(tripEnventsListElement, createPointFormTemplate('new'), 'afterbegin');
 
@@ -93,3 +114,5 @@ const addNewPointForm = () => {
 eventAddButton.addEventListener('click', addNewPointForm);
 
 filterForm.addEventListener('change', filterPoints);
+
+sortForm.addEventListener('change', sortPoints);
