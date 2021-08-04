@@ -58,9 +58,9 @@ export const createPointTemplate = (dataPoint) => {
       <h3 class="event__title">${capitalizeFirstLetter(dataPoint.type)} ${dataPoint.destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime=${formateDateTime(dataPoint.dateFrom, formatsDateTime.time)}}>${formateDateTime(dataPoint.dateFrom, formatsDateTime.time)}</time>
+          <time class="event__start-time" datetime=${formateDateTime(dataPoint.dateFrom, formatsDateTime.dateTimeMachine)}}>${formateDateTime(dataPoint.dateFrom, formatsDateTime.time)}</time>
           &mdash;
-          <time class="event__end-time" datetime=${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}>${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}</time>
+          <time class="event__end-time" datetime=${formateDateTime(dataPoint.dateTo, formatsDateTime.dateTimeMachine)}>${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}</time>
         </p>
         <p class="event__duration">${createTimeDurationElement(diffTime)}</p>
       </div>
