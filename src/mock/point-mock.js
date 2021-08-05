@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {getRandomInteger} from '../util.js';
 import {
   DESTINATIONS,
-  OFFERS_BY_TYPE
+  generateOffer
 } from '../constants.js';
 
 const MOCK_TEXT =
@@ -83,15 +83,8 @@ const generatePointPictures = () => {
   return pictures;
 };
 
-const generateOfferPoint = () => {
-  const randomIndex = getRandomInteger(0, OFFERS_BY_TYPE.length - 1);
-
-  return OFFERS_BY_TYPE[randomIndex];
-};
-
 export const generateDataPoint = () => {
-  const offerPoint = generateOfferPoint();
-  const randomNumber = getRandomInteger(0, offerPoint.offers.length - 1);
+  const offerPoint = generateOffer();
 
   const maxDaysIndex = 2;
   const maxHoursIndex = 23;
@@ -116,7 +109,7 @@ export const generateDataPoint = () => {
       description: generatePointDescription(),
       pictures: generatePointPictures(),
     },
-    offer: offerPoint.offers.slice(randomNumber),
+    offer: offerPoint.offers,
     type: offerPoint.type,
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };

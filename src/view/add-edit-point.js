@@ -1,4 +1,5 @@
 import {
+  getRandomInteger,
   capitalizeFirstLetter,
   formateDateTime,
   getKeyByValue
@@ -9,7 +10,7 @@ import {
   DESTINATIONS,
   POINT_TYPES,
   TYPE_DEFAULT,
-  OFFERS_BY_TYPE
+  OFFERS
 } from '../constants.js';
 
 const createPointTypesTemplate = (currentType) => (
@@ -34,7 +35,7 @@ const createDestinationsList = () => (
 
 const createOffersSection = (dataObject, eventType) => {
   if (eventType === 'new') {
-    const offerList = dataObject.offers
+    const offerList = dataObject
       .map((offer) => `<div class="event__offer-selector">
           <input
             class="event__offer-checkbox visually-hidden"
@@ -112,11 +113,6 @@ const createDestinationSection = (dataPoint) => (
     </p>
     ${createPhotoTemplate(dataPoint)}
 </section>`);
-
-const getOffersObject = (offersByTypeArray, type) => {
-  const offerFound = offersByTypeArray.find((el) => el.type === type);
-  return offerFound;
-};
 
 export const createPointFormTemplate = (eventType, dataPoint) => {
   const isNewPoint = (eventType === 'new');
@@ -200,7 +196,7 @@ export const createPointFormTemplate = (eventType, dataPoint) => {
       </button>
     </header>
     <section class="event__details">
-      ${isNewPoint ? createOffersSection(getOffersObject(OFFERS_BY_TYPE, TYPE_DEFAULT), 'new') : createOffersSection(dataPoint, 'edit')}
+      ${isNewPoint ? createOffersSection(OFFERS.slice(getRandomInteger(1, OFFERS.length - 1)), 'new') : createOffersSection(dataPoint, 'edit')}
       ${isNewPoint ? '' : createDestinationSection(dataPoint)}
     </section>
     <input class="event__input event__input--isFavorite visually-hidden"
