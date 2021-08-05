@@ -49,43 +49,54 @@ points.map((point) => render(tripEnventsListElement, createPointTemplate(point))
 
 const filterPoints = (evt) => {
   tripEnventsListElement.innerHTML = '';
-  if (evt.target.value === 'everything') {
-    points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
-  }
-  if (evt.target.value === 'past') {
-    points.map((point) => {
-      if (point.dateTo < NOW) {
-        render(tripEnventsListElement, createPointTemplate(point));
-      }
-    });
-  }
-  if (evt.target.value === 'future') {
-    points.map((point) => {
-      if (point.dateFrom >= NOW) {
-        render(tripEnventsListElement, createPointTemplate(point));
-      }
-    });
+
+  switch (evt.target.value) {
+    case 'everything':
+      points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
+      break;
+
+    case 'past':
+      points.map((point) => {
+        if (point.dateTo < NOW) {
+          render(tripEnventsListElement, createPointTemplate(point));
+        }
+      });
+      break;
+
+    case 'future':
+      points.map((point) => {
+        if (point.dateFrom >= NOW) {
+          render(tripEnventsListElement, createPointTemplate(point));
+        }
+      });
+      break;
   }
 };
 
 const sortPoints = (evt) => {
   tripEnventsListElement.innerHTML = '';
-  if (evt.target.value === 'sort-price') {
-    points.sort((a, b) => b.basePrice - a.basePrice)
-      .map((point) => {
-        render(tripEnventsListElement, createPointTemplate(point));
-      });
-  }
-  if (evt.target.value === 'sort-time') {
-    points.sort((a, b) => b.duration - a.duration)
-      .map((point) => {
-        render(tripEnventsListElement, createPointTemplate(point));
-      });
-  }
-  if (evt.target.value === 'sort-day') {
-    points.map((point) => {
-      render(tripEnventsListElement, createPointTemplate(point));
-    });
+
+  switch (evt.target.value) {
+    case 'sort-price':
+      points.slice().sort((a, b) => b.basePrice - a.basePrice)
+        .map((point) => {
+          render(tripEnventsListElement, createPointTemplate(point));
+        });
+      break;
+
+    case 'sort-time':
+      points.slice().sort((a, b) => b.duration - a.duration)
+        .map((point) => {
+          render(tripEnventsListElement, createPointTemplate(point));
+        });
+      break;
+
+    case 'sort-day':
+      points.slice().sort((a, b) => b.dateFrom - a.dateFrom)
+        .map((point) => {
+          render(tripEnventsListElement, createPointTemplate(point));
+        });
+      break;
   }
 };
 
