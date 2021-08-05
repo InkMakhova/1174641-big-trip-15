@@ -51,10 +51,6 @@ const filterPoints = (evt) => {
   tripEnventsListElement.innerHTML = '';
 
   switch (evt.target.value) {
-    case 'everything':
-      points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
-      break;
-
     case 'past':
       points.map((point) => {
         if (point.dateTo < NOW) {
@@ -70,6 +66,9 @@ const filterPoints = (evt) => {
         }
       });
       break;
+
+    default:
+      points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
   }
 };
 
@@ -91,12 +90,11 @@ const sortPoints = (evt) => {
         });
       break;
 
-    case 'sort-day':
+    default:
       points.slice().sort((a, b) => b.dateFrom - a.dateFrom)
         .map((point) => {
           render(tripEnventsListElement, createPointTemplate(point));
         });
-      break;
   }
 };
 
