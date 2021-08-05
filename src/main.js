@@ -108,7 +108,6 @@ const addNewPointForm = () => {
 
   sortForm.querySelector('#sort-time').checked = true;
   filterForm.querySelector('#filter-everything').checked = true;
-  points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
 };
 
 // const loadData = (onSuccess, onFail) => {
