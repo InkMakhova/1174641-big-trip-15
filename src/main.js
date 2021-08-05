@@ -41,7 +41,7 @@ const sortForm = tripEventsElement.querySelector('.trip-sort');
 
 const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__list');
 
-const points = new Array(POINTS_NUMBER).fill(null).map(() => generateDataPoint());
+const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
 render(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
 
