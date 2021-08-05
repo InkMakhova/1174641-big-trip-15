@@ -33,40 +33,14 @@ const createDestinationsList = () => (
     .join('')
 );
 
-const createOffersSection = (dataObject, eventType) => {
-  if (eventType === 'new') {
-    const offerList = dataObject
-      .map((offer) => `<div class="event__offer-selector">
-          <input
-            class="event__offer-checkbox visually-hidden"
-            id="event-offer-${getKeyByValue(offerNames, offer.title)}-1"
-            type="checkbox"
-            name="event-offer-${getKeyByValue(offerNames, offer.title)}">
-          <label
-            class="event__offer-label"
-            for="event-offer-${getKeyByValue(offerNames, offer.title)}-1">
-              <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>`).join('');
-    return `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-      ${offerList}
-      </div>
-    </section>`;
-  }
-  if (dataObject.offer && dataObject.offer.length > 0) {
-    const offerList = dataObject.offer
-      .map((offer) => `<div class="event__offer-selector">
+const offerListNewTemplate = (dataOffers) => {
+  const offerList = dataOffers
+    .map((offer) => `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox visually-hidden"
           id="event-offer-${getKeyByValue(offerNames, offer.title)}-1"
           type="checkbox"
-          name="event-offer-${getKeyByValue(offerNames, offer.title)}"
-          ${eventType === 'edit' ? 'checked' : ''}>
+          name="event-offer-${getKeyByValue(offerNames, offer.title)}">
         <label
           class="event__offer-label"
           for="event-offer-${getKeyByValue(offerNames, offer.title)}-1">
@@ -75,15 +49,49 @@ const createOffersSection = (dataObject, eventType) => {
             <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>`).join('');
-
-    return `<section class="event__section  event__section--offers">
+  return `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-      ${offerList}
-      </div>
+        <div class="event__available-offers">
+          ${offerList}
+        </div>
     </section>`;
+};
+
+const offerListEditTemplate = (dataOffers) => {
+  const offerList = dataOffers.offer
+    .map((offer) => `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox visually-hidden"
+        id="event-offer-${getKeyByValue(offerNames, offer.title)}-1"
+        type="checkbox"
+        name="event-offer-${getKeyByValue(offerNames, offer.title)}"
+        checked>
+      <label
+        class="event__offer-label"
+        for="event-offer-${getKeyByValue(offerNames, offer.title)}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`).join('');
+
+  return `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offerList}
+        </div>
+    </section>`;
+};
+
+const createOffersSection = (dataOffers, eventType) => {
+  if (eventType === 'new') {
+    return offerListNewTemplate(dataOffers);
   }
+
+  if (dataOffers.offer && dataOffers.offer.length > 0) {
+    return offerListEditTemplate(dataOffers);
+  }
+
   return '';
 };
 
