@@ -110,17 +110,6 @@ const addNewPointForm = () => {
   filterForm.querySelector('#filter-everything').checked = true;
 };
 
-// const loadData = (onSuccess, onFail) => {
-//   fetch('https://15.ecmascript.pages.academy/big-trip/points', {
-//     headers: {
-//       Authorization: 'Basic kTy9gIdsz2317rD.',
-//     }}).then((response) => response.json())
-//     .then(onSuccess)
-//     .catch(onFail);
-// };
-
-// loadData((data) => {console.log(data);});
-
 eventAddButton.addEventListener('click', addNewPointForm);
 
 filterForm.addEventListener('change', filterPoints);
