@@ -10,7 +10,7 @@ import {createFilterTemplate} from './view/filter.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list';
 import {createPointFormTemplate} from './view/add-edit-point.js';
-import {createPointTemplate} from './view/point.js';
+import PointView from './view/point.js';
 import {generateDataPoint} from './mock/point-mock.js';
 import {NOW} from './constants.js';
 //import {formats} from 'dayjs/locale/*';
@@ -49,7 +49,7 @@ const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
 renderTemplate(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
 
-points.map((point) => renderTemplate(tripEnventsListElement, createPointTemplate(point)));
+points.map((point) => renderElement(tripEnventsListElement, new PointView(point).getElement(), RenderPosition.BEFOREEND));
 
 const filterPoints = (evt) => {
   tripEnventsListElement.innerHTML = '';
