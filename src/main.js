@@ -1,5 +1,9 @@
-import {renderTemplate} from './util.js';
-import {createSiteMenuTemplate} from './view/site-menu.js';
+import {
+  renderElement,
+  renderTemplate,
+  RenderPosition
+} from './util.js';
+import SiteMenuView from './view/site-menu.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPriceTemplate} from './view/price.js';
 import {createFilterTemplate} from './view/filter.js';
@@ -20,7 +24,7 @@ const filterElement = siteHeaderElement.querySelector('.trip-controls__filters')
 const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
 renderTemplate(tripMainElement, createTripInfoTemplate(), 'afterbegin');
-renderTemplate(siteMenuElement, createSiteMenuTemplate());
+renderElement(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 renderTemplate (filterElement, createFilterTemplate());
 
 const filterForm = filterElement.querySelector('.trip-filters');
