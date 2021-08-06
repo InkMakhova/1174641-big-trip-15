@@ -1,11 +1,12 @@
 import {
   renderElement,
   renderTemplate,
-  RenderPosition
+  RenderPosition,
+  getRandomInteger
 } from './util.js';
 import SiteMenuView from './view/site-menu.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
-import {createPriceTemplate} from './view/price.js';
+import PriceView from './view/price.js';
 import {createFilterTemplate} from './view/filter.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list';
@@ -31,7 +32,7 @@ const filterForm = filterElement.querySelector('.trip-filters');
 
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 
-renderTemplate(tripInfoElement, createPriceTemplate());
+renderElement(tripInfoElement, new PriceView(getRandomInteger(200, 1000)).getElement(), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
