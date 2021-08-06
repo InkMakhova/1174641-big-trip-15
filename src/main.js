@@ -5,6 +5,7 @@ import {
   getRandomInteger
 } from './util.js';
 
+import TripInfoView from './view/trip-info.js';
 import SiteMenuView from './view/site-menu.js';
 import PriceView from './view/price.js';
 import FiltersView from './view/filters';
@@ -12,7 +13,6 @@ import SortView from './view/sort.js';
 import PointListView from './view/point-list';
 import PointView from './view/point.js';
 
-import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPointFormTemplate} from './view/add-edit-point.js';
 import {generateDataPoint} from './mock/point-mock.js';
 
@@ -30,7 +30,7 @@ const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigat
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
-renderTemplate(tripMainElement, createTripInfoTemplate(), 'afterbegin');
+renderElement(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 renderElement(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 renderElement(filterElement, new FiltersView(FILTERS).getElement(), RenderPosition.BEFOREEND);
 
