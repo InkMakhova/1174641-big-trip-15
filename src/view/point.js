@@ -28,7 +28,7 @@ const createOffersList = (offers) => {
   return '';
 };
 
-const getTripDurationElement = (duration) => {
+const formatTripDurationElement = (duration) => {
   let days = '';
   let hours = '';
   let minutes = '';
@@ -58,7 +58,7 @@ const createPointTemplate = (point) => {
     diffMinutes: duration,
   };
 
-  const tripDuration = getTripDurationElement(diffTime);
+  const tripDuration = formatTripDurationElement(diffTime);
 
   const favoriteClassName = isFavorite === true ? ' event__favorite-btn--active' : '';
 
