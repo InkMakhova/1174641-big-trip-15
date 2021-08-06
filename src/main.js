@@ -7,7 +7,7 @@ import SiteMenuView from './view/site-menu.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPriceTemplate} from './view/price.js';
 import {createFilterTemplate} from './view/filter.js';
-import {createSortTemplate} from './view/sort.js';
+import SortView from './view/sort.js';
 import {createPointListTemplate} from './view/point-list';
 import {createPointFormTemplate} from './view/add-edit-point.js';
 import {createPointTemplate} from './view/point.js';
@@ -36,7 +36,7 @@ renderTemplate(tripInfoElement, createPriceTemplate());
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-renderTemplate(tripEventsElement, createSortTemplate());
+renderElement(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 renderTemplate(tripEventsElement, createPointListTemplate());
 
 const sortForm = tripEventsElement.querySelector('.trip-sort');
