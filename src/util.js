@@ -12,8 +12,31 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
 export const formateDateTime = (date, format) => dayjs(date).format(format);
 
-export const render = (container, template, place = 'beforeend') => {
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+export const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
   container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };
 
 export const humanizedTimeDuration = (durationObject) => {

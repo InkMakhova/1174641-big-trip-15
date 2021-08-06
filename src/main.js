@@ -1,6 +1,4 @@
-import {
-  render
-} from './util.js';
+import {renderTemplate} from './util.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPriceTemplate} from './view/price.js';
@@ -21,21 +19,21 @@ const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigat
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
-render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
-render(siteMenuElement, createSiteMenuTemplate());
-render (filterElement, createFilterTemplate());
+renderTemplate(tripMainElement, createTripInfoTemplate(), 'afterbegin');
+renderTemplate(siteMenuElement, createSiteMenuTemplate());
+renderTemplate (filterElement, createFilterTemplate());
 
 const filterForm = filterElement.querySelector('.trip-filters');
 
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 
-render(tripInfoElement, createPriceTemplate());
+renderTemplate(tripInfoElement, createPriceTemplate());
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-render(tripEventsElement, createSortTemplate());
-render(tripEventsElement, createPointListTemplate());
+renderTemplate(tripEventsElement, createSortTemplate());
+renderTemplate(tripEventsElement, createPointListTemplate());
 
 const sortForm = tripEventsElement.querySelector('.trip-sort');
 
@@ -43,9 +41,9 @@ const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__li
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
-render(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
+renderTemplate(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
 
-points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
+points.map((point) => renderTemplate(tripEnventsListElement, createPointTemplate(point)));
 
 const filterPoints = (evt) => {
   tripEnventsListElement.innerHTML = '';
@@ -54,7 +52,7 @@ const filterPoints = (evt) => {
     case 'past':
       points.map((point) => {
         if (point.dateTo < NOW) {
-          render(tripEnventsListElement, createPointTemplate(point));
+          renderTemplate(tripEnventsListElement, createPointTemplate(point));
         }
       });
       break;
@@ -62,13 +60,13 @@ const filterPoints = (evt) => {
     case 'future':
       points.map((point) => {
         if (point.dateFrom >= NOW) {
-          render(tripEnventsListElement, createPointTemplate(point));
+          renderTemplate(tripEnventsListElement, createPointTemplate(point));
         }
       });
       break;
 
     default:
-      points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
+      points.map((point) => renderTemplate(tripEnventsListElement, createPointTemplate(point)));
   }
 };
 
@@ -79,27 +77,27 @@ const sortPoints = (evt) => {
     case 'sort-price':
       points.slice().sort((a, b) => b.basePrice - a.basePrice)
         .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
+          renderTemplate(tripEnventsListElement, createPointTemplate(point));
         });
       break;
 
     case 'sort-time':
       points.slice().sort((a, b) => b.duration - a.duration)
         .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
+          renderTemplate(tripEnventsListElement, createPointTemplate(point));
         });
       break;
 
     default:
       points.slice().sort((a, b) => b.dateFrom - a.dateFrom)
         .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
+          renderTemplate(tripEnventsListElement, createPointTemplate(point));
         });
   }
 };
 
 const addNewPointForm = () => {
-  render(tripEnventsListElement, createPointFormTemplate('new'), 'afterbegin');
+  renderTemplate(tripEnventsListElement, createPointFormTemplate('new'), 'afterbegin');
 
   eventAddButton.disabled = true;
   eventAddButton.removeEventListener('click', addNewPointForm);
