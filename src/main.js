@@ -8,7 +8,7 @@ import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPriceTemplate} from './view/price.js';
 import {createFilterTemplate} from './view/filter.js';
 import SortView from './view/sort.js';
-import {createPointListTemplate} from './view/point-list';
+import PointListView from './view/point-list';
 import {createPointFormTemplate} from './view/add-edit-point.js';
 import {createPointTemplate} from './view/point.js';
 import {generateDataPoint} from './mock/point-mock.js';
@@ -37,7 +37,9 @@ const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 renderElement(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
-renderTemplate(tripEventsElement, createPointListTemplate());
+
+const pointListComponent = new PointListView();
+renderElement(tripEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
 const sortForm = tripEventsElement.querySelector('.trip-sort');
 

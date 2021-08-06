@@ -1,3 +1,29 @@
-export const createPointListTemplate = () => (
+import {createElement} from '../util.js';
+
+const createPointListTemplate = () => (
   `<ul class="trip-events__list">
   </ul>`);
+
+export default class PointList {
+  constructor () {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointListTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+
