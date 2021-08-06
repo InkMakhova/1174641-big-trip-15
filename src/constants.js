@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './util';
 
+export const FILTERS = {
+  everything: true,
+  past: false,
+  future: false,
+};
+
 export const POINT_TYPES = [
   'taxi',
   'bus',
