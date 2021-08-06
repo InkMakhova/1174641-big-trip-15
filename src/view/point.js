@@ -65,9 +65,9 @@ const createPointTemplate = (point) => {
   return `<li class="trip-events__item">
     <div class="event">
       <input class="event__id visually-hidden"
-      id="event-id"
+      id="event-${id}"
       type="text"
-      name="event-id"
+      name="event-${id}"
       value="${id}">
       <time
         class="event__date"
