@@ -1,4 +1,5 @@
 import {
+  createElement,
   getRandomInteger,
   capitalizeFirstLetter,
   formateDateTime,
@@ -67,21 +68,25 @@ const offerListNewTemplate = (offers) => {
 
 const offerListEditTemplate = (offers) => {
   const offerList = offers.offer
-    .map((offer) => `<div class="event__offer-selector">
-      <input
-        class="event__offer-checkbox visually-hidden"
-        id="event-offer-${getKeyByValue(offerNames, offer.title)}-1"
-        type="checkbox"
-        name="event-offer-${getKeyByValue(offerNames, offer.title)}"
-        checked>
-      <label
-        class="event__offer-label"
-        for="event-offer-${getKeyByValue(offerNames, offer.title)}-1">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`).join('');
+    .map((offer) => {
+      const offerName = getKeyByValue(offerNames, offer.title);
+
+      return `<div class="event__offer-selector">
+        <input
+          class="event__offer-checkbox visually-hidden"
+          id="event-offer-${offerName}-1"
+          type="checkbox"
+          name="event-offer-${offerName}"
+          checked>
+        <label
+          class="event__offer-label"
+          for="event-offer-${offerName}-1">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`;
+    }).join('');
 
   return `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -104,7 +109,9 @@ const createOffersSection = (offers, eventType) => {
 };
 
 const createPhotoTemplate = (point) => {
-  if (point.destination.pictures && point.destination.pictures.length > 0) {
+  const isOffers = point.destination.pictures && point.destination.pictures.length > 0;
+
+  if (isOffers) {
     const pictureList = point.destination.pictures
       .map((picture) => `<img
         class="event__photo"
@@ -130,8 +137,25 @@ const createDestinationSection = (point) => (
     ${createPhotoTemplate(point)}
 </section>`);
 
-export const createPointFormTemplate = (eventType, point) => {
+const createPointFormTemplate = (eventType, point) => {
   const isNewPoint = (eventType === 'new');
+
+  const type = isNewPoint ? TYPE_DEFAULT : point.type;
+
+  const capitalizedType = isNewPoint ? capitalizeFirstLetter(TYPE_DEFAULT) : capitalizeFirstLetter(point.type);
+
+  const destinationName = isNewPoint ? '' : point.destination.name;
+
+  const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, formatsDateTime.dateTimeHumanize);
+  const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, formatsDateTime.dateTimeHumanize);
+
+  const basePrice = isNewPoint ? '' : point.basePrice;
+
+  const offersSection = isNewPoint ? createOffersSection(OFFERS.slice(getRandomInteger(1, OFFERS.length - 1)), 'new') : createOffersSection(point, 'edit');
+
+  const destinationSection = isNewPoint ? '' : createDestinationSection(point);
+
+  const isFavoriteValue = isNewPoint ? false : point.isFavorite;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -143,7 +167,7 @@ export const createPointFormTemplate = (eventType, point) => {
             class="event__type-icon"
             width="17"
             height="17"
-            src="img/icons/${isNewPoint ? TYPE_DEFAULT : point.type}.png"
+            src="img/icons/${type}.png"
             alt="Event type icon">
         </label>
         <input
@@ -153,21 +177,21 @@ export const createPointFormTemplate = (eventType, point) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-              ${createPointTypesTemplate(isNewPoint ? TYPE_DEFAULT : point.type)}
+              ${createPointTypesTemplate(type)}
           </fieldset>
         </div>
       </div>
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${isNewPoint ? capitalizeFirstLetter(TYPE_DEFAULT) : capitalizeFirstLetter(point.type)}
+          ${capitalizedType}
         </label>
         <input
           class="event__input event__input--destination"
           id="event-destination-1"
           type="text"
           name="event-destination"
-          value="${isNewPoint ? '' : point.destination.name}"
+          value="${destinationName}"
           list="destination-list-1">
         <datalist id="destination-list-1">
           ${createDestinationsList()}
@@ -181,7 +205,7 @@ export const createPointFormTemplate = (eventType, point) => {
           id="event-start-time-1"
           type="text"
           name="event-start-time"
-          value="${isNewPoint ? '' : formateDateTime(point.dateFrom, formatsDateTime.dateTimeHumanize)}">
+          value="${dateFrom}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
         <input
@@ -189,7 +213,7 @@ export const createPointFormTemplate = (eventType, point) => {
           id="event-end-time-1"
           type="text"
           name="event-end-time"
-          value="${isNewPoint ? '' : formateDateTime(point.dateTo, formatsDateTime.dateTimeHumanize)}">
+          value="${dateTo}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -202,7 +226,7 @@ export const createPointFormTemplate = (eventType, point) => {
           id="event-price-1"
           type="text"
           name="event-price"
-          value="${isNewPoint ? '' : point.basePrice}">
+          value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -212,14 +236,14 @@ export const createPointFormTemplate = (eventType, point) => {
       </button>
     </header>
     <section class="event__details">
-      ${isNewPoint ? createOffersSection(OFFERS.slice(getRandomInteger(1, OFFERS.length - 1)), 'new') : createOffersSection(point, 'edit')}
-      ${isNewPoint ? '' : createDestinationSection(point)}
+      ${offersSection}
+      ${destinationSection}
     </section>
-    <input class="event__input event__input--isFavorite visually-hidden"
+    <input class="event__input event__input--favorite visually-hidden"
       id="event-favorite"
       type="text"
       name="event-favorite"
-      value="${isNewPoint ? false : point.isFavorite}">
+      value="${isFavoriteValue}">
   </form>
 </li>`;
 };
@@ -227,7 +251,23 @@ export const createPointFormTemplate = (eventType, point) => {
 export default class PointForm {
   constructor (eventType, point) {
     this._eventType = eventType;
-    this._dataPoint = point;
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointFormTemplate(this._eventType, this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
     this._element = null;
   }
 }

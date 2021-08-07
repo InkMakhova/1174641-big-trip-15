@@ -12,8 +12,9 @@ import FiltersView from './view/filters';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list';
 import PointView from './view/point.js';
+import PointFormView from './view/add-edit-point.js';
 
-import {createPointFormTemplate} from './view/add-edit-point.js';
+//import PointForm, {createPointFormTemplate} from './view/add-edit-point.js';
 import {generateDataPoint} from './mock/point-mock.js';
 
 import {
@@ -54,7 +55,7 @@ const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__li
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
-renderTemplate(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
+renderElement(tripEnventsListElement, new PointFormView('edit', points[0]).getElement(), RenderPosition.BEFOREEND);
 
 points.map((point) => renderElement(tripEnventsListElement, new PointView(point).getElement(), RenderPosition.BEFOREEND));
 
@@ -110,7 +111,7 @@ const sortPoints = (evt) => {
 };
 
 const addNewPointForm = () => {
-  renderTemplate(tripEnventsListElement, createPointFormTemplate('new'), 'afterbegin');
+  renderElement(tripEnventsListElement, new PointFormView('new').getElement(), RenderPosition.AFTERBEGIN);
 
   eventAddButton.disabled = true;
   eventAddButton.removeEventListener('click', addNewPointForm);
