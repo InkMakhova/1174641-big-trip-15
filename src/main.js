@@ -47,6 +47,35 @@ const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new PointFormView('edit', point);
+
+  const replacePointToForm = () => {
+    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  const replaceFormToPoint = () => {
+    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointToForm();
+  });
+
+  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
 const sortForm = tripEventsElement.querySelector('.trip-sort');
 
 const getFilterValue = () => filterForm
@@ -58,8 +87,8 @@ const getSortValue = () => sortForm
   .value;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
-const newPointComponent = new PointFormView('new');
-const editPointComponent = new PointFormView('edit', point);
+//const newPointComponent = new PointFormView('new');
+//const editPointComponent = new PointFormView('edit', point);
 
 const filterAndSortPoints = (filterValue, sortValue) => {
   const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__list');
@@ -83,7 +112,8 @@ const filterAndSortPoints = (filterValue, sortValue) => {
 
     getSortedPoints(filteredPoints, sortValue)
       .map((point) => {
-        render(pointListComponent.getElement(), new PointView(point).getElement(), RenderPosition.BEFOREEND);
+        renderPoint(pointListComponent.getElement(), point);
+        //render(pointListComponent.getElement(), new PointView(point).getElement(), RenderPosition.BEFOREEND);
       });
   }
 };
