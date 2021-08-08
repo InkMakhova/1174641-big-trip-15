@@ -1,5 +1,5 @@
 import {
-  renderElement,
+  render,
   renderTemplate,
   RenderPosition,
   getRandomInteger
@@ -21,6 +21,7 @@ import {generateDataPoint} from './mock/point-mock.js';
 import {
   FILTERS
 } from './constants.js';
+import PointForm from './view/add-edit-point.js';
 //import {formats} from 'dayjs/locale/*';
 
 const POINTS_NUMBER = 2;
@@ -31,20 +32,20 @@ const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigat
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
-renderElement(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
-renderElement(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
-renderElement(filterElement, new FiltersView(FILTERS).getElement(), RenderPosition.BEFOREEND);
+render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
+render(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+render(filterElement, new FiltersView(FILTERS).getElement(), RenderPosition.BEFOREEND);
 
 const filterForm = filterElement.querySelector('.trip-filters');
 
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 
-renderElement(tripInfoElement, new PriceView(getRandomInteger(200, 1000)).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new PriceView(getRandomInteger(200, 1000)).getElement(), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-renderElement(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 const sortForm = tripEventsElement.querySelector('.trip-sort');
 
@@ -57,6 +58,8 @@ const getSortValue = () => sortForm
   .value;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
+const newPointComponent = new PointFormView('new');
+const editPointComponent = new PointFormView('edit', point);
 
 const filterAndSortPoints = (filterValue, sortValue) => {
   const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__list');
@@ -73,14 +76,14 @@ const filterAndSortPoints = (filterValue, sortValue) => {
   const filteredPoints = getFilteredPoints(points, filterValue);
 
   if (filteredPoints.length === 0) {
-    renderElement(tripEventsElement, new PointListEmptyView(filterValue).getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new PointListEmptyView(filterValue).getElement(), RenderPosition.BEFOREEND);
   } else {
     const pointListComponent = new PointListView();
-    renderElement(tripEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
     getSortedPoints(filteredPoints, sortValue)
       .map((point) => {
-        renderElement(pointListComponent.getElement(), new PointView(point).getElement(), RenderPosition.BEFOREEND);
+        render(pointListComponent.getElement(), new PointView(point).getElement(), RenderPosition.BEFOREEND);
       });
   }
 };
@@ -91,12 +94,8 @@ const sortPoints = (evt) => filterAndSortPoints(getFilterValue(), evt.target.val
 
 
 if (points.length === 0) {
-  renderElement(tripEventsElement, new PointListEmptyView().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new PointListEmptyView().getElement(), RenderPosition.BEFOREEND);
 } else {
-  const pointListComponent = new PointListView();
-  renderElement(tripEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
-
-  renderElement(pointListComponent.getElement(), new PointFormView('edit', points[0]).getElement(), RenderPosition.BEFOREEND);
   filterAndSortPoints(getFilterValue(), getSortValue());
 }
 
