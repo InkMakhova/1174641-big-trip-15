@@ -17,7 +17,7 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export const render = (container, element, place) => {
+export const render = (container, element, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -55,3 +55,6 @@ export const capitalizeFirstLetter = (string) =>
 export const getKeyByValue = (object, value) =>
   Object.keys(object)
     .find((key) => object[key] === value);
+
+const ESC_KEY = ['Escape', 'Esc'];
+export const isEscEvent = (evt) => ESC_KEY.includes(evt.key);
