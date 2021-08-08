@@ -23,7 +23,7 @@ import {
 } from './constants.js';
 //import {formats} from 'dayjs/locale/*';
 
-const POINTS_NUMBER = 2;
+const POINTS_NUMBER = 20;
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
