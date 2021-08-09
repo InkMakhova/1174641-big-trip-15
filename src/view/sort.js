@@ -1,40 +1,45 @@
-import {createElement} from '../util.js';
+import {
+  capitalizeFirstLetter,
+  createElement
+} from '../util.js';
+import {DISABLED_SORT} from '../constants.js';
 
-const createSortTemplate = () => (
-  `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    <div class="trip-sort__item  trip-sort__item--day">
-      <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day">
-      <label class="trip-sort__btn" for="sort-day">Day</label>
-    </div>
+const createSortItemTemplate = (sort, isChecked) => {
+  const checkedValue = isChecked === true ? 'checked' : '';
+  const disabledValue = DISABLED_SORT.includes(sort) ? 'disabled' : '';
 
-    <div class="trip-sort__item  trip-sort__item--event">
-      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-      <label class="trip-sort__btn" for="sort-event">Event</label>
-    </div>
+  return `<div class="trip-sort__item  trip-sort__item--${sort}">
+      <input
+        id="sort-${sort}"
+        class="trip-sort__input visually-hidden"
+        type="radio"
+        name="trip-sort"
+        value="sort-${sort}"
+        ${checkedValue}
+        ${disabledValue}>
+      <label
+        class="trip-sort__btn"
+        for="sort-${sort}">${capitalizeFirstLetter(sort)}
+      </label>
+    </div>`;
+};
 
-    <div class="trip-sort__item  trip-sort__item--time">
-      <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
-      <label class="trip-sort__btn" for="sort-time">Time</label>
-    </div>
+const createSortTemplate = (sortItems) => {
+  const sortItemsElement = Object.keys(sortItems)
+    .map((el) => createSortItemTemplate(el, sortItems[el])).join('');
 
-    <div class="trip-sort__item  trip-sort__item--price">
-      <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" checked>
-      <label class="trip-sort__btn" for="sort-price">Price</label>
-    </div>
-
-    <div class="trip-sort__item  trip-sort__item--offer">
-      <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-      <label class="trip-sort__btn" for="sort-offer">Offers</label>
-    </div>
-  </form>`);
-
+  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+      ${sortItemsElement}
+    </form>`;
+};
 export default class Sort {
-  constructor () {
+  constructor (sort) {
+    this._sort = sort;
     this._element = null;
   }
 
   getTemplate() {
-    return createSortTemplate();
+    return createSortTemplate(this._sort);
   }
 
   getElement() {
