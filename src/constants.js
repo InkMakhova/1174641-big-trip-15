@@ -1,6 +1,25 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './util';
 
+export const Filters = {
+  everything: true,
+  past: false,
+  future: false,
+};
+
+export const SortList = {
+  'day': false,
+  'event': false,
+  'time': false,
+  'price': true,
+  'offer': false,
+};
+
+export const DISABLED_SORT = [
+  'event',
+  'offer',
+];
+
 export const POINT_TYPES = [
   'taxi',
   'bus',
@@ -75,7 +94,7 @@ export const DESTINATIONS = [
 
 export const NOW = dayjs();
 
-export const formatsDateTime = {
+export const FormatsDateTime = {
   yearMonthDay: 'YYYY-MM-DD',
   monthDay: 'MMM D',
   dateTimeMachine: 'YYYY-MM-DDTHH:mm',
@@ -83,7 +102,7 @@ export const formatsDateTime = {
   time: 'HH:mm',
 };
 
-export const offerNames = {
+export const OfferNames = {
   upgradeComfort: 'Upgrade to comfort class',
   chooseComfort: 'Choose comfort class',
   chooseBusiness: 'Choose business class',

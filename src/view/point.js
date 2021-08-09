@@ -1,14 +1,15 @@
 import dayjs from 'dayjs';
 import {
+  createElement,
   formateDateTime,
   humanizedTimeDuration,
   capitalizeFirstLetter
 } from '../util.js';
-import {formatsDateTime} from '../constants.js';
+import {FormatsDateTime} from '../constants.js';
 
-const createOffersList = (dataOffers) => {
-  if (dataOffers && dataOffers.length > 0) {
-    const offerList = dataOffers
+const createOffersList = (offers) => {
+  if (offers && offers.length > 0) {
+    const offerList = offers
       .map((offer) => `<li class="event__offer">
           <span class="event__offer-title">
             ${offer.title}
@@ -27,7 +28,7 @@ const createOffersList = (dataOffers) => {
   return '';
 };
 
-const createTimeDurationElement = (duration) => {
+const formatTripDurationElement = (duration) => {
   let days = '';
   let hours = '';
   let minutes = '';
@@ -46,60 +47,71 @@ const createTimeDurationElement = (duration) => {
   return `${days}${hours}${minutes}`;
 };
 
-export const createPointTemplate = (dataPoint) => {
-  const dateFrom = dayjs(dataPoint.dateFrom);
-  const dateTo = dayjs(dataPoint.dateTo);
+const createPointTemplate = (point) => {
+  const {id, dateFrom, dateTo, type, offer, destination, basePrice, duration, isFavorite} = point;
+
+  const dateStart = dayjs(dateFrom);
+  const dateFinish = dayjs(dateTo);
   const diffTime = {
-    diffDays: dateTo.diff(dateFrom, 'day'),
-    diffHours: dateTo.diff(dateFrom, 'hour'),
-    diffMinutes: dateTo.diff(dateFrom, 'minute'),
+    diffDays: dateFinish.diff(dateStart, 'day'),
+    diffHours: dateFinish.diff(dateStart, 'hour'),
+    diffMinutes: duration,
   };
+
+  const tripDuration = formatTripDurationElement(diffTime);
+
+  const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
     <div class="event">
+      <input class="event__id visually-hidden"
+      id="event-${id}"
+      type="text"
+      name="event-${id}"
+      value="${id}">
       <time
         class="event__date"
-        datetime=${formateDateTime(dataPoint.dateFrom, formatsDateTime.yearMonthDay)}>
-          ${formateDateTime(dataPoint.dateFrom, formatsDateTime.monthDay)}
+        datetime=${formateDateTime(dateFrom, FormatsDateTime.yearMonthDay)}>
+          ${formateDateTime(dateFrom, FormatsDateTime.monthDay)}
       </time>
       <div class="event__type">
         <img
           class="event__type-icon"
           width="42"
           height="42"
-          src="img/icons/${dataPoint.type}.png"
+          src="img/icons/${type}.png"
           alt="Event type icon">
       </div>
       <h3 class="event__title">
-        ${capitalizeFirstLetter(dataPoint.type)} ${dataPoint.destination.name}
+        ${capitalizeFirstLetter(type)} ${destination.name}
       </h3>
       <div class="event__schedule">
         <p class="event__time">
           <time
             class="event__start-time"
-            datetime=${formateDateTime(dataPoint.dateFrom, formatsDateTime.dateTimeMachine)}}>
-              ${formateDateTime(dataPoint.dateFrom, formatsDateTime.time)}
+            datetime=${formateDateTime(dateFrom, FormatsDateTime.dateTimeMachine)}}>
+              ${formateDateTime(dateFrom, FormatsDateTime.time)}
           </time>
           &mdash;
           <time
             class="event__end-time"
-            datetime=${formateDateTime(dataPoint.dateTo, formatsDateTime.dateTimeMachine)}>
-              ${formateDateTime(dataPoint.dateTo, formatsDateTime.time)}
+            datetime=${formateDateTime(dateTo, FormatsDateTime.dateTimeMachine)}>
+              ${formateDateTime(dateTo, FormatsDateTime.time)}
           </time>
         </p>
         <p class="event__duration">
-          ${createTimeDurationElement(diffTime)}
+          ${tripDuration}
         </p>
       </div>
       <p class="event__price">
         &euro;&nbsp;
         <span class="event__price-value">
-          ${dataPoint.basePrice}
+          ${basePrice}
         </span>
       </p>
-      ${createOffersList(dataPoint.offer)}
+      ${createOffersList(offer)}
       <button
-        class="event__favorite-btn${dataPoint.isFavorite === true ? ' event__favorite-btn--active' : ''}"
+        class="event__favorite-btn${favoriteClassName}"
         type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -113,3 +125,26 @@ export const createPointTemplate = (dataPoint) => {
     </div>
   </li>`;
 };
+
+export default class Point {
+  constructor (point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

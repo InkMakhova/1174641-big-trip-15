@@ -1,16 +1,29 @@
 import {
-  render
+  Filters,
+  SortList
+} from './constants.js';
+
+import {
+  render,
+  isEscEvent,
+  RenderPosition,
+  getRandomInteger
 } from './util.js';
-import {createSiteMenuTemplate} from './view/site-menu.js';
-import {createTripInfoTemplate} from './view/trip-info.js';
-import {createPriceTemplate} from './view/price.js';
-import {createFilterTemplate} from './view/filter.js';
-import {createSortTemplate} from './view/sort.js';
-import {createPointListTemplate} from './view/point-list';
-import {createPointFormTemplate} from './view/add-edit-point.js';
-import {createPointTemplate} from './view/point.js';
+
+import {getFilteredPoints} from './presenter/filters-presenter.js';
+import {getSortedPoints} from './presenter/sort-presenter.js';
+import TripInfoView from './view/trip-info.js';
+import SiteMenuView from './view/site-menu.js';
+import PriceView from './view/price.js';
+import FiltersView from './view/filters';
+import SortView from './view/sort.js';
+import PointListView from './view/point-list';
+import PointListEmptyView from './view/point-list-empty.js';
+import PointView from './view/point.js';
+import PointFormView from './view/add-edit-point.js';
+
 import {generateDataPoint} from './mock/point-mock.js';
-import {NOW} from './constants.js';
+
 //import {formats} from 'dayjs/locale/*';
 
 const POINTS_NUMBER = 20;
@@ -19,97 +32,130 @@ const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
-const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
+//const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
-render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
-render(siteMenuElement, createSiteMenuTemplate());
-render (filterElement, createFilterTemplate());
+const tripInfoComponent = new TripInfoView();
+render(tripMainElement, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(tripInfoComponent.getElement(), new PriceView(getRandomInteger(200, 1000)).getElement());
 
-const filterForm = filterElement.querySelector('.trip-filters');
+render(siteMenuElement, new SiteMenuView().getElement());
 
-const tripInfoElement = tripMainElement.querySelector('.trip-info');
-
-render(tripInfoElement, createPriceTemplate());
+const filtersComponent = new FiltersView(Filters);
+render(filterElement, filtersComponent.getElement());
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-render(tripEventsElement, createSortTemplate());
-render(tripEventsElement, createPointListTemplate());
+const sortComponent = new SortView(SortList);
+render(tripEventsElement, sortComponent.getElement());
 
-const sortForm = tripEventsElement.querySelector('.trip-sort');
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new PointFormView('edit', point);
 
-const tripEnventsListElement = tripEventsElement.querySelector('.trip-events__list');
+  const replacePointToForm = () => {
+    pointListElement.
+      replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  const replaceFormToPoint = () => {
+    pointListElement.
+      replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointComponent.getElement()
+    .querySelector('.event__rollup-btn')
+    .addEventListener('click', () => {
+      replacePointToForm();
+    });
+
+  pointEditComponent.getElement()
+    .querySelector('form')
+    .addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+    });
+
+  pointEditComponent.getElement()
+    .querySelector('.event__rollup-btn')
+    .addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+    });
+
+  const pointEditEscHandler = (evt) => {
+    if (isEscEvent(evt)) {
+      replaceFormToPoint();
+    }
+  };
+
+  render(pointListElement, pointComponent.getElement());
+
+  document.addEventListener('keydown', pointEditEscHandler);
+};
+
+const getFilterValue = () => filtersComponent.getElement()
+  .querySelector('input:checked')
+  .value;
+
+const getSortValue = () => sortComponent.getElement()
+  .querySelector('input:checked')
+  .value;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
-render(tripEnventsListElement, createPointFormTemplate('edit', points[0]));
+const filterAndSortPoints = (filterValue, sortValue) => {
+  const tripEnventsListElement = tripEventsElement
+    .querySelector('.trip-events__list');
 
-points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
+  const tripEmptyListElement = tripEventsElement
+    .querySelector('.trip-events__msg');
 
-const filterPoints = (evt) => {
-  tripEnventsListElement.innerHTML = '';
+  if (tripEnventsListElement) {
+    tripEnventsListElement.remove();
+  }
 
-  switch (evt.target.value) {
-    case 'past':
-      points.map((point) => {
-        if (point.dateTo < NOW) {
-          render(tripEnventsListElement, createPointTemplate(point));
-        }
+  if (tripEmptyListElement) {
+    tripEmptyListElement.remove();
+  }
+
+  const filteredPoints = getFilteredPoints(points, filterValue);
+
+  if (filteredPoints.length === 0) {
+    render(tripEventsElement, new PointListEmptyView(filterValue).getElement());
+  } else {
+    const pointListComponent = new PointListView();
+    render(tripEventsElement, pointListComponent.getElement());
+
+    getSortedPoints(filteredPoints, sortValue)
+      .map((point) => {
+        renderPoint(pointListComponent.getElement(), point);
       });
-      break;
-
-    case 'future':
-      points.map((point) => {
-        if (point.dateFrom >= NOW) {
-          render(tripEnventsListElement, createPointTemplate(point));
-        }
-      });
-      break;
-
-    default:
-      points.map((point) => render(tripEnventsListElement, createPointTemplate(point)));
   }
 };
 
-const sortPoints = (evt) => {
-  tripEnventsListElement.innerHTML = '';
+const filterPoints = (evt) => filterAndSortPoints(evt.target.value, getSortValue());
 
-  switch (evt.target.value) {
-    case 'sort-price':
-      points.slice().sort((a, b) => b.basePrice - a.basePrice)
-        .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
-        });
-      break;
+const sortPoints = (evt) => filterAndSortPoints(getFilterValue(), evt.target.value);
 
-    case 'sort-time':
-      points.slice().sort((a, b) => b.duration - a.duration)
-        .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
-        });
-      break;
+if (points.length === 0) {
+  render(tripEventsElement, new PointListEmptyView().getElement());
+} else {
+  filterAndSortPoints(getFilterValue(), getSortValue());
+}
 
-    default:
-      points.slice().sort((a, b) => b.dateFrom - a.dateFrom)
-        .map((point) => {
-          render(tripEnventsListElement, createPointTemplate(point));
-        });
-  }
-};
+// const addNewPointForm = () => {
+//   renderElement(tripEnventsListElement, new PointFormView('new').getElement(), RenderPosition.AFTERBEGIN);
 
-const addNewPointForm = () => {
-  render(tripEnventsListElement, createPointFormTemplate('new'), 'afterbegin');
+//   eventAddButton.disabled = true;
+//   eventAddButton.removeEventListener('click', addNewPointForm);
 
-  eventAddButton.disabled = true;
-  eventAddButton.removeEventListener('click', addNewPointForm);
+//   sortForm.querySelector('#sort-time').checked = true;
+//   filterForm.querySelector('#filter-everything').checked = true;
+// };
 
-  sortForm.querySelector('#sort-time').checked = true;
-  filterForm.querySelector('#filter-everything').checked = true;
-};
+//eventAddButton.addEventListener('click', addNewPointForm);
 
-eventAddButton.addEventListener('click', addNewPointForm);
+filtersComponent.getElement().addEventListener('change', filterPoints);
 
-filterForm.addEventListener('change', filterPoints);
-
-sortForm.addEventListener('change', sortPoints);
+sortComponent.getElement().addEventListener('change', sortPoints);
