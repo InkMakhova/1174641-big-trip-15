@@ -60,7 +60,7 @@ const createPointTemplate = (point) => {
 
   const tripDuration = formatTripDurationElement(diffTime);
 
-  const favoriteClassName = isFavorite === true ? ' event__favorite-btn--active' : '';
+  const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
     <div class="event">
