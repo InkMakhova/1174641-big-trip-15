@@ -56,5 +56,4 @@ export const getKeyByValue = (object, value) =>
   Object.keys(object)
     .find((key) => object[key] === value);
 
-const ESC_KEY = ['Escape', 'Esc'];
-export const isEscEvent = (evt) => ESC_KEY.includes(evt.key);
+export const isEscEvent = (evt) => ['Escape', 'Esc'].includes(evt.key);
