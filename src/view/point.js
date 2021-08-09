@@ -5,7 +5,7 @@ import {
   humanizedTimeDuration,
   capitalizeFirstLetter
 } from '../util.js';
-import {formatsDateTime} from '../constants.js';
+import {FormatsDateTime} from '../constants.js';
 
 const createOffersList = (offers) => {
   if (offers && offers.length > 0) {
@@ -71,8 +71,8 @@ const createPointTemplate = (point) => {
       value="${id}">
       <time
         class="event__date"
-        datetime=${formateDateTime(dateFrom, formatsDateTime.yearMonthDay)}>
-          ${formateDateTime(dateFrom, formatsDateTime.monthDay)}
+        datetime=${formateDateTime(dateFrom, FormatsDateTime.yearMonthDay)}>
+          ${formateDateTime(dateFrom, FormatsDateTime.monthDay)}
       </time>
       <div class="event__type">
         <img
@@ -89,14 +89,14 @@ const createPointTemplate = (point) => {
         <p class="event__time">
           <time
             class="event__start-time"
-            datetime=${formateDateTime(dateFrom, formatsDateTime.dateTimeMachine)}}>
-              ${formateDateTime(dateFrom, formatsDateTime.time)}
+            datetime=${formateDateTime(dateFrom, FormatsDateTime.dateTimeMachine)}}>
+              ${formateDateTime(dateFrom, FormatsDateTime.time)}
           </time>
           &mdash;
           <time
             class="event__end-time"
-            datetime=${formateDateTime(dateTo, formatsDateTime.dateTimeMachine)}>
-              ${formateDateTime(dateTo, formatsDateTime.time)}
+            datetime=${formateDateTime(dateTo, FormatsDateTime.dateTimeMachine)}>
+              ${formateDateTime(dateTo, FormatsDateTime.time)}
           </time>
         </p>
         <p class="event__duration">

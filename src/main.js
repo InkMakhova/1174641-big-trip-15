@@ -1,9 +1,15 @@
 import {
+  Filters,
+  SortList
+} from './constants.js';
+
+import {
   render,
   isEscEvent,
   RenderPosition,
   getRandomInteger
 } from './util.js';
+
 import {getFilteredPoints} from './presenter/filters-presenter.js';
 import {getSortedPoints} from './presenter/sort-presenter.js';
 import TripInfoView from './view/trip-info.js';
@@ -18,9 +24,6 @@ import PointFormView from './view/add-edit-point.js';
 
 import {generateDataPoint} from './mock/point-mock.js';
 
-import {
-  FILTERS
-} from './constants.js';
 //import {formats} from 'dayjs/locale/*';
 
 const POINTS_NUMBER = 20;
@@ -37,13 +40,13 @@ render(tripInfoComponent.getElement(), new PriceView(getRandomInteger(200, 1000)
 
 render(siteMenuElement, new SiteMenuView().getElement());
 
-const filtersComponent = new FiltersView(FILTERS);
+const filtersComponent = new FiltersView(Filters);
 render(filterElement, filtersComponent.getElement());
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-const sortComponent = new SortView();
+const sortComponent = new SortView(SortList);
 render(tripEventsElement, sortComponent.getElement());
 
 const renderPoint = (pointListElement, point) => {

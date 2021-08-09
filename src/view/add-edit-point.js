@@ -6,8 +6,8 @@ import {
   getKeyByValue
 } from '../util.js';
 import {
-  formatsDateTime,
-  offerNames,
+  FormatsDateTime,
+  OfferNames,
   DESTINATIONS,
   POINT_TYPES,
   TYPE_DEFAULT,
@@ -41,7 +41,7 @@ const createDestinationsList = () => (
 const offerListNewTemplate = (offers) => {
   const offerList = offers
     .map((offer) => {
-      const offerName = getKeyByValue(offerNames, offer.title);
+      const offerName = getKeyByValue(OfferNames, offer.title);
 
       return `<div class="event__offer-selector">
         <input
@@ -69,7 +69,7 @@ const offerListNewTemplate = (offers) => {
 const offerListEditTemplate = (offers) => {
   const offerList = offers.offer
     .map((offer) => {
-      const offerName = getKeyByValue(offerNames, offer.title);
+      const offerName = getKeyByValue(OfferNames, offer.title);
 
       return `<div class="event__offer-selector">
         <input
@@ -146,8 +146,8 @@ const createPointFormTemplate = (eventType, point) => {
 
   const destinationName = isNewPoint ? '' : point.destination.name;
 
-  const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, formatsDateTime.dateTimeHumanize);
-  const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, formatsDateTime.dateTimeHumanize);
+  const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, FormatsDateTime.dateTimeHumanize);
+  const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, FormatsDateTime.dateTimeHumanize);
 
   const basePrice = isNewPoint ? '' : point.basePrice;
 
