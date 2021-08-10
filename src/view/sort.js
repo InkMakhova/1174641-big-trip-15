@@ -1,8 +1,6 @@
-import {
-  capitalizeFirstLetter,
-  createElement
-} from '../util.js';
+import {capitalizeFirstLetter} from '../util.js';
 import {DISABLED_SORT} from '../constants.js';
+import AbstractView from './abstract.js';
 
 const createSortItemTemplate = (sort, isChecked) => {
   const checkedValue = isChecked === true ? 'checked' : '';
@@ -32,25 +30,14 @@ const createSortTemplate = (sortItems) => {
       ${sortItemsElement}
     </form>`;
 };
-export default class Sort {
+export default class Sort extends AbstractView {
   constructor (sort) {
+    super();
+
     this._sort = sort;
-    this._element = null;
   }
 
   getTemplate() {
     return createSortTemplate(this._sort);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
