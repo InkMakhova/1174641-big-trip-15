@@ -1,10 +1,6 @@
-import {
-  getRandomInteger
-} from '../util.js';
-
-import AbstractView from './abstract.js';
-
+import {getRandomInteger} from '../util.js';
 import {DESTINATIONS} from '../constants.js';
+import AbstractView from './abstract.js';
 
 const getTripInfo = () => (
   {
