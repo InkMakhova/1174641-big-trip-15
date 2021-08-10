@@ -63,35 +63,33 @@ const renderPoint = (pointListElement, point) => {
       replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
   };
 
-  pointComponent.getElement()
-    .querySelector('.event__rollup-btn')
-    .addEventListener('click', () => {
-      replacePointToForm();
-    });
-
-  pointEditComponent.getElement()
-    .querySelector('form')
-    .addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-    });
-
-  pointEditComponent.getElement()
-    .querySelector('.event__rollup-btn')
-    .addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-    });
-
-  const pointEditEscHandler = (evt) => {
+  const pointClickEscHandler = (evt) => {
     if (isEscEvent(evt)) {
       replaceFormToPoint();
+
+      document.removeEventListener('keydown', pointClickEscHandler);
     }
   };
 
-  render(pointListElement, pointComponent.getElement());
+  pointComponent.setRollUpHandler(() => {
+    replacePointToForm();
 
-  document.addEventListener('keydown', pointEditEscHandler);
+    document.addEventListener('keydown', pointClickEscHandler);
+  });
+
+  pointEditComponent.setFormSubmitHandler(() => {
+    replaceFormToPoint();
+
+    document.removeEventListener('keydown', pointClickEscHandler);
+  });
+
+  pointEditComponent.setRollUpHandler(() => {
+    replaceFormToPoint();
+
+    document.removeEventListener('keydown', pointClickEscHandler);
+  });
+
+  render(pointListElement, pointComponent.getElement());
 };
 
 const getFilterValue = () => filtersComponent.getElement()
