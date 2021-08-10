@@ -161,4 +161,3 @@ filtersComponent.setFilterChangeHandler((evt) => {
 sortComponent.setSortChangeHandler((evt) => {
   sortPoints(evt);
 });
-//getElement().addEventListener('change', sortPoints);
