@@ -1,7 +1,8 @@
 import {
-  getRandomInteger,
-  createElement
+  getRandomInteger
 } from '../util.js';
+
+import AbstractView from './abstract.js';
 
 import {DESTINATIONS} from '../constants.js';
 
@@ -23,24 +24,8 @@ const createTripInfoTemplate = () => (
     </div>
   </section>`);
 
-export default class TripInfo {
-  constructor () {
-    this._element = null;
-  }
-
+export default class TripInfo extends AbstractView {
   getTemplate() {
     return createTripInfoTemplate(this._element);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
