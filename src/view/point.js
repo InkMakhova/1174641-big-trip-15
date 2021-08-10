@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 import {
-  createElement,
   formateDateTime,
   humanizedTimeDuration,
   capitalizeFirstLetter
 } from '../util.js';
 import {FormatsDateTime} from '../constants.js';
+import AbstractView from './abstract.js';
 
 const createOffersList = (offers) => {
   if (offers && offers.length > 0) {
@@ -126,25 +126,14 @@ const createPointTemplate = (point) => {
   </li>`;
 };
 
-export default class Point {
+export default class Point extends AbstractView {
   constructor (point) {
+    super();
+
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
