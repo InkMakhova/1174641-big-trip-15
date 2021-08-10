@@ -154,6 +154,8 @@ if (points.length === 0) {
 
 //eventAddButton.addEventListener('click', addNewPointForm);
 
-filtersComponent.getElement().addEventListener('change', filterPoints);
+filtersComponent.setFilterChangeHandler((evt) => {
+  filterPoints(evt);
+});
 
 sortComponent.getElement().addEventListener('change', sortPoints);
