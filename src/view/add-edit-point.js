@@ -1,5 +1,4 @@
 import {
-  createElement,
   getRandomInteger,
   capitalizeFirstLetter,
   formateDateTime,
@@ -13,6 +12,7 @@ import {
   TYPE_DEFAULT,
   OFFERS
 } from '../constants.js';
+import AbstractView from './abstract.js';
 
 const createPointTypesTemplate = (currentType) => (
   POINT_TYPES.map((type) => {
@@ -248,26 +248,15 @@ const createPointFormTemplate = (eventType, point) => {
 </li>`;
 };
 
-export default class PointForm {
+export default class PointForm extends AbstractView {
   constructor (eventType, point) {
+    super();
+
     this._eventType = eventType;
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointFormTemplate(this._eventType, this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
