@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractView from './abstract.js';
 
 const createEmptyListText = (filterValue) => {
   if (filterValue) {
@@ -22,25 +22,14 @@ const createEmptyListPoints = (filterValue) => (
   </p>`);
 
 
-export default class EmptyList {
+export default class EmptyList extends AbstractView {
   constructor (filterValue) {
+    super();
+
     this._filter = filterValue;
-    this._element = null;
   }
 
   getTemplate() {
     return createEmptyListPoints(this._filter);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
