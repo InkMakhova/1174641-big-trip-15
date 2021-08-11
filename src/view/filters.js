@@ -1,4 +1,4 @@
-import {capitalizeFirstLetter} from '../util.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
 const createFilterItemTemplate = (filter, isChecked) => (

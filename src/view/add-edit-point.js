@@ -1,10 +1,4 @@
 import {
-  getRandomInteger,
-  capitalizeFirstLetter,
-  formateDateTime,
-  getKeyByValue
-} from '../util.js';
-import {
   FormatsDateTime,
   OfferNames,
   DESTINATIONS,
@@ -12,6 +6,12 @@ import {
   TYPE_DEFAULT,
   OFFERS
 } from '../constants.js';
+import {
+  getRandomInteger,
+  capitalizeFirstLetter,
+  getKeyByValue
+} from '../utils/common.js';
+import {formateDateTime} from '../utils/point.js';
 import AbstractView from './abstract.js';
 
 const createPointTypesTemplate = (currentType) => (

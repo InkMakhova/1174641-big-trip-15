@@ -4,11 +4,14 @@ import {
 } from './constants.js';
 
 import {
-  render,
   isEscEvent,
-  RenderPosition,
   getRandomInteger
-} from './util.js';
+} from './utils/common.js';
+
+import {
+  render,
+  RenderPosition
+} from './utils/render.js';
 
 import {getFilteredPoints} from './presenter/filters-presenter.js';
 import {getSortedPoints} from './presenter/sort-presenter.js';

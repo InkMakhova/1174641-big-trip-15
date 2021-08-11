@@ -1,5 +1,5 @@
-import {getRandomInteger} from '../util.js';
 import {DESTINATIONS} from '../constants.js';
+import {getRandomInteger} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
 const getTripInfo = () => (

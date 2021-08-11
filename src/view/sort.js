@@ -1,5 +1,5 @@
-import {capitalizeFirstLetter} from '../util.js';
 import {DISABLED_SORT} from '../constants.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
 const createSortItemTemplate = (sort, isChecked) => {

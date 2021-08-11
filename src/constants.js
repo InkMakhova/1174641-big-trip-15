@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from './util';
+import {getRandomInteger} from './utils/common.js';
 
 export const Filters = {
   everything: true,

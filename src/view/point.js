@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
+import {FormatsDateTime} from '../constants.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import {
   formateDateTime,
-  humanizedTimeDuration,
-  capitalizeFirstLetter
-} from '../util.js';
-import {FormatsDateTime} from '../constants.js';
+  humanizeTimeDuration
+} from '../utils/point.js';
 import AbstractView from './abstract.js';
 
 const createOffersList = (offers) => {
@@ -33,16 +33,16 @@ const formatTripDurationElement = (duration) => {
   let hours = '';
   let minutes = '';
 
-  if (humanizedTimeDuration(duration).days !== 0) {
-    days = `0${humanizedTimeDuration(duration).days}D `.slice(-4);
+  if (humanizeTimeDuration(duration).days !== 0) {
+    days = `0${humanizeTimeDuration(duration).days}D `.slice(-4);
     hours = '00H ';
   }
 
-  if (humanizedTimeDuration(duration).hours !== 0) {
-    hours = `0${humanizedTimeDuration(duration).hours}H `.slice(-4);
+  if (humanizeTimeDuration(duration).hours !== 0) {
+    hours = `0${humanizeTimeDuration(duration).hours}H `.slice(-4);
   }
 
-  minutes = `0${humanizedTimeDuration(duration).minutes}M`.slice(-3);
+  minutes = `0${humanizeTimeDuration(duration).minutes}M`.slice(-3);
 
   return `${days}${hours}${minutes}`;
 };
