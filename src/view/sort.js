@@ -1,12 +1,10 @@
-import {
-  capitalizeFirstLetter,
-  createElement
-} from '../util.js';
-import {DISABLED_SORT} from '../constants.js';
+import {disabledSortFields} from '../constants.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
+import AbstractView from './abstract.js';
 
 const createSortItemTemplate = (sort, isChecked) => {
   const checkedValue = isChecked === true ? 'checked' : '';
-  const disabledValue = DISABLED_SORT.includes(sort) ? 'disabled' : '';
+  const disabledValue = disabledSortFields.includes(sort) ? 'disabled' : '';
 
   return `<div class="trip-sort__item  trip-sort__item--${sort}">
       <input
@@ -32,25 +30,24 @@ const createSortTemplate = (sortItems) => {
       ${sortItemsElement}
     </form>`;
 };
-export default class Sort {
+export default class Sort extends AbstractView {
   constructor (sort) {
+    super();
+
     this._sort = sort;
-    this._element = null;
+    this._sortChangeHandler = this._sortChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createSortTemplate(this._sort);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _sortChangeHandler(evt) {
+    this._callback.sortChange(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setSortChangeHandler(callback) {
+    this._callback.sortChange = callback;
+    this.getElement().addEventListener('change', this._sortChangeHandler);
   }
 }

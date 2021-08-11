@@ -1,7 +1,5 @@
-import {
-  capitalizeFirstLetter,
-  createElement
-} from '../util.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
+import AbstractView from './abstract.js';
 
 const createFilterItemTemplate = (filter, isChecked) => (
   `<div class="trip-filters__filter">
@@ -27,25 +25,24 @@ const createFiltersTemplate = (filterItems) => {
     </form>`;
 };
 
-export default class Filters {
+export default class Filters extends AbstractView {
   constructor (filters) {
+    super();
+
     this._filters = filters;
-    this._element = null;
+    this._filterChangeHandler = this._filterChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createFiltersTemplate(this._filters);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _filterChangeHandler(evt) {
+    this._callback.filterChange(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setFilterChangeHandler(callback) {
+    this._callback.filterChange = callback;
+    this.getElement().addEventListener('change', this._filterChangeHandler);
   }
 }

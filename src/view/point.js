@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
-import {
-  createElement,
-  formateDateTime,
-  humanizedTimeDuration,
-  capitalizeFirstLetter
-} from '../util.js';
 import {FormatsDateTime} from '../constants.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
+import {
+  formateDateTime,
+  humanizeTimeDuration
+} from '../utils/point.js';
+import AbstractView from './abstract.js';
 
 const createOffersList = (offers) => {
   if (offers && offers.length > 0) {
@@ -33,16 +33,16 @@ const formatTripDurationElement = (duration) => {
   let hours = '';
   let minutes = '';
 
-  if (humanizedTimeDuration(duration).days !== 0) {
-    days = `0${humanizedTimeDuration(duration).days}D `.slice(-4);
+  if (humanizeTimeDuration(duration).days !== 0) {
+    days = `0${humanizeTimeDuration(duration).days}D `.slice(-4);
     hours = '00H ';
   }
 
-  if (humanizedTimeDuration(duration).hours !== 0) {
-    hours = `0${humanizedTimeDuration(duration).hours}H `.slice(-4);
+  if (humanizeTimeDuration(duration).hours !== 0) {
+    hours = `0${humanizeTimeDuration(duration).hours}H `.slice(-4);
   }
 
-  minutes = `0${humanizedTimeDuration(duration).minutes}M`.slice(-3);
+  minutes = `0${humanizeTimeDuration(duration).minutes}M`.slice(-3);
 
   return `${days}${hours}${minutes}`;
 };
@@ -71,8 +71,8 @@ const createPointTemplate = (point) => {
       value="${id}">
       <time
         class="event__date"
-        datetime=${formateDateTime(dateFrom, FormatsDateTime.yearMonthDay)}>
-          ${formateDateTime(dateFrom, FormatsDateTime.monthDay)}
+        datetime=${formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD)}>
+          ${formateDateTime(dateFrom, FormatsDateTime.MMM_D)}
       </time>
       <div class="event__type">
         <img
@@ -89,14 +89,14 @@ const createPointTemplate = (point) => {
         <p class="event__time">
           <time
             class="event__start-time"
-            datetime=${formateDateTime(dateFrom, FormatsDateTime.dateTimeMachine)}}>
-              ${formateDateTime(dateFrom, FormatsDateTime.time)}
+            datetime=${formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD_TIME)}}>
+              ${formateDateTime(dateFrom, FormatsDateTime.HH_MM)}
           </time>
           &mdash;
           <time
             class="event__end-time"
-            datetime=${formateDateTime(dateTo, FormatsDateTime.dateTimeMachine)}>
-              ${formateDateTime(dateTo, FormatsDateTime.time)}
+            datetime=${formateDateTime(dateTo, FormatsDateTime.YYYY_MM_DD_TIME)}>
+              ${formateDateTime(dateTo, FormatsDateTime.HH_MM)}
           </time>
         </p>
         <p class="event__duration">
@@ -126,25 +126,25 @@ const createPointTemplate = (point) => {
   </li>`;
 };
 
-export default class Point {
+export default class Point extends AbstractView {
   constructor (point) {
+    super();
+
     this._point = point;
-    this._element = null;
+    this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _rollUpClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.rollUpClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setRollUpHandler(callback) {
+    this._callback.rollUpClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
   }
 }

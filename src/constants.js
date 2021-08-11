@@ -1,13 +1,13 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from './util';
+import {getRandomInteger} from './utils/common.js';
 
-export const Filters = {
+export const filtersList = {
   everything: true,
   past: false,
   future: false,
 };
 
-export const SortList = {
+export const sortList = {
   'day': false,
   'event': false,
   'time': false,
@@ -15,12 +15,12 @@ export const SortList = {
   'offer': false,
 };
 
-export const DISABLED_SORT = [
+export const disabledSortFields = [
   'event',
   'offer',
 ];
 
-export const POINT_TYPES = [
+export const pointTypes = [
   'taxi',
   'bus',
   'train',
@@ -32,7 +32,7 @@ export const POINT_TYPES = [
   'restaurant',
 ];
 
-export const OFFERS = [
+export const offerOptions = [
   {
     title: 'Choose the radio station',
     price: 30,
@@ -75,9 +75,9 @@ export const OFFERS = [
   },
 ];
 
-export const TYPE_DEFAULT = POINT_TYPES[3];
+export const defaultType = pointTypes[3];
 
-export const DESTINATIONS = [
+export const destinations = [
   'Amsterdam',
   'Munich',
   'Vienna',
@@ -92,17 +92,17 @@ export const DESTINATIONS = [
   'San Francisco',
 ];
 
-export const NOW = dayjs();
+export const now = dayjs();
 
 export const FormatsDateTime = {
-  yearMonthDay: 'YYYY-MM-DD',
-  monthDay: 'MMM D',
-  dateTimeMachine: 'YYYY-MM-DDTHH:mm',
-  dateTimeHumanize: 'DD/MM/YY HH:mm',
-  time: 'HH:mm',
+  YYYY_MM_DD: 'YYYY-MM-DD',
+  MMM_D: 'MMM D',
+  YYYY_MM_DD_TIME: 'YYYY-MM-DDTHH:mm',
+  DD_MM_YY_TIME: 'DD/MM/YY HH:mm',
+  HH_MM: 'HH:mm',
 };
 
-export const OfferNames = {
+export const offersNames = {
   upgradeComfort: 'Upgrade to comfort class',
   chooseComfort: 'Choose comfort class',
   chooseBusiness: 'Choose business class',
@@ -132,7 +132,7 @@ export const OfferNames = {
 
 export const generateOffer = () => (
   {
-    type: POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)],
-    offers: OFFERS.slice(getRandomInteger(0, OFFERS.length - 1), getRandomInteger(0, OFFERS.length - 1)),
+    type: pointTypes[getRandomInteger(0, pointTypes.length - 1)],
+    offers: offerOptions.slice(getRandomInteger(0, offerOptions.length - 1), getRandomInteger(0, offerOptions.length - 1)),
   }
 );

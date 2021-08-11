@@ -1,15 +1,12 @@
-import {
-  getRandomInteger,
-  createElement
-} from '../util.js';
-
-import {DESTINATIONS} from '../constants.js';
+import {destinations} from '../constants.js';
+import {getRandomInteger} from '../utils/common.js';
+import AbstractView from './abstract.js';
 
 const getTripInfo = () => (
   {
-    firstPoint: DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)],
-    secondPoint: DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)],
-    lastPoint: DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)],
+    firstPoint: destinations[getRandomInteger(0, destinations.length - 1)],
+    secondPoint: destinations[getRandomInteger(0, destinations.length - 1)],
+    lastPoint: destinations[getRandomInteger(0, destinations.length - 1)],
   }
 );
 
@@ -23,24 +20,8 @@ const createTripInfoTemplate = () => (
     </div>
   </section>`);
 
-export default class TripInfo {
-  constructor () {
-    this._element = null;
-  }
-
+export default class TripInfo extends AbstractView {
   getTemplate() {
     return createTripInfoTemplate(this._element);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

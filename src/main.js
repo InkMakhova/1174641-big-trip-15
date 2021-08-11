@@ -1,14 +1,18 @@
 import {
-  Filters,
-  SortList
+  filtersList,
+  sortList
 } from './constants.js';
 
 import {
-  render,
   isEscEvent,
-  RenderPosition,
   getRandomInteger
-} from './util.js';
+} from './utils/common.js';
+
+import {
+  render,
+  RenderPosition,
+  replace
+} from './utils/render.js';
 
 import {getFilteredPoints} from './presenter/filters-presenter.js';
 import {getSortedPoints} from './presenter/sort-presenter.js';
@@ -35,63 +39,59 @@ const filterElement = siteHeaderElement.querySelector('.trip-controls__filters')
 //const eventAddButton = siteHeaderElement.querySelector('.trip-main__event-add-btn');
 
 const tripInfoComponent = new TripInfoView();
-render(tripMainElement, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-render(tripInfoComponent.getElement(), new PriceView(getRandomInteger(200, 1000)).getElement());
+render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
-render(siteMenuElement, new SiteMenuView().getElement());
+render(siteMenuElement, new SiteMenuView());
 
-const filtersComponent = new FiltersView(Filters);
-render(filterElement, filtersComponent.getElement());
+const filtersComponent = new FiltersView(filtersList);
+render(filterElement, filtersComponent);
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-const sortComponent = new SortView(SortList);
-render(tripEventsElement, sortComponent.getElement());
+const sortComponent = new SortView(sortList);
+render(tripEventsElement, sortComponent);
 
 const renderPoint = (pointListElement, point) => {
   const pointComponent = new PointView(point);
   const pointEditComponent = new PointFormView('edit', point);
 
   const replacePointToForm = () => {
-    pointListElement.
-      replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    pointListElement.
-      replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
-  pointComponent.getElement()
-    .querySelector('.event__rollup-btn')
-    .addEventListener('click', () => {
-      replacePointToForm();
-    });
-
-  pointEditComponent.getElement()
-    .querySelector('form')
-    .addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-    });
-
-  pointEditComponent.getElement()
-    .querySelector('.event__rollup-btn')
-    .addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-    });
-
-  const pointEditEscHandler = (evt) => {
+  const pointClickEscHandler = (evt) => {
     if (isEscEvent(evt)) {
       replaceFormToPoint();
+
+      document.removeEventListener('keydown', pointClickEscHandler);
     }
   };
 
-  render(pointListElement, pointComponent.getElement());
+  pointComponent.setRollUpHandler(() => {
+    replacePointToForm();
 
-  document.addEventListener('keydown', pointEditEscHandler);
+    document.addEventListener('keydown', pointClickEscHandler);
+  });
+
+  pointEditComponent.setFormSubmitHandler(() => {
+    replaceFormToPoint();
+
+    document.removeEventListener('keydown', pointClickEscHandler);
+  });
+
+  pointEditComponent.setRollUpHandler(() => {
+    replaceFormToPoint();
+
+    document.removeEventListener('keydown', pointClickEscHandler);
+  });
+
+  render(pointListElement, pointComponent);
 };
 
 const getFilterValue = () => filtersComponent.getElement()
@@ -122,10 +122,10 @@ const filterAndSortPoints = (filterValue, sortValue) => {
   const filteredPoints = getFilteredPoints(points, filterValue);
 
   if (filteredPoints.length === 0) {
-    render(tripEventsElement, new PointListEmptyView(filterValue).getElement());
+    render(tripEventsElement, new PointListEmptyView(filterValue));
   } else {
     const pointListComponent = new PointListView();
-    render(tripEventsElement, pointListComponent.getElement());
+    render(tripEventsElement, pointListComponent);
 
     getSortedPoints(filteredPoints, sortValue)
       .map((point) => {
@@ -139,7 +139,7 @@ const filterPoints = (evt) => filterAndSortPoints(evt.target.value, getSortValue
 const sortPoints = (evt) => filterAndSortPoints(getFilterValue(), evt.target.value);
 
 if (points.length === 0) {
-  render(tripEventsElement, new PointListEmptyView().getElement());
+  render(tripEventsElement, new PointListEmptyView());
 } else {
   filterAndSortPoints(getFilterValue(), getSortValue());
 }
@@ -156,6 +156,10 @@ if (points.length === 0) {
 
 //eventAddButton.addEventListener('click', addNewPointForm);
 
-filtersComponent.getElement().addEventListener('change', filterPoints);
+filtersComponent.setFilterChangeHandler((evt) => {
+  filterPoints(evt);
+});
 
-sortComponent.getElement().addEventListener('change', sortPoints);
+sortComponent.setSortChangeHandler((evt) => {
+  sortPoints(evt);
+});
