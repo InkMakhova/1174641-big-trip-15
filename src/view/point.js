@@ -71,8 +71,8 @@ const createPointTemplate = (point) => {
       value="${id}">
       <time
         class="event__date"
-        datetime=${formateDateTime(dateFrom, FormatsDateTime.yearMonthDay)}>
-          ${formateDateTime(dateFrom, FormatsDateTime.monthDay)}
+        datetime=${formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD)}>
+          ${formateDateTime(dateFrom, FormatsDateTime.MMM_D)}
       </time>
       <div class="event__type">
         <img
@@ -89,14 +89,14 @@ const createPointTemplate = (point) => {
         <p class="event__time">
           <time
             class="event__start-time"
-            datetime=${formateDateTime(dateFrom, FormatsDateTime.dateTimeMachine)}}>
-              ${formateDateTime(dateFrom, FormatsDateTime.time)}
+            datetime=${formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD_TIME)}}>
+              ${formateDateTime(dateFrom, FormatsDateTime.HH_MM)}
           </time>
           &mdash;
           <time
             class="event__end-time"
-            datetime=${formateDateTime(dateTo, FormatsDateTime.dateTimeMachine)}>
-              ${formateDateTime(dateTo, FormatsDateTime.time)}
+            datetime=${formateDateTime(dateTo, FormatsDateTime.YYYY_MM_DD_TIME)}>
+              ${formateDateTime(dateTo, FormatsDateTime.HH_MM)}
           </time>
         </p>
         <p class="event__duration">

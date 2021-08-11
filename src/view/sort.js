@@ -1,10 +1,10 @@
-import {DISABLED_SORT} from '../constants.js';
+import {disabledSortFields} from '../constants.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
 const createSortItemTemplate = (sort, isChecked) => {
   const checkedValue = isChecked === true ? 'checked' : '';
-  const disabledValue = DISABLED_SORT.includes(sort) ? 'disabled' : '';
+  const disabledValue = disabledSortFields.includes(sort) ? 'disabled' : '';
 
   return `<div class="trip-sort__item  trip-sort__item--${sort}">
       <input

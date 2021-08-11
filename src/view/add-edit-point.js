@@ -1,10 +1,10 @@
 import {
   FormatsDateTime,
-  OfferNames,
-  DESTINATIONS,
-  POINT_TYPES,
-  TYPE_DEFAULT,
-  OFFERS
+  offersNames,
+  destinations,
+  pointTypes,
+  defaultType,
+  offerOptions
 } from '../constants.js';
 import {
   getRandomInteger,
@@ -15,7 +15,7 @@ import {formateDateTime} from '../utils/point.js';
 import AbstractView from './abstract.js';
 
 const createPointTypesTemplate = (currentType) => (
-  POINT_TYPES.map((type) => {
+  pointTypes.map((type) => {
     const checkedStatus = currentType === type ? 'checked' : '';
 
     return `<div class="event__type-item">
@@ -34,14 +34,14 @@ const createPointTypesTemplate = (currentType) => (
   }).join(''));
 
 const createDestinationsList = () => (
-  DESTINATIONS.map((destination) => `<option value="${destination}"></option>`)
+  destinations.map((destination) => `<option value="${destination}"></option>`)
     .join('')
 );
 
 const offerListNewTemplate = (offers) => {
   const offerList = offers
     .map((offer) => {
-      const offerName = getKeyByValue(OfferNames, offer.title);
+      const offerName = getKeyByValue(offersNames, offer.title);
 
       return `<div class="event__offer-selector">
         <input
@@ -69,7 +69,7 @@ const offerListNewTemplate = (offers) => {
 const offerListEditTemplate = (offers) => {
   const offerList = offers.offer
     .map((offer) => {
-      const offerName = getKeyByValue(OfferNames, offer.title);
+      const offerName = getKeyByValue(offersNames, offer.title);
 
       return `<div class="event__offer-selector">
         <input
@@ -140,18 +140,18 @@ const createDestinationSection = (point) => (
 const createPointFormTemplate = (eventType, point) => {
   const isNewPoint = (eventType === 'new');
 
-  const type = isNewPoint ? TYPE_DEFAULT : point.type;
+  const type = isNewPoint ? defaultType : point.type;
 
-  const capitalizedType = isNewPoint ? capitalizeFirstLetter(TYPE_DEFAULT) : capitalizeFirstLetter(point.type);
+  const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(point.type);
 
   const destinationName = isNewPoint ? '' : point.destination.name;
 
-  const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, FormatsDateTime.dateTimeHumanize);
-  const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, FormatsDateTime.dateTimeHumanize);
+  const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, FormatsDateTime.DD_MM_YY_TIME);
+  const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, FormatsDateTime.DD_MM_YY_TIME);
 
   const basePrice = isNewPoint ? '' : point.basePrice;
 
-  const offersSection = isNewPoint ? createOffersSection(OFFERS.slice(getRandomInteger(1, OFFERS.length - 1)), 'new') : createOffersSection(point, 'edit');
+  const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(point, 'edit');
 
   const destinationSection = isNewPoint ? '' : createDestinationSection(point);
 

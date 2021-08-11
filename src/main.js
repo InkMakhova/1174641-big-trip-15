@@ -1,6 +1,6 @@
 import {
-  Filters,
-  SortList
+  filtersList,
+  sortList
 } from './constants.js';
 
 import {
@@ -11,8 +11,7 @@ import {
 import {
   render,
   RenderPosition,
-  replace,
-  remove
+  replace
 } from './utils/render.js';
 
 import {getFilteredPoints} from './presenter/filters-presenter.js';
@@ -45,13 +44,13 @@ render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
 render(siteMenuElement, new SiteMenuView());
 
-const filtersComponent = new FiltersView(Filters);
+const filtersComponent = new FiltersView(filtersList);
 render(filterElement, filtersComponent);
 
 const siteMainElement = document.querySelector('.page-main');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-const sortComponent = new SortView(SortList);
+const sortComponent = new SortView(sortList);
 render(tripEventsElement, sortComponent);
 
 const renderPoint = (pointListElement, point) => {
