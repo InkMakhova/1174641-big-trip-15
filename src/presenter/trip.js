@@ -3,11 +3,12 @@ import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
 import PointView from '../view/point.js';
 import PointFormView from '../view/add-edit-point.js';
+import PointPresenter from '../presenter/point.js';
 import {
   render,
-  replace
+//  replace
 } from '../utils/render.js';
-import {isEscEvent} from '../utils/common.js';
+//import {isEscEvent} from '../utils/common.js';
 import {sortList} from '../constants.js';
 
 export default class Trip {
@@ -36,44 +37,8 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new PointFormView('edit', point);
-
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const pointClickEscHandler = (evt) => {
-      if (isEscEvent(evt)) {
-        replaceFormToPoint();
-
-        document.removeEventListener('keydown', pointClickEscHandler);
-      }
-    };
-
-    pointComponent.setRollUpHandler(() => {
-      replacePointToForm();
-
-      document.addEventListener('keydown', pointClickEscHandler);
-    });
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-
-      document.removeEventListener('keydown', pointClickEscHandler);
-    });
-
-    pointEditComponent.setRollUpHandler(() => {
-      replaceFormToPoint();
-
-      document.removeEventListener('keydown', pointClickEscHandler);
-    });
-
-    render(this._pointListComponent, pointComponent);
+    const pointPresenter = new PointPresenter(this._pointListComponent);
+    pointPresenter.init(point);
   }
 
   _renderPoints() {
