@@ -3,7 +3,8 @@ import PointView from '../view/point.js';
 import PointFormView from '../view/add-edit-point.js';
 import {
   render,
-  replace
+  replace,
+  remove
 } from '../utils/render.js';
 
 export default class Point {
@@ -22,6 +23,9 @@ export default class Point {
   init(point) {
     this._point = point;
 
+    const prevPointComponent = this._pointComponent;
+    const prevPointEditComponent = this._pointEditComponent;
+
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new PointFormView('edit', point);
 
@@ -29,7 +33,27 @@ export default class Point {
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);
 
-    render(this._pointListContainer, this._pointComponent);
+    //render(this._pointListContainer, this._pointComponent);
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this._pointListContainer, this._pointComponent);
+      return;
+    }
+
+    if (this._pointListContainer.getElement().contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._pointListContainer.getElement().contains(prevPointEditComponent.getElement())) {
+      replace(this._pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._pointEditComponent);
   }
 
   _replacePointToForm() {
