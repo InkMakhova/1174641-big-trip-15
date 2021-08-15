@@ -1,15 +1,16 @@
 import {isEscEvent} from '../utils/common.js';
-import PointView from '../view/point.js';
-import PointFormView from '../view/add-edit-point.js';
 import {
   render,
   replace,
   remove
 } from '../utils/render.js';
+import PointView from '../view/point.js';
+import PointFormView from '../view/add-edit-point.js';
 
 export default class Point {
-  constructor(pointListContainer) {
+  constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
+    this._changeData = changeData;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -18,6 +19,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
@@ -30,10 +32,10 @@ export default class Point {
     this._pointEditComponent = new PointFormView('edit', point);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);
 
-    //render(this._pointListContainer, this._pointComponent);
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);
       return;
@@ -77,7 +79,20 @@ export default class Point {
     this._replacePointToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavorite: !this._point.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._replaceFormToPoint();
   }
 

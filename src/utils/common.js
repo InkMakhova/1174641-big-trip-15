@@ -14,6 +14,7 @@ export const getKeyByValue = (object, value) =>
 
 export const isEscEvent = (evt) => ['Escape', 'Esc'].includes(evt.key);
 
+//в массиве заменяет один элемент на новый
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
