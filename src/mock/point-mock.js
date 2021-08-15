@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {
   destinations,
   generateOffer
@@ -94,7 +95,7 @@ export const generateDataPoint = () => {
   const duration = dateTo.diff(dateFrom, 'minute');
 
   const point = {
-    id: getRandomInteger(1, MAX_RANDOM_NUMBER),
+    id: nanoid(),
     basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
     dateFrom: dateFrom,
     dateTo: dateTo,
