@@ -255,7 +255,7 @@ export default class PointForm extends AbstractView {
     this._eventType = eventType;
     this._point = point;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
+    this._formCloseHandler = this._formCloseHandler.bind(this);
   }
 
   getTemplate() {
@@ -264,7 +264,7 @@ export default class PointForm extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._point);
   }
 
   setFormSubmitHandler(callback) {
@@ -272,13 +272,13 @@ export default class PointForm extends AbstractView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  _rollUpClickHandler(evt) {
+  _formCloseHandler(evt) {
     evt.preventDefault();
-    this._callback.rollUpClick();
+    this._callback.formClose();
   }
 
-  setRollUpHandler(callback) {
-    this._callback.rollUpClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
+  setFormCloseHandler(callback) {
+    this._callback.formClose = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formCloseHandler);
   }
 }
