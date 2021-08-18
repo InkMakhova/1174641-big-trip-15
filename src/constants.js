@@ -7,17 +7,19 @@ export const filtersList = {
   future: false,
 };
 
-export const sortList = {
-  'day': false,
-  'event': false,
-  'time': false,
-  'price': true,
-  'offer': false,
+export const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
 };
 
+export const defaultSortType = SortType.PRICE;
+
 export const disabledSortFields = [
-  'event',
-  'offer',
+  SortType.EVENT,
+  SortType.OFFER,
 ];
 
 export const pointTypes = [

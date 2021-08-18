@@ -1,15 +1,19 @@
-import {disabledSortFields} from '../constants.js';
+import {
+  defaultSortType,
+  disabledSortFields
+} from '../constants.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
-const createSortItemTemplate = (sort, isChecked) => {
-  const checkedValue = isChecked === true ? 'checked' : '';
+const createSortItemTemplate = (sort) => {
+  const checkedValue = defaultSortType === sort ? 'checked' : '';
   const disabledValue = disabledSortFields.includes(sort) ? 'disabled' : '';
 
   return `<div class="trip-sort__item  trip-sort__item--${sort}">
       <input
         id="sort-${sort}"
         class="trip-sort__input visually-hidden"
+        data-sort-type = "${sort}"
         type="radio"
         name="trip-sort"
         value="sort-${sort}"
@@ -24,7 +28,7 @@ const createSortItemTemplate = (sort, isChecked) => {
 
 const createSortTemplate = (sortItems) => {
   const sortItemsElement = Object.keys(sortItems)
-    .map((el) => createSortItemTemplate(el, sortItems[el])).join('');
+    .map((key) => createSortItemTemplate(sortItems[key])).join('');
 
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItemsElement}
@@ -35,19 +39,20 @@ export default class Sort extends AbstractView {
     super();
 
     this._sort = sort;
-    this._sortChangeHandler = this._sortChangeHandler.bind(this);
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createSortTemplate(this._sort);
   }
 
-  _sortChangeHandler(evt) {
-    this._callback.sortChange(evt);
+  _sortTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
-  setSortChangeHandler(callback) {
-    this._callback.sortChange = callback;
-    this.getElement().addEventListener('change', this._sortChangeHandler);
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener('change', this._sortTypeChangeHandler);
   }
 }
