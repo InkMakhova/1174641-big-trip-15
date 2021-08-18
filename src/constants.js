@@ -15,17 +15,11 @@ export const SortType = {
   OFFER: 'offer',
 };
 
-export const sortList = {
-  'day': false,
-  'event': false,
-  'time': false,
-  'price': true,
-  'offer': false,
-};
+export const defaultSortType = SortType.PRICE;
 
 export const disabledSortFields = [
-  'event',
-  'offer',
+  SortType.EVENT,
+  SortType.OFFER,
 ];
 
 export const pointTypes = [

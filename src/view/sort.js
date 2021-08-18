@@ -1,9 +1,12 @@
-import {disabledSortFields} from '../constants.js';
+import {
+  defaultSortType,
+  disabledSortFields
+} from '../constants.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
-const createSortItemTemplate = (sort, isChecked) => {
-  const checkedValue = isChecked === true ? 'checked' : '';
+const createSortItemTemplate = (sort) => {
+  const checkedValue = defaultSortType === sort ? 'checked' : '';
   const disabledValue = disabledSortFields.includes(sort) ? 'disabled' : '';
 
   return `<div class="trip-sort__item  trip-sort__item--${sort}">
@@ -25,7 +28,7 @@ const createSortItemTemplate = (sort, isChecked) => {
 
 const createSortTemplate = (sortItems) => {
   const sortItemsElement = Object.keys(sortItems)
-    .map((el) => createSortItemTemplate(el, sortItems[el])).join('');
+    .map((key) => createSortItemTemplate(sortItems[key])).join('');
 
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItemsElement}

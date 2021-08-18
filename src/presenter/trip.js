@@ -1,7 +1,4 @@
-import {
-  sortList,
-  SortType
-} from '../constants.js';
+import {SortType} from '../constants.js';
 import {render} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
 import {
@@ -21,7 +18,7 @@ export default class Trip {
     this._tripContainer = tripContainer;
     this._pointPresenters = new Map();
 
-    this._sortComponent = new SortView(sortList);
+    this._sortComponent = new SortView(SortType);
     this._pointListComponent = new PointListView();
     this._emptyListComponent = new EmptyListView();
     this._pointComponent = new PointView();

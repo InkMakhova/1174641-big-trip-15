@@ -30,7 +30,6 @@ render(siteMenuElement, new SiteMenuView());
 const filtersComponent = new FiltersView(filtersList);
 render(filterElement, filtersComponent);
 
-//tripContainer
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
 const tripPresenter = new TripPresenter(tripContainerElement);
