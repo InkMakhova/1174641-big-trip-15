@@ -1,6 +1,14 @@
-import {sortList} from '../constants.js';
+import {
+  sortList,
+  SortType
+} from '../constants.js';
 import {render} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
+import {
+  sortPointsTime,
+  sortPointsPrice,
+  sortPointsDay
+} from '../utils/point.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
@@ -21,12 +29,40 @@ export default class Trip {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPoints) {
     this._tripPoints = tripPoints.slice();
+    this._sourcedTripPoints = tripPoints.slice();
 
     this._renderTrip();
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.TIME:
+        this._tripPoints.sort(sortPointsTime);
+        break;
+      case SortType.PRICE:
+        this._tripPoints.sort(sortPointsPrice);
+        break;
+      default:
+        this._tripPoints.sort(sortPointsDay);
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointList();
+    this._renderPointList();
+    this._renderPoints();
   }
 
   _handleModeChange() {
@@ -35,11 +71,13 @@ export default class Trip {
 
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
+    this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
     this._pointPresenters.get(updatedPoint.id).init(updatedPoint);
   }
 
   _renderSort() {
     render(this._tripContainer, this._sortComponent);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPointList() {
