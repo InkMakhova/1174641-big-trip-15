@@ -37,7 +37,9 @@ export default class Trip {
   }
 
   _sortPoints(sortType) {
-    switch (sortType) {
+    this._currentSortType = sortType;
+
+    switch (this._currentSortType) {
       case SortType.TIME:
         this._tripPoints.sort(sortPointsTime);
         break;
@@ -47,8 +49,6 @@ export default class Trip {
       default:
         this._tripPoints.sort(sortPointsDay);
     }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
