@@ -10,6 +10,7 @@ const createSortItemTemplate = (sort, isChecked) => {
       <input
         id="sort-${sort}"
         class="trip-sort__input visually-hidden"
+        data-sort-type = "${sort}"
         type="radio"
         name="trip-sort"
         value="sort-${sort}"
