@@ -7,6 +7,14 @@ export const filtersList = {
   future: false,
 };
 
+export const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
+};
+
 export const sortList = {
   'day': false,
   'event': false,
