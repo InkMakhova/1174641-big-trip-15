@@ -77,6 +77,85 @@ export const offerOptions = [
   },
 ];
 
+export const OffersSetByTypes = {
+  'taxi': [
+    {
+      title: 'Drive quickly, I\'m in a hurry',
+      price: 100,
+    },
+    {
+      title: 'Upgrade to comfort class',
+      price: 120,
+    },
+    {
+      title: 'Choose the radio station',
+      price: 30,
+    },
+  ],
+  'bus': [
+    {
+      title: 'Infotainment system',
+      price: 50,
+    },
+    {
+      title: 'Choose seats',
+      price: 190,
+    },
+  ],
+  'train': [
+    {
+      title: 'Choose meal',
+      price: 120,
+    },
+    {
+      title: 'Upgrade to business class',
+      price: 120,
+    },
+  ],
+  'flight': [
+    {
+      title: 'Choose seats',
+      price: 190,
+    },
+    {
+      title: 'Upgrade to business class',
+      price: 120,
+    },
+    {
+      title: 'Add luggage',
+      price: 170,
+    },
+  ],
+  'check-in': [
+    {
+      title: 'Choose meal',
+      price: 120,
+    },
+  ],
+  'sightseeing': [],
+  'ship': [
+    {
+      title: 'Choose seats',
+      price: 190,
+    },
+    {
+      title: 'Upgrade to business class',
+      price: 120,
+    },
+  ],
+  'drive': [
+    {
+      title: 'Upgrade to comfort class',
+      price: 120,
+    },
+    {
+      title: 'Choose the radio station',
+      price: 30,
+    },
+  ],
+  'restaurant': [],
+};
+
 export const defaultType = pointTypes[3];
 
 export const destinations = [
