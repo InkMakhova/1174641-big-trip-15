@@ -1,7 +1,7 @@
 import {
   FormatsDateTime,
   offersNames,
-  destinations,
+  //destinations,
   pointTypes,
   defaultType,
   offerOptions,
@@ -13,9 +13,31 @@ import {
   getKeyByValue
 } from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
+import {
+  createElement,
+  render,
+  RenderPosition
+} from '../utils/render.js';
 //import AbstractView from './abstract.js';
 import SmartView from './smart.js';
+// import {destinations} from '../main.js';
 import {generateDataPoint} from '../mock/point-mock.js';
+
+let destinations;
+
+// const saveDestinations = (data) => {
+//   destinations = data;
+//   return new Promise((resolve, reject) => {
+
+//   }
+// };
+
+export const saveDestinations = (callback) => (
+  (data) => {
+    destinations = data;
+    callback();
+  }
+);
 
 const createPointTypesTemplate = (currentType) => (
   pointTypes.map((type) => {
@@ -36,8 +58,8 @@ const createPointTypesTemplate = (currentType) => (
     </div>`;
   }).join(''));
 
-const createDestinationsList = () => (
-  destinations.map((destination) => `<option value="${destination}"></option>`)
+const createDestinationsList = (destinationItems) => (
+  destinationItems.map((item) => `<option value="${item.name}"></option>`)
     .join('')
 );
 
@@ -69,9 +91,8 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const getOffersByType = (type) => {
-  return OffersSetByTypes[type];
-};
+const getOffersTemplate = (type) => (
+  createElement(offerListNewTemplate(OffersSetByTypes[type])));
 
 const offerListEditTemplate = (offers) => {
   const offerList = offers
@@ -213,7 +234,7 @@ const createPointFormTemplate = (eventType, data) => {
           value="${destinationName}"
           list="destination-list-1">
         <datalist id="destination-list-1">
-          ${createDestinationsList()}
+          ${createDestinationsList(destinations)}
         </datalist>
       </div>
 
@@ -284,6 +305,7 @@ export default class PointForm extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -324,7 +346,33 @@ export default class PointForm extends SmartView {
       type: evt.target.value,
       offer: [],
     });
-    //this.getTemplate(this._eventType, this._data);
+
+    const pointEventsElement = this.getElement()
+      .querySelector('.event__details');
+
+    const newOffersList = getOffersTemplate(evt.target.value);
+
+    render(pointEventsElement, newOffersList, RenderPosition.AFTERBEGIN);
+  }
+
+  _destinationChangeHandler(evt) {
+    let description;
+    let pictures;
+
+    Object.keys(destinations).map((key) => {
+      if (destinations[key].name === evt.target.value) {
+        description = destinations[key].description;
+        pictures = destinations[key].pictures;
+      }
+    });
+
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+        description: description,
+        pictures: pictures,
+      },
+    });
   }
 
   restoreHandlers() {
@@ -336,6 +384,10 @@ export default class PointForm extends SmartView {
     this.getElement()
       .querySelector('.event__type-group')
       .addEventListener('change', this._typeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
   }
 
   static parsePointToData(point) {

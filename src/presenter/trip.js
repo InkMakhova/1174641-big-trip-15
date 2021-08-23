@@ -12,6 +12,7 @@ import EmptyListView from '../view/point-list-empty.js';
 import PointView from '../view/point.js';
 import PointFormView from '../view/add-edit-point.js';
 import PointPresenter from '../presenter/point.js';
+import { loadDestinations } from '../main.js';
 
 export default class Trip {
   constructor(tripContainer) {
