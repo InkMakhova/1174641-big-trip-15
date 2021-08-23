@@ -1,7 +1,6 @@
 import {
   FormatsDateTime,
   offersNames,
-  //destinations,
   pointTypes,
   defaultType,
   offerOptions,
@@ -18,19 +17,10 @@ import {
   render,
   RenderPosition
 } from '../utils/render.js';
-//import AbstractView from './abstract.js';
 import SmartView from './smart.js';
-// import {destinations} from '../main.js';
 import {generateDataPoint} from '../mock/point-mock.js';
 
 let destinations;
-
-// const saveDestinations = (data) => {
-//   destinations = data;
-//   return new Promise((resolve, reject) => {
-
-//   }
-// };
 
 export const saveDestinations = (callback) => (
   (data) => {
@@ -165,36 +155,26 @@ const createDestinationSection = (destination) => (
     ${createPhotoTemplate(destination)}
 </section>`);
 
-//const createPointFormTemplate = (eventType, point) => {
 const createPointFormTemplate = (eventType, data) => {
   const {id, basePrice, dateFrom, dateTo, duration, destination, offer, type, isFavorite} = data;
 
   const isNewPoint = (eventType === 'new');
 
-  //const type = isNewPoint ? defaultType : point.type;
   const dataType = isNewPoint ? defaultType : type;
 
-  //const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(point.type);
   const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
 
-  //const destinationName = isNewPoint ? '' : point.destination.name;
   const destinationName = isNewPoint ? '' : destination.name;
 
-  //const dateFrom = isNewPoint ? '' : formateDateTime(point.dateFrom, FormatsDateTime.DD_MM_YY_TIME);
-  //const dateTo = isNewPoint ? '' : formateDateTime(point.dateTo, FormatsDateTime.DD_MM_YY_TIME);
   const dataDateFrom = isNewPoint ? '' : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
   const dataDateTo = isNewPoint ? '' : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
 
-  //const basePrice = isNewPoint ? '' : point.basePrice;
   const dataBasePrice = isNewPoint ? '' : basePrice;
 
-  //const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(point, 'edit');
   const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(offer, 'edit');
 
-  //const destinationSection = isNewPoint ? '' : createDestinationSection(point);
   const destinationSection = isNewPoint ? '' : createDestinationSection(destination);
 
-  //const isFavoriteValue = isNewPoint ? false : point.isFavorite;
   const isFavoriteValue = isNewPoint ? false : isFavorite;
 
   return `<li class="trip-events__item">
@@ -293,14 +273,11 @@ const createPointFormTemplate = (eventType, data) => {
 </li>`;
 };
 
-//export default class PointForm extends AbstractView {
 export default class PointForm extends SmartView {
-  //constructor (eventType = 'edit', point) {
   constructor (eventType = 'edit', point  = generateDataPoint()) {
     super();
 
     this._eventType = eventType;
-    //this._point = point;
     this._data = PointForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -310,14 +287,18 @@ export default class PointForm extends SmartView {
     this._setInnerHandlers();
   }
 
+  reset(point) {
+    this.updateData(
+      PointForm.parsePointToData(point),
+    );
+  }
+
   getTemplate() {
-    //return createPointFormTemplate(this._eventType, this._point);
     return createPointFormTemplate(this._eventType, this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    //this._callback.formSubmit(this._point);
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
 
@@ -330,8 +311,7 @@ export default class PointForm extends SmartView {
 
   _formCloseHandler(evt) {
     evt.preventDefault();
-    //this._callback.formClose(); ???
-    this._callback.formClose(PointForm.parseDataToPoint(this._data));
+    this._callback.formClose();
   }
 
   setFormCloseHandler(callback) {
@@ -388,15 +368,16 @@ export default class PointForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this._formCloseHandler);
   }
 
   static parsePointToData(point) {
     return Object.assign(
       {},
       point,
-      // {
-      //   type: point.type,
-      // },
     );
   }
 
