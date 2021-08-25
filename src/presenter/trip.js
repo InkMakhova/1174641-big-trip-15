@@ -9,8 +9,6 @@ import {
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
-import PointView from '../view/point.js';
-import PointFormView from '../view/add-edit-point.js';
 import PointPresenter from '../presenter/point.js';
 
 export default class Trip {
@@ -21,8 +19,6 @@ export default class Trip {
     this._sortComponent = new SortView(SortType);
     this._pointListComponent = new PointListView();
     this._emptyListComponent = new EmptyListView();
-    this._pointComponent = new PointView();
-    this._pointFormComponent = new PointFormView();
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);

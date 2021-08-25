@@ -93,7 +93,6 @@ export default class Point {
   }
 
   _handleEditClick() {
-    this._pointEditComponent.reset(this._point);
     this._replacePointToForm();
   }
 
@@ -115,6 +114,7 @@ export default class Point {
   }
 
   _handleFormClose() {
+    this._pointEditComponent.reset(this._point);
     this._replaceFormToPoint();
   }
 }

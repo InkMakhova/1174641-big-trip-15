@@ -181,6 +181,8 @@ export const FormatsDateTime = {
   YYYY_MM_DD_TIME: 'YYYY-MM-DDTHH:mm',
   DD_MM_YY_TIME: 'DD/MM/YY HH:mm',
   HH_MM: 'HH:mm',
+  ISO: 'YYYY-MM-DDTHH:mm:ss.000Z',
+
 };
 
 export const offersNames = {

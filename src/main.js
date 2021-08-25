@@ -11,7 +11,6 @@ import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
 import {generateDataPoint} from './mock/point-mock.js';
 import {saveDestinations} from './view/add-edit-point.js';
-//import {formats} from 'dayjs/locale/*';
 
 const POINTS_NUMBER = 20;
 
@@ -45,3 +44,4 @@ loadDestinations(saveDestinations(() => {
   const tripPresenter = new TripPresenter(tripContainerElement);
   tripPresenter.init(points);
 }));
+

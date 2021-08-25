@@ -20,7 +20,6 @@ import {
   RenderPosition
 } from '../utils/render.js';
 import SmartView from './smart.js';
-import {generateDataPoint} from '../mock/point-mock.js';
 
 let destinations;
 
@@ -65,7 +64,9 @@ const offerListNewTemplate = (offers) => {
           class="event__offer-checkbox visually-hidden"
           id="event-offer-${offerName}-1"
           type="checkbox"
-          name="event-offer-${offerName}">
+          name="event-offer-${offerName}"
+          data-offer-title="${offer.title}"
+          data-offer-price="${offer.price}">
         <label
           class="event__offer-label"
           for="event-offer-${offerName}-1">
@@ -97,6 +98,8 @@ const offerListEditTemplate = (offers) => {
           id="event-offer-${offerName}-1"
           type="checkbox"
           name="event-offer-${offerName}"
+          data-offer-title="${offer.title}"
+          data-offer-price="${offer.price}"
           checked>
         <label
           class="event__offer-label"
@@ -276,17 +279,24 @@ const createPointFormTemplate = (eventType, data) => {
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = 'edit', point  = generateDataPoint()) {
+  constructor (eventType = 'edit', point) {
     super();
 
     this._eventType = eventType;
+    this._dateFromPicker = null;
+    this._dateToPicker = null;
     this._data = PointForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._renderOffers = this._renderOffers.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDateFromPicker();
+    this._setDateToPicker();
   }
 
   reset(point) {
@@ -299,8 +309,95 @@ export default class PointForm extends SmartView {
     return createPointFormTemplate(this._eventType, this._data);
   }
 
+  _dateFromChangeHandler([userDate]) {
+    if (userDate > this._data.dateTo) {
+      this._setDateToValidity();
+    } else {
+      this.updateData({
+        dateFrom: userDate,
+      });
+    }
+  }
+
+  _setDateToValidity() {
+    this.getElement()
+      .querySelector('#event-end-time-1')
+      .setCustomValidity('Дата начала не может быть больше даты окончания путешествия');
+    this.getElement()
+      .querySelector('#event-end-time-1')
+      .reportValidity();
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
+    });
+  }
+
+  _setDateFromPicker() {
+    if (this._dateFromPicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._dateFromPicker.destroy();
+      this._dateFromPicker = null;
+    }
+
+    this._dateFromPicker = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
+        onChange: this._dateFromChangeHandler,
+      },
+    );
+  }
+
+  _setDateToPicker() {
+    if (this._dateToPicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._dateToPicker.destroy();
+      this._dateToPicker = null;
+    }
+
+    this._dateToPicker = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
+        onChange: this._dateToChangeHandler,
+        minDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
+      },
+    );
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    if (this.getElement().querySelector('.event__section--offers')) {
+      const offersElements = this.getElement()
+        .querySelector('.event__section--offers')
+        .querySelectorAll('input:checked');
+
+      const offers = new Array(offersElements.length)
+        .fill(null)
+        .map((_element, index) => {
+          const title = offersElements[index].dataset.offerTitle;
+          const price = offersElements[index].dataset.offerPrice;
+
+          return {
+            title: title,
+            price: price,
+          };
+        });
+
+      this.updateData({
+        offer: offers,
+      });
+    }
+
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
 
@@ -328,13 +425,22 @@ export default class PointForm extends SmartView {
       type: evt.target.value,
       offer: [],
     });
+    this._renderOffers(evt.target.value);
+  }
 
+  _renderOffers(type) {
     const pointEventsElement = this.getElement()
       .querySelector('.event__details');
 
-    const newOffersList = getOffersTemplate(evt.target.value);
+    const newOffersList = getOffersTemplate(type);
 
     render(pointEventsElement, newOffersList, RenderPosition.AFTERBEGIN);
+  }
+
+  _offerChooseHandler(evt) {
+    this.updateData({
+      offer: [evt.target.value],
+    });
   }
 
   _destinationChangeHandler(evt) {
@@ -359,7 +465,10 @@ export default class PointForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDateFromPicker();
+    this._setDateToPicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormCloseHandler(this._callback.formClose);
   }
 
   _setInnerHandlers() {
@@ -370,10 +479,6 @@ export default class PointForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
-
-    this.getElement()
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this._formCloseHandler);
   }
 
   static parsePointToData(point) {
