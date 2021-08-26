@@ -14,11 +14,6 @@ import {
   getKeyByValue
 } from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
-import {
-  createElement,
-  render,
-  RenderPosition
-} from '../utils/render.js';
 import SmartView from './smart.js';
 
 let destinations;
@@ -84,31 +79,31 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const getOffersTemplate = (type) => (
-  createElement(offerListNewTemplate(OffersSetByTypes[type])));
-
-const offerListEditTemplate = (offers) => {
-  const offerList = offers
+const offerListEditTemplate = (type, offers) => {
+  const offerList = OffersSetByTypes[type]
     .map((offer) => {
-      const offerName = getKeyByValue(offersNames, offer.title);
+      const el = offers.find((item) => (item.title === offer.title && item.price === offer.price));
+      const isChecked = !!el;
+
+      const offerTitle = getKeyByValue(offersNames, offer.title);
 
       return `<div class="event__offer-selector">
-        <input
-          class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offerName}-1"
-          type="checkbox"
-          name="event-offer-${offerName}"
-          data-offer-title="${offer.title}"
-          data-offer-price="${offer.price}"
-          checked>
-        <label
-          class="event__offer-label"
-          for="event-offer-${offerName}-1">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`;
+      <input
+        class="event__offer-checkbox visually-hidden"
+        id="event-offer-${offerTitle}-1"
+        type="checkbox"
+        name="event-offer-${offerTitle}"
+        data-offer-title="${offer.title}"
+        data-offer-price="${offer.price}"
+        ${isChecked ? 'checked' : ''}>
+      <label
+        class="event__offer-label"
+        for="event-offer-${offerTitle}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`;
     }).join('');
 
   return `<section class="event__section  event__section--offers">
@@ -119,13 +114,13 @@ const offerListEditTemplate = (offers) => {
     </section>`;
 };
 
-const createOffersSection = (offers, eventType) => {
+const createOffersSection = (type, offers, eventType) => {
   if (eventType === 'new') {
     return offerListNewTemplate(offers);
   }
 
-  if (offers && offers.length > 0) {
-    return offerListEditTemplate(offers);
+  if (offers && OffersSetByTypes[type].length > 0) {
+    return offerListEditTemplate(type, offers);
   }
 
   return '';
@@ -176,7 +171,7 @@ const createPointFormTemplate = (eventType, data) => {
 
   const dataBasePrice = isNewPoint ? '' : basePrice;
 
-  const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(offer, 'edit');
+  const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(type, offer, 'edit');
 
   const destinationSection = isNewPoint ? '' : createDestinationSection(destination);
 
@@ -289,10 +284,10 @@ export default class PointForm extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
-    this._renderOffers = this._renderOffers.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._offerChooseHandler = this._offerChooseHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDateFromPicker();
@@ -376,28 +371,6 @@ export default class PointForm extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
 
-    if (this.getElement().querySelector('.event__section--offers')) {
-      const offersElements = this.getElement()
-        .querySelector('.event__section--offers')
-        .querySelectorAll('input:checked');
-
-      const offers = new Array(offersElements.length)
-        .fill(null)
-        .map((_element, index) => {
-          const title = offersElements[index].dataset.offerTitle;
-          const price = offersElements[index].dataset.offerPrice;
-
-          return {
-            title: title,
-            price: price,
-          };
-        });
-
-      this.updateData({
-        offer: offers,
-      });
-    }
-
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
 
@@ -425,22 +398,28 @@ export default class PointForm extends SmartView {
       type: evt.target.value,
       offer: [],
     });
-    this._renderOffers(evt.target.value);
-  }
-
-  _renderOffers(type) {
-    const pointEventsElement = this.getElement()
-      .querySelector('.event__details');
-
-    const newOffersList = getOffersTemplate(type);
-
-    render(pointEventsElement, newOffersList, RenderPosition.AFTERBEGIN);
   }
 
   _offerChooseHandler(evt) {
-    this.updateData({
-      offer: [evt.target.value],
-    });
+    let offers = this._data.offer.slice();
+    if (evt.target.checked === true) {
+      const price = Number(evt.target.dataset.offerPrice);
+
+      offers.push({
+        title: evt.target.dataset.offerTitle,
+        price: price,
+      });
+
+      this.updateData({
+        offer: offers,
+      });
+    } else {
+      offers = offers.filter((offer) => offer.title !== evt.target.dataset.offerTitle);
+
+      this.updateData({
+        offer: offers,
+      });
+    }
   }
 
   _destinationChangeHandler(evt) {
@@ -479,6 +458,12 @@ export default class PointForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
+
+    if (this.getElement().querySelector('.event__section--offers')) {
+      this.getElement().querySelectorAll('.event__offer-checkbox')
+        .forEach((checkbox) => checkbox.addEventListener('change', this._offerChooseHandler));
+    }
+
   }
 
   static parsePointToData(point) {

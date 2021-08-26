@@ -213,9 +213,27 @@ export const offersNames = {
   vip: 'Choose VIP area',
 };
 
-export const generateOffer = () => (
-  {
-    type: pointTypes[getRandomInteger(0, pointTypes.length - 1)],
-    offers: offerOptions.slice(getRandomInteger(0, offerOptions.length - 1), getRandomInteger(0, offerOptions.length - 1)),
-  }
-);
+export const generateOffer = () => {
+  const type = pointTypes[getRandomInteger(0, pointTypes.length - 1)];
+  return {
+    type: type,
+    offers: OffersSetByTypes[type].slice(getRandomInteger(0, OffersSetByTypes[type].length - 1)),
+  };
+};
+
+// let offersData;
+
+// const someFunction = () => {
+//   const request = new XMLHttpRequest();
+//   request.open('GET', 'https://15.ecmascript.pages.academy/big-trip/offers');
+//   request.setRequestHeader('Authorization', 'Basic er883jdzbdw');
+//   request.onload = function() {
+//     offersData = request.response;
+//     // return offersData;
+//   };
+//   request.send();
+// };
+
+// someFunction();
+// console.log(offersData);
+
