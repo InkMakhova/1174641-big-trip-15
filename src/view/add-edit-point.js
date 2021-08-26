@@ -156,7 +156,7 @@ const createDestinationSection = (destination) => (
 </section>`);
 
 const createPointFormTemplate = (eventType, data) => {
-  const {id, basePrice, dateFrom, dateTo, duration, destination, offer, type, isFavorite} = data;
+  const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
 
   const isNewPoint = (eventType === 'new');
 
