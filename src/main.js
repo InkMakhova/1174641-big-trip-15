@@ -10,7 +10,6 @@ import PriceView from './view/price.js';
 import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
 import {generateDataPoint} from './mock/point-mock.js';
-//import {formats} from 'dayjs/locale/*';
 
 const POINTS_NUMBER = 20;
 
@@ -32,5 +31,19 @@ render(filterElement, filtersComponent);
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-const tripPresenter = new TripPresenter(tripContainerElement);
-tripPresenter.init(points);
+const loadDestinations = () => {
+  fetch('https://15.ecmascript.pages.academy/big-trip/destinations',
+    {headers: {'Authorization': 'Basic er883jdzbdw'}})
+    .then((response) => response.json())
+    .then((destinations) => {
+      const tripPresenter = new TripPresenter(tripContainerElement, destinations);
+      tripPresenter.init(points);
+    })
+    .catch(() => {
+      const tripPresenter = new TripPresenter(tripContainerElement);
+      tripPresenter.init(points);
+    });
+};
+
+loadDestinations();
+

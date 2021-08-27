@@ -9,20 +9,17 @@ import {
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
-import PointView from '../view/point.js';
-import PointFormView from '../view/add-edit-point.js';
 import PointPresenter from '../presenter/point.js';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, destinations) {
+    this._destinations = destinations;
     this._tripContainer = tripContainer;
     this._pointPresenters = new Map();
 
     this._sortComponent = new SortView(SortType);
     this._pointListComponent = new PointListView();
     this._emptyListComponent = new EmptyListView();
-    this._pointComponent = new PointView();
-    this._pointFormComponent = new PointFormView();
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -83,7 +80,7 @@ export default class Trip {
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange, this._handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this._destinations);
     this._pointPresenters.set(point.id, pointPresenter);
   }
 
