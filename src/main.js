@@ -10,19 +10,10 @@ import PriceView from './view/price.js';
 import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
 import {generateDataPoint} from './mock/point-mock.js';
-import {saveDestinations} from './view/add-edit-point.js';
 
 const POINTS_NUMBER = 20;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
-
-export const loadDestinations = (onSuccess, onFail) => {
-  fetch('https://15.ecmascript.pages.academy/big-trip/destinations',
-    {headers: {'Authorization': 'Basic er883jdzbdw'}})
-    .then((response) => response.json())
-    .then(onSuccess)
-    .catch(onFail);
-};
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -40,8 +31,19 @@ render(filterElement, filtersComponent);
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-loadDestinations(saveDestinations(() => {
-  const tripPresenter = new TripPresenter(tripContainerElement);
-  tripPresenter.init(points);
-}));
+const loadDestinations = () => {
+  fetch('https://15.ecmascript.pages.academy/big-trip/destinations',
+    {headers: {'Authorization': 'Basic er883jdzbdw'}})
+    .then((response) => response.json())
+    .then((destinations) => {
+      const tripPresenter = new TripPresenter(tripContainerElement, destinations);
+      tripPresenter.init(points);
+    })
+    .catch(() => {
+      const tripPresenter = new TripPresenter(tripContainerElement);
+      tripPresenter.init(points);
+    });
+};
+
+loadDestinations();
 

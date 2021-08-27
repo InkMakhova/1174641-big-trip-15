@@ -16,15 +16,6 @@ import {
 import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
-let destinations;
-
-export const saveDestinations = (callback) => (
-  (data) => {
-    destinations = data;
-    callback();
-  }
-);
-
 const createPointTypesTemplate = (currentType) => (
   pointTypes.map((type) => {
     const checkedStatus = currentType === type ? 'checked' : '';
@@ -155,7 +146,7 @@ const createDestinationSection = (destination) => (
     ${createPhotoTemplate(destination)}
 </section>`);
 
-const createPointFormTemplate = (eventType, data) => {
+const createPointFormTemplate = (eventType, data, destinations) => {
   const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
 
   const isNewPoint = (eventType === 'new');
@@ -164,7 +155,11 @@ const createPointFormTemplate = (eventType, data) => {
 
   const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
 
-  const destinationName = isNewPoint ? '' : destination.name;
+  const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
+  const destinationTitleEdit = !destination.name ? '' : destination.name;
+  const destinationTitle = isNewPoint ? '' : destinationTitleEdit;
+  const placeholderText = destinations.length > 0 ? '' : 'There is no destination data';
+  const destinationPlaceholder = isNewPoint ? '' : placeholderText;
 
   const dataDateFrom = isNewPoint ? '' : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
   const dataDateTo = isNewPoint ? '' : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
@@ -173,7 +168,8 @@ const createPointFormTemplate = (eventType, data) => {
 
   const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(type, offer, 'edit');
 
-  const destinationSection = isNewPoint ? '' : createDestinationSection(destination);
+  const destinationSectionEdit = !destinationTitleEdit ? '' : createDestinationSection(destination);
+  const destinationSection = isNewPoint ? '' : destinationSectionEdit;
 
   const isFavoriteValue = isNewPoint ? false : isFavorite;
 
@@ -211,10 +207,12 @@ const createPointFormTemplate = (eventType, data) => {
           id="event-destination-1"
           type="text"
           name="event-destination"
-          value="${destinationName}"
-          list="destination-list-1">
+          value="${destinationTitle}"
+          list="destination-list-1" autocomplete="off"
+          placeholder="${destinationPlaceholder}"
+          required>
         <datalist id="destination-list-1">
-          ${createDestinationsList(destinations)}
+          ${destinationList}
         </datalist>
       </div>
 
@@ -274,10 +272,11 @@ const createPointFormTemplate = (eventType, data) => {
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = 'edit', point) {
+  constructor (eventType = 'edit', point, destinations) {
     super();
 
     this._eventType = eventType;
+    this._destinations = destinations;
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._data = PointForm.parsePointToData(point);
@@ -301,7 +300,7 @@ export default class PointForm extends SmartView {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._eventType, this._data);
+    return createPointFormTemplate(this._eventType, this._data, this._destinations);
   }
 
   _dateFromChangeHandler([userDate]) {
@@ -426,20 +425,26 @@ export default class PointForm extends SmartView {
     let description;
     let pictures;
 
-    Object.keys(destinations).map((key) => {
-      if (destinations[key].name === evt.target.value) {
-        description = destinations[key].description;
-        pictures = destinations[key].pictures;
-      }
-    });
+    if (!this._destinations) {
+      this.updateData({
+        destination: [],
+      });
+    } else {
+      Object.keys(this._destinations).map((key) => {
+        if (this._destinations[key].name === evt.target.value) {
+          description = this._destinations[key].description;
+          pictures = this._destinations[key].pictures;
+        }
+      });
 
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: description,
-        pictures: pictures,
-      },
-    });
+      this.updateData({
+        destination: {
+          name: evt.target.value,
+          description: description,
+          pictures: pictures,
+        },
+      });
+    }
   }
 
   restoreHandlers() {
