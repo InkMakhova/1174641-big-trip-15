@@ -27,7 +27,6 @@ export default class Trip {
   }
 
   init(tripPoints) {
-    console.log(this._destinations);
     this._tripPoints = tripPoints.slice();
     this._sourcedTripPoints = tripPoints.slice();
 
