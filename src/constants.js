@@ -221,19 +221,4 @@ export const generateOffer = () => {
   };
 };
 
-// let offersData;
-
-// const someFunction = () => {
-//   const request = new XMLHttpRequest();
-//   request.open('GET', 'https://15.ecmascript.pages.academy/big-trip/offers');
-//   request.setRequestHeader('Authorization', 'Basic er883jdzbdw');
-//   request.onload = function() {
-//     offersData = request.response;
-//     // return offersData;
-//   };
-//   request.send();
-// };
-
-// someFunction();
-// console.log(offersData);
 
