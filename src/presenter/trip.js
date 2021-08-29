@@ -12,7 +12,8 @@ import EmptyListView from '../view/point-list-empty.js';
 import PointPresenter from '../presenter/point.js';
 
 export default class Trip {
-  constructor(tripContainer, destinations) {
+  constructor(tripContainer, destinations, pointsModel) {
+    this._pointsModel = pointsModel;
     this._destinations = destinations;
     this._tripContainer = tripContainer;
     this._pointPresenters = new Map();
@@ -31,6 +32,10 @@ export default class Trip {
     this._sourcedTripPoints = tripPoints.slice();
 
     this._renderTrip();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _sortPoints(sortType) {
@@ -66,7 +71,7 @@ export default class Trip {
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
     this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
-    this._pointPresenters.get(updatedPoint.id).init(updatedPoint);
+    this._pointPresenters.get(updatedPoint.id).init(updatedPoint, this._destinations);
   }
 
   _renderSort() {

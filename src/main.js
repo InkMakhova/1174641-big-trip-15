@@ -9,11 +9,15 @@ import SiteMenuView from './view/site-menu.js';
 import PriceView from './view/price.js';
 import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
+import PointsModel from './model/points.js';
 import {generateDataPoint} from './mock/point-mock.js';
 
 const POINTS_NUMBER = 20;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
+
+const pointsModel = new PointsModel();
+pointsModel.setPoints(points);
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -36,11 +40,11 @@ const loadDestinations = () => {
     {headers: {'Authorization': 'Basic er883jdzbdw'}})
     .then((response) => response.json())
     .then((destinations) => {
-      const tripPresenter = new TripPresenter(tripContainerElement, destinations);
+      const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel);
       tripPresenter.init(points);
     })
     .catch(() => {
-      const tripPresenter = new TripPresenter(tripContainerElement);
+      const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel);
       tripPresenter.init(points);
     });
 };
