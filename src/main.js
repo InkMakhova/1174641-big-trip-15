@@ -10,6 +10,7 @@ import PriceView from './view/price.js';
 import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
+import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
 
 const POINTS_NUMBER = 20;
@@ -18,6 +19,8 @@ const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
+
+const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
