@@ -282,6 +282,7 @@ export default class PointForm extends SmartView {
     this._data = PointForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -291,6 +292,15 @@ export default class PointForm extends SmartView {
     this._setInnerHandlers();
     this._setDateFromPicker();
     this._setDateToPicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(point) {
@@ -453,6 +463,7 @@ export default class PointForm extends SmartView {
     this._setDateToPicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormCloseHandler(this._callback.formClose);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -468,7 +479,16 @@ export default class PointForm extends SmartView {
       this.getElement().querySelectorAll('.event__offer-checkbox')
         .forEach((checkbox) => checkbox.addEventListener('change', this._offerChooseHandler));
     }
+  }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {
