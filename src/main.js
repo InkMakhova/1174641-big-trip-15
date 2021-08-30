@@ -19,24 +19,6 @@ const POINTS_NUMBER = 20;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
-// const filters = [
-//   {
-//     type: 'everything',
-//     name: 'EVERYTHING',
-//     count: 0,
-//   },
-//   {
-//     type: 'past',
-//     name: 'PAST',
-//     count: 0,
-//   },
-//   {
-//     type: 'future',
-//     name: 'FUTURE',
-//     count: 0,
-//   },
-// ];
-
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
@@ -69,11 +51,19 @@ const loadDestinations = () => {
       const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
       //tripPresenter.init(points);
       tripPresenter.init();
+      document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+        evt.preventDefault();
+        tripPresenter.createTask();
+      });
     })
     .catch(() => {
       const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel, filterModel);
       //tripPresenter.init(points);
       tripPresenter.init();
+      document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+        evt.preventDefault();
+        tripPresenter.createTask();
+      });
     });
 };
 
