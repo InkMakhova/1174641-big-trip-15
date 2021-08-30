@@ -7,6 +7,12 @@ export const filtersList = {
   future: false,
 };
 
+export const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  FUTURE: 'future',
+};
+
 export const SortType = {
   DAY: 'day',
   EVENT: 'event',
