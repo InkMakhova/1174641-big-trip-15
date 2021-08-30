@@ -65,12 +65,12 @@ const loadDestinations = () => {
     {headers: {'Authorization': 'Basic er883jdzbdw'}})
     .then((response) => response.json())
     .then((destinations) => {
-      const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel);
+      const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
       //tripPresenter.init(points);
       tripPresenter.init();
     })
     .catch(() => {
-      const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel);
+      const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel, filterModel);
       //tripPresenter.init(points);
       tripPresenter.init();
     });

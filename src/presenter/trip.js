@@ -14,14 +14,16 @@ import {
   sortPointsPrice,
   sortPointsDay
 } from '../utils/point.js';
+import {filter} from '../utils/filter.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
 import PointPresenter from '../presenter/point.js';
 
 export default class Trip {
-  constructor(tripContainer, destinations, pointsModel) {
+  constructor(tripContainer, destinations, pointsModel, filterModel) {
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._destinations = destinations;
     this._tripComponent = tripContainer;
     this._pointPresenters = new Map();
@@ -39,6 +41,7 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   // init(tripPoints) {
@@ -52,21 +55,28 @@ export default class Trip {
   _getPoints() {
     //return this._pointsModel.getPoints();
 
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filtredPoints = filter[filterType](points);
+
   //добвлено из _sortPoints(sortType)
     switch (this._currentSortType) {
       case SortType.TIME:
         //this._tripPoints.sort(sortPointsTime);
-        this._pointsModel.getPoints().slice().sort(sortPointsTime);
+        //this._pointsModel.getPoints().slice().sort(sortPointsTime);
+        filtredPoints.sort(sortPointsTime);
         break;
       case SortType.PRICE:
         //this._tripPoints.sort(sortPointsPrice);
-        this._pointsModel.getPoints().slice().sort(sortPointsPrice);
+        //this._pointsModel.getPoints().slice().sort(sortPointsPrice);
+        filtredPoints.sort(sortPointsPrice);
         break;
       default:
         //this._tripPoints.sort(sortPointsDay);
         this._pointsModel.getPoints().slice().sort(sortPointsDay);
+        filtredPoints.sort(sortPointsDay);
     }
-    return this._pointsModel.getPoints();
+    return filtredPoints;
   }
 
   // _sortPoints(sortType) {
