@@ -1,9 +1,13 @@
 import {
   SortType,
+  defaultSortType,
   UpdateType,
   UserAction
 } from '../constants.js';
-import {render} from '../utils/render.js';
+import {
+  render,
+  remove
+} from '../utils/render.js';
 //import {updateItem} from '../utils/common.js';
 import {
   sortPointsTime,
@@ -19,10 +23,12 @@ export default class Trip {
   constructor(tripContainer, destinations, pointsModel) {
     this._pointsModel = pointsModel;
     this._destinations = destinations;
-    this._tripContainer = tripContainer;
+    this._tripComponent = tripContainer;
     this._pointPresenters = new Map();
 
-    this._sortComponent = new SortView(SortType);
+    //this._sortComponent = new SortView(SortType);
+    this._sortComponent = null;
+
     this._pointListComponent = new PointListView();
     this._emptyListComponent = new EmptyListView();
 
@@ -85,9 +91,12 @@ export default class Trip {
 
     this._currentSortType = sortType;
     //this._sortPoints(sortType);
-    this._clearPointList();
-    this._renderPointList();
-    this._renderPoints();
+    //this._clearPointList();
+    //this._renderPointList();
+    //this._renderPoints();
+
+    this._clearTrip();
+    this._renderTrip();
   }
 
   _handleModeChange() {
@@ -132,20 +141,30 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this._clearTrip();
+        this._renderTrip();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this._clearTrip({resetSortType: true});
+        this._renderTrip();
         break;
     }
   }
 
   _renderSort() {
-    render(this._tripContainer, this._sortComponent);
+    //render(this._tripContainer, this._sortComponent);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(SortType, this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripComponent, this._sortComponent);
   }
 
   _renderPointList() {
-    render(this._tripContainer, this._pointListComponent);
+    render(this._tripComponent, this._pointListComponent);
   }
 
   _renderPoint(point) {
@@ -158,16 +177,28 @@ export default class Trip {
   // _renderPoints() {
   //   this._tripPoints
   _renderPoints(points) {
-    points.forEach((tripPoint) => this._renderPoint(tripPoint));
+    points.forEach((point) => this._renderPoint(point));
   }
 
   _renderEmptyList() {
-    render(this._tripContainer, this._emptyListComponent);
+    render(this._tripComponent, this._emptyListComponent);
   }
 
   _clearPointList() {
     this._pointPresenters.forEach((presenter) => presenter.destroy());
     this._pointPresenters.clear();
+  }
+
+  _clearTrip({resetSortType = false} = {}) {
+    this._pointPresenters.forEach((presenter) => presenter.destroy());
+    this._pointPresenters.clear();
+
+    remove(this._sortComponent);
+    remove(this._emptyListComponent);
+
+    if (resetSortType) {
+      this._currentSortType = defaultSortType;
+    }
   }
 
   _renderTrip() {
@@ -176,6 +207,7 @@ export default class Trip {
     //if (this._tripPoints.length === 0) {
     if (this._getPoints().length === 0) {
       this._renderEmptyList();
+      return;
     }
 
     this._renderPointList();
