@@ -184,10 +184,10 @@ export default class Trip {
     render(this._tripComponent, this._emptyListComponent);
   }
 
-  _clearPointList() {
-    this._pointPresenters.forEach((presenter) => presenter.destroy());
-    this._pointPresenters.clear();
-  }
+  // _clearPointList() {
+  //   this._pointPresenters.forEach((presenter) => presenter.destroy());
+  //   this._pointPresenters.clear();
+  // }
 
   _clearTrip({resetSortType = false} = {}) {
     this._pointPresenters.forEach((presenter) => presenter.destroy());
