@@ -1,3 +1,7 @@
+import {
+  UserAction,
+  UpdateType
+} from '../constants.js';
 import {isEscEvent} from '../utils/common.js';
 import {
   render,
@@ -99,6 +103,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,
@@ -110,7 +116,12 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    //this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this._replaceFormToPoint();
   }
 
