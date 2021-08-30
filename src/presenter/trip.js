@@ -1,6 +1,7 @@
 import {
   SortType,
   defaultSortType,
+  FilterType,
   UpdateType,
   UserAction
 } from '../constants.js';
@@ -27,12 +28,15 @@ export default class Trip {
     this._destinations = destinations;
     this._tripComponent = tripContainer;
     this._pointPresenters = new Map();
+    this._filterType = FilterType.EVERYTHING;
+    this._currentSortType = defaultSortType;
 
     //this._sortComponent = new SortView(SortType);
     this._sortComponent = null;
+    this._emptyListComponent = null;
 
     this._pointListComponent = new PointListView();
-    this._emptyListComponent = new EmptyListView();
+    //this._emptyListComponent = new EmptyListView();
 
     //this._handlePointChange = this._handlePointChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -55,9 +59,11 @@ export default class Trip {
   _getPoints() {
     //return this._pointsModel.getPoints();
 
-    const filterType = this._filterModel.getFilter();
+    //const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredPoints = filter[filterType](points);
+    // const filtredPoints = filter[filterType](points);
+    const filtredPoints = filter[this._filterType](points);
 
   //добвлено из _sortPoints(sortType)
     switch (this._currentSortType) {
@@ -191,6 +197,7 @@ export default class Trip {
   }
 
   _renderEmptyList() {
+    this._emptyListComponent = new EmptyListView(this._filterType);
     render(this._tripComponent, this._emptyListComponent);
   }
 
@@ -204,7 +211,11 @@ export default class Trip {
     this._pointPresenters.clear();
 
     remove(this._sortComponent);
-    remove(this._emptyListComponent);
+    //remove(this._emptyListComponent);
+
+    if (this._emptyListComponent) {
+      remove(this._emptyListComponent);
+    }
 
     if (resetSortType) {
       this._currentSortType = defaultSortType;
