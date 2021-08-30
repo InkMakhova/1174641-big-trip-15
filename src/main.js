@@ -41,11 +41,13 @@ const loadDestinations = () => {
     .then((response) => response.json())
     .then((destinations) => {
       const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel);
-      tripPresenter.init(points);
+      //tripPresenter.init(points);
+      tripPresenter.init();
     })
     .catch(() => {
       const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel);
-      tripPresenter.init(points);
+      //tripPresenter.init(points);
+      tripPresenter.init();
     });
 };
 
