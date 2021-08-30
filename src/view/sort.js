@@ -5,8 +5,8 @@ import {
 import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
-const createSortItemTemplate = (sort) => {
-  const checkedValue = defaultSortType === sort ? 'checked' : '';
+const createSortItemTemplate = (sort, currentSortType) => {
+  const checkedValue = currentSortType === sort ? 'checked' : '';
   const disabledValue = disabledSortFields.includes(sort) ? 'disabled' : '';
 
   return `<div class="trip-sort__item  trip-sort__item--${sort}">
@@ -26,24 +26,25 @@ const createSortItemTemplate = (sort) => {
     </div>`;
 };
 
-const createSortTemplate = (sortItems) => {
+const createSortTemplate = (sortItems, currentSortType) => {
   const sortItemsElement = Object.keys(sortItems)
-    .map((key) => createSortItemTemplate(sortItems[key])).join('');
+    .map((key) => createSortItemTemplate(sortItems[key], currentSortType)).join('');
 
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItemsElement}
     </form>`;
 };
 export default class Sort extends AbstractView {
-  constructor (sort) {
+  constructor (sort, currentSortType) {
     super();
 
     this._sort = sort;
+    this._currentSortType = currentSortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortTemplate(this._sort);
+    return createSortTemplate(this._sort, this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
