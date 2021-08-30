@@ -13,6 +13,7 @@ import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
+import dayjs from 'dayjs';
 
 const POINTS_NUMBER = 20;
 

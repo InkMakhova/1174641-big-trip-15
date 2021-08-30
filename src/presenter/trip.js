@@ -20,6 +20,7 @@ import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import EmptyListView from '../view/point-list-empty.js';
 import PointPresenter from '../presenter/point.js';
+import PointNewPresenter from './point-new.js';
 
 export default class Trip {
   constructor(tripContainer, destinations, pointsModel, filterModel) {
@@ -28,6 +29,7 @@ export default class Trip {
     this._destinations = destinations;
     this._tripComponent = tripContainer;
     this._pointPresenters = new Map();
+
     this._filterType = FilterType.EVERYTHING;
     this._currentSortType = defaultSortType;
 
@@ -46,6 +48,8 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction);
   }
 
   // init(tripPoints) {
@@ -54,6 +58,12 @@ export default class Trip {
   init() {
 
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._currentSortType = defaultSortType;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
   }
 
   _getPoints() {
@@ -116,6 +126,7 @@ export default class Trip {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     this._pointPresenters.forEach((presenter) => presenter.resetView());
   }
 
@@ -207,6 +218,7 @@ export default class Trip {
   // }
 
   _clearTrip({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     this._pointPresenters.forEach((presenter) => presenter.destroy());
     this._pointPresenters.clear();
 

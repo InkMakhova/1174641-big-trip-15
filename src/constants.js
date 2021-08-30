@@ -179,7 +179,7 @@ export const destinations = [
   'San Francisco',
 ];
 
-export const now = dayjs();
+export const today = dayjs();
 
 export const FormatsDateTime = {
   YYYY_MM_DD: 'YYYY-MM-DD',
