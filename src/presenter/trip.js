@@ -49,14 +49,13 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._destinations);
   }
 
   // init(tripPoints) {
   //   this._tripPoints = tripPoints.slice();
   //   this._sourcedTripPoints = tripPoints.slice();
   init() {
-
     this._renderTrip();
   }
 
@@ -164,7 +163,8 @@ export default class Trip {
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
-        this._pointPresenters.get(data.id).init(data);
+        //this._pointPresenters.get(data.id).init(data);
+        this._pointPresenters.get(data.id).init(data, this._destinations);
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
@@ -245,6 +245,6 @@ export default class Trip {
 
     this._renderPointList();
 
-    this._renderPoints();
+    this._renderPoints(this._pointsModel.getPoints());
   }
 }

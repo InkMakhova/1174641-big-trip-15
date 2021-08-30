@@ -4,11 +4,12 @@ import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../constants.js';
 
 export default class PointNew {
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, destinations) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
+    this._destinations = destinations;
 
-    this._pointFormComponent = null;
+    this._pointEditComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -16,26 +17,26 @@ export default class PointNew {
   }
 
   init() {
-    if (this._pointFormComponent !== null) {
+    if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointFormComponent = new PointFormView();
-    this._pointFormComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._pointFormComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._pointEditComponent = new PointFormView('new', null, this._destinations);
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._pointListContainer, this._pointFormComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointListContainer, this._pointEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   destroy() {
-    if (this._pointFormComponent === null) {
+    if (this._pointEditComponent === null) {
       return;
     }
 
-    remove(this._pointFormComponent);
-    this._pointFormComponent = null;
+    remove(this._pointEditComponent);
+    this._pointEditComponent = null;
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }

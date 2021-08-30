@@ -1,4 +1,5 @@
 import flatpickr from 'flatpickr';
+import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
@@ -6,7 +7,8 @@ import {
   pointTypes,
   defaultType,
   offerOptions,
-  OffersSetByTypes
+  OffersSetByTypes,
+  today
 } from '../constants.js';
 import {
   getRandomInteger,
@@ -156,22 +158,25 @@ const createPointFormTemplate = (eventType, data, destinations) => {
   const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
 
   const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
-  const destinationTitleEdit = !destination.name ? '' : destination.name;
-  const destinationTitle = isNewPoint ? '' : destinationTitleEdit;
+  //const destinationTitleEdit = !destination.name ? '' : destination.name;
+  const destinationTitle = isNewPoint ? '' : destination.name;
   const placeholderText = destinations.length > 0 ? '' : 'There is no destination data';
   const destinationPlaceholder = isNewPoint ? '' : placeholderText;
 
-  const dataDateFrom = isNewPoint ? '' : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
-  const dataDateTo = isNewPoint ? '' : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
+  const dataDateFrom = isNewPoint ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
+  const dataDateTo = isNewPoint ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
 
   const dataBasePrice = isNewPoint ? '' : basePrice;
 
-  const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(type, offer, 'edit');
+  const offersSection = isNewPoint ? createOffersSection(defaultType, OffersSetByTypes[defaultType], 'new') : createOffersSection(type, offer, 'edit');
 
-  const destinationSectionEdit = !destinationTitleEdit ? '' : createDestinationSection(destination);
-  const destinationSection = isNewPoint ? '' : destinationSectionEdit;
+  //const destinationSectionEdit = !destinationTitleEdit ? '' : createDestinationSection(destination);
+  //const destinationSection = isNewPoint ? '' : destinationSectionEdit;
+  const destinationSection = isNewPoint ? '' : createDestinationSection(destination);
 
   const isFavoriteValue = isNewPoint ? false : isFavorite;
+
+  const idValue = isNewPoint ? nanoid() : id;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -263,10 +268,10 @@ const createPointFormTemplate = (eventType, data, destinations) => {
       name="event-favorite"
       value="${isFavoriteValue}">
     <input class="event__id visually-hidden"
-      id="event-${id}"
+      id="event-${idValue}"
       type="text"
-      name="event-${id}"
-      value="${id}">
+      name="event-id"
+      value="${idValue}">
   </form>
 </li>`;
 };

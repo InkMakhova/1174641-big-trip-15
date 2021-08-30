@@ -1,4 +1,4 @@
-import {now} from '../constants.js';
+import {today} from '../constants.js';
 import FilterView from '../view/filter.js';
 import {
   render,
