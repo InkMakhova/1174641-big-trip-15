@@ -8,6 +8,10 @@ import {
   replace,
   remove
 } from '../utils/render.js';
+import {
+  isDatesEqual,
+  isPriceEqual
+} from '../utils/point.js';
 import PointView from '../view/point.js';
 import PointFormView from '../view/add-edit-point.js';
 
@@ -30,6 +34,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
@@ -47,6 +52,7 @@ export default class Point {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);
+    this._taskEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);
@@ -115,14 +121,31 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(point) {
+  //_handleFormSubmit(point) {
+  _handleFormSubmit(update) {
     //this._changeData(point);
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isMinorUpdate =
+      !isDatesEqual(this._point.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this._point.dateTo, update.dateTo) ||
+      !isPriceEqual(this._point.basePrice, update.basePrice);
+
     this._changeData(
       UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      //point,
+      update,
+    );
+    this._replaceFormToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );
-    this._replaceFormToPoint();
   }
 
   _handleFormClose() {
