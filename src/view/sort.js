@@ -1,7 +1,4 @@
-import {
-  defaultSortType,
-  disabledSortFields
-} from '../constants.js';
+import {disabledSortFields} from '../constants.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
