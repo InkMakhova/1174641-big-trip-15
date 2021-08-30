@@ -1,4 +1,4 @@
-import {filtersList} from './constants.js';
+import {FilterType} from './constants.js';
 import {getRandomInteger} from './utils/common.js';
 import {
   render,
@@ -17,6 +17,21 @@ const POINTS_NUMBER = 20;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 
+const filters = [
+  {
+    type: 'everything',
+    name: 'EVERYTHING',
+  },
+  {
+    type: 'past',
+    name: 'PAST',
+  },
+  {
+    type: 'future',
+    name: 'FUTURE',
+  },
+];
+
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
@@ -33,7 +48,7 @@ render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
 render(siteMenuElement, new SiteMenuView());
 
-const filtersComponent = new FiltersView(filtersList);
+const filtersComponent = new FiltersView(filters, 'everything');
 render(filterElement, filtersComponent);
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
