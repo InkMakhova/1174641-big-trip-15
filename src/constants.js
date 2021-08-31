@@ -21,7 +21,7 @@ export const SortType = {
   OFFER: 'offer',
 };
 
-export const defaultSortType = SortType.PRICE;
+export const defaultSortType = SortType.DAY;
 
 export const disabledSortFields = [
   SortType.EVENT,

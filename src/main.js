@@ -12,7 +12,7 @@ import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
 
-import NewPointButtonView from './view/button-new-point.js';
+//import NewPointButtonView from './view/button-new-point.js';
 
 const POINTS_NUMBER = 20;
 
@@ -30,7 +30,7 @@ const filterElement = siteHeaderElement.querySelector('.trip-controls__filters')
 
 const tripInfoComponent = new TripInfoView();
 render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-render(tripMainElement, new NewPointButtonView());
+//render(tripMainElement, new NewPointButtonView());
 
 render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
@@ -47,7 +47,7 @@ const loadDestinations = () => {
     .then((response) => response.json())
     .then((destinations) => {
       const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
-      //tripPresenter.init(points);
+
       tripPresenter.init();
       document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
         evt.preventDefault();
@@ -57,7 +57,7 @@ const loadDestinations = () => {
     })
     .catch(() => {
       const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel, filterModel);
-      //tripPresenter.init(points);
+
       tripPresenter.init();
       document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
         evt.preventDefault();

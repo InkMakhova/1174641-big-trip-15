@@ -2,6 +2,7 @@ import PointFormView from '../view/add-edit-point.js';
 import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../constants.js';
+import PointNewModel from '../model/point-new.js';
 
 export default class PointNew {
   constructor(pointListContainer, changeData, destinations) {
@@ -11,10 +12,13 @@ export default class PointNew {
 
     this._pointEditComponent = null;
 
+    this._data = new PointNewModel().initData();
+
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._inableNewPointButton = this._inableNewPointButton.bind(this);
   }
 
   init() {
@@ -22,11 +26,10 @@ export default class PointNew {
       return;
     }
 
-    this._pointEditComponent = new PointFormView('new', null, this._destinations);
+    this._pointEditComponent = new PointFormView('new', this._data, this._destinations);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);
-    //this._pointEditComponent.restoreHandlers();
 
     render(this._pointListContainer, this._pointEditComponent, RenderPosition.AFTERBEGIN);
 
@@ -53,20 +56,28 @@ export default class PointNew {
       Object.assign({id: nanoid()}, point),
     );
     this.destroy();
+    this._inableNewPointButton();
   }
 
   _handleDeleteClick() {
     this.destroy();
+    this._inableNewPointButton();
   }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();
+      this._inableNewPointButton();
     }
   }
 
   _handleFormClose() {
     this.destroy();
+    this._inableNewPointButton();
+  }
+
+  _inableNewPointButton() {
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 }

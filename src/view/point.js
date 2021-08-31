@@ -48,14 +48,14 @@ const formatTripDurationElement = (duration) => {
 };
 
 const createPointTemplate = (point) => {
-  const {id, dateFrom, dateTo, type, offer, destination, basePrice, duration, isFavorite} = point;
+  const {id, dateFrom, dateTo, type, offer, destination, basePrice, isFavorite} = point;
 
   const dateStart = dayjs(dateFrom);
   const dateFinish = dayjs(dateTo);
   const diffTime = {
     diffDays: dateFinish.diff(dateStart, 'day'),
     diffHours: dateFinish.diff(dateStart, 'hour'),
-    diffMinutes: duration,
+    diffMinutes: dateFinish.diff(dateStart, 'minute'),
   };
 
   const tripDuration = formatTripDurationElement(diffTime);
