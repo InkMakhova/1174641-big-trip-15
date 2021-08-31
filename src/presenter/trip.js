@@ -49,6 +49,7 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
+    //this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._destinations);
     this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._destinations);
   }
 
@@ -155,11 +156,6 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
@@ -237,14 +233,16 @@ export default class Trip {
   _renderTrip() {
     this._renderSort();
 
+    const points = this._getPoints();
     //if (this._tripPoints.length === 0) {
-    if (this._getPoints().length === 0) {
+    if (points.length === 0) {
       this._renderEmptyList();
       return;
     }
 
     this._renderPointList();
 
-    this._renderPoints(this._pointsModel.getPoints());
+    this._renderPoints(points);
+    //this._renderPoints(this._pointsModel.getPoints());
   }
 }
