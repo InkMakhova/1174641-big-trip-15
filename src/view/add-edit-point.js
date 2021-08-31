@@ -153,26 +153,27 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 
   const isNewPoint = (eventType === 'new');
 
-  const dataType = isNewPoint ? defaultType : type;
+  const dataType = isNewPoint && !type ? defaultType : type;
 
-  const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
+  const capitalizedType = isNewPoint && !type ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
 
   const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
   //const destinationTitleEdit = !destination.name ? '' : destination.name;
-  const destinationTitle = isNewPoint ? '' : destination.name;
+
+  const destinationTitle = isNewPoint && !data.destination ? '' : destination.name;
   const placeholderText = destinations.length > 0 ? '' : 'There is no destination data';
-  const destinationPlaceholder = isNewPoint ? '' : placeholderText;
+  const destinationPlaceholder = isNewPoint && destinations.length > 0 ? '' : placeholderText;
 
-  const dataDateFrom = isNewPoint ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
-  const dataDateTo = isNewPoint ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
+  const dataDateFrom = isNewPoint && !data.dateFrom ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
+  const dataDateTo = isNewPoint && !data.dateTo ? formateDateTime(today, FormatsDateTime.DD_MM_YY_TIME) : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
 
-  const dataBasePrice = isNewPoint ? '' : basePrice;
+  const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
-  const offersSection = isNewPoint ? createOffersSection(defaultType, OffersSetByTypes[defaultType], 'new') : createOffersSection(type, offer, 'edit');
+  const offersSection = isNewPoint && !offer ? createOffersSection(defaultType, OffersSetByTypes[defaultType], 'new') : createOffersSection(type, offer, 'edit');
 
   //const destinationSectionEdit = !destinationTitleEdit ? '' : createDestinationSection(destination);
   //const destinationSection = isNewPoint ? '' : destinationSectionEdit;
-  const destinationSection = isNewPoint ? '' : createDestinationSection(destination);
+  const destinationSection = isNewPoint && !destination ? '' : createDestinationSection(destination);
 
   const isFavoriteValue = isNewPoint ? false : isFavorite;
 
@@ -358,6 +359,7 @@ export default class PointForm extends SmartView {
         dateFormat: 'd/m/y H:i',
         defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateFromChangeHandler,
+        maxDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
