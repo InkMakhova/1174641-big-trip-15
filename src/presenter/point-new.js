@@ -11,6 +11,7 @@ export default class PointNew {
     this._destinations = destinations;
 
     this._pointEditComponent = null;
+    this._destroyCallback = null;
 
     this._data = new PointNewModel().initData();
 
@@ -18,10 +19,11 @@ export default class PointNew {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._inableNewPointButton = this._inableNewPointButton.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._destroyCallback = callback;
+
     if (this._pointEditComponent !== null) {
       return;
     }
@@ -37,6 +39,10 @@ export default class PointNew {
   }
 
   destroy() {
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
     if (this._pointEditComponent === null) {
       return;
     }
@@ -56,28 +62,20 @@ export default class PointNew {
       Object.assign({id: nanoid()}, point),
     );
     this.destroy();
-    this._inableNewPointButton();
   }
 
   _handleDeleteClick() {
     this.destroy();
-    this._inableNewPointButton();
   }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();
-      this._inableNewPointButton();
     }
   }
 
   _handleFormClose() {
     this.destroy();
-    this._inableNewPointButton();
-  }
-
-  _inableNewPointButton() {
-    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 }
