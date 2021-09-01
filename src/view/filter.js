@@ -22,8 +22,6 @@ const createFiltersTemplate = (filterItems, currentFilterType) => {
   const filterItemsTemplate = filterItems
     .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
-  // const filterItemsElement = Object.keys(filterItems)
-  //   .map((el) => createFilterItemTemplate(el, filterItems[el])).join('');
 
   return `<form class="trip-filters" action="#" method="get">
       ${filterItemsTemplate}
