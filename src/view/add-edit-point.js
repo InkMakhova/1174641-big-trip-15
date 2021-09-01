@@ -232,6 +232,7 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           type="text"
           name="event-start-time"
           value="${dataDateFrom}"
+          readonly
           required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -241,6 +242,7 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           type="text"
           name="event-end-time"
           value="${dataDateTo}"
+          readonly
           required>
       </div>
 
@@ -257,8 +259,7 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           step="1"
           name="event-price"
           value="${dataBasePrice}"
-          required
-        >
+          required>
       </div>
 
       <button class="event__save-btn btn btn--blue" type="submit">Save</button>
