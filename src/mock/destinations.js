@@ -163,19 +163,19 @@ export const destinations = [
     'pictures': [
       {
         'src': 'http://picsum.photos/300/200?r=0.5457052728751646',
-        'description': 'Kopenhagen park'
+        'description': 'Kopenhagen park',
       },
       {
         'src': 'http://picsum.photos/300/200?r=0.07149730750342931',
-        'description': 'Kopenhagen street market'
+        'description': 'Kopenhagen street market',
       },
       {
         'src': 'http://picsum.photos/300/200?r=0.985349404396237',
-        'description': 'Kopenhagen parliament building'
+        'description': 'Kopenhagen parliament building',
       },
       {
         'src': 'http://picsum.photos/300/200?r=0.39281748754404067',
-        'description': 'Kopenhagen zoo'
+        'description': 'Kopenhagen zoo',
       },
     ],
   },

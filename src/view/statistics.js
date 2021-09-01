@@ -2,9 +2,8 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import SmartView from './smart.js';
 
-const createStatisticsTemplate = () => {
-  const money = 12345;
-  return `<section class="statistics">
+const createStatisticsTemplate = () => (
+  `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
 
     <div class="statistics__item">
@@ -18,8 +17,8 @@ const createStatisticsTemplate = () => {
     <div class="statistics__item">
       <canvas class="statistics__chart" id="time-spend" width="900"></canvas>
     </div>
-  </section>`;
-};
+  </section>`
+);
 
 export default class Statistics extends SmartView {
   constructor(points) {

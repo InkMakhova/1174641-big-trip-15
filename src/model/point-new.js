@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import {defaultType} from '../constants.js';
 
 export default class PointNew {
