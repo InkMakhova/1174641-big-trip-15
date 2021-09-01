@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {MenuItem} from './constants.js';
+import {MenuItem} from '../constants.js';
 
 const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -20,20 +20,27 @@ export default class SiteMenu extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.value);
+    this._callback.menuClick(evt.target.innerText);
   }
 
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener('change', this._menuClickHandler);
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 
   setMenuItem(menuItem) {
-    const item = Array.from(this.getElement().querySelectorAll('a'))
+    const itemActive = Array.from(this.getElement().querySelectorAll('a'))
       .find((el) => el.innerText === menuItem);
 
+    const item = Array.from(this.getElement().querySelectorAll('a'))
+      .find((el) => el.innerText !== menuItem);
+
+    if (itemActive !== null) {
+      itemActive.classList.add('trip-tabs__btn--active');
+    }
+
     if (item !== null) {
-      item.checked = true;
+      item.classList.remove('trip-tabs__btn--active');
     }
   }
 }
