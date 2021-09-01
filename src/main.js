@@ -11,6 +11,7 @@ import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
+import {MenuItem} from './constants.js';
 
 //import NewPointButtonView from './view/button-new-point.js';
 
@@ -30,14 +31,30 @@ const filterElement = siteHeaderElement.querySelector('.trip-controls__filters')
 
 const tripInfoComponent = new TripInfoView();
 render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-//render(tripMainElement, new NewPointButtonView());
 
 render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
-render(siteMenuElement, new SiteMenuView());
+const siteMenuComponent = new SiteMenuView();
+render(siteMenuElement, siteMenuComponent);
 
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
 filterPresenter.init();
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATISTICS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
