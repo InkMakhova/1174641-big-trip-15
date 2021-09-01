@@ -11,9 +11,11 @@ import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
+import {destinations} from './mock/destinations.js';
 import {MenuItem} from './constants.js';
+//import StatisticsView from './view/statistics.js';
 
-//import NewPointButtonView from './view/button-new-point.js';
+import NewPointButtonView from './view/button-new-point.js';
 
 const POINTS_NUMBER = 20;
 
@@ -40,49 +42,40 @@ render(siteMenuElement, siteMenuComponent);
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
 filterPresenter.init();
 
-const handleSiteMenuClick = (menuItem) => {
-  switch (menuItem) {
-    case MenuItem.TABLE:
-      // Показать доску
-      // Скрыть статистику
-      break;
-    case MenuItem.STATISTICS:
-      // Скрыть доску
-      // Показать статистику
-      break;
-  }
-};
-
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
+const newPointButtonComponent = new NewPointButtonView();
+render(tripMainElement, newPointButtonComponent.getElement());
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-const loadDestinations = () => {
-  fetch('https://15.ecmascript.pages.academy/big-trip/destinations',
-    {headers: {'Authorization': 'Basic er883jdzbdw'}})
-    .then((response) => response.json())
-    .then((destinations) => {
-      const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
+tripPresenter.init();
 
-      tripPresenter.init();
-      document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-        evt.preventDefault();
-        evt.target.disabled = true;
-        tripPresenter.createPoint();
-      });
-    })
-    .catch(() => {
-      const tripPresenter = new TripPresenter(tripContainerElement, [], pointsModel, filterModel);
-
-      tripPresenter.init();
-      document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-        evt.preventDefault();
-        evt.target.disabled = true;
-        tripPresenter.createTask();
-      });
-    });
+const handleNewPointFormClose = () => {
+  siteMenuComponent.setMenuItem(MenuItem.TABLE);
+  newPointButtonComponent.activateButton();
 };
 
-loadDestinations();
+const handleNewPointButtonClick = () => {
+  tripPresenter.createPoint(handleNewPointFormClose);
+};
 
+newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+
+// const handleSiteMenuClick = (menuItem) => {
+//   switch (menuItem) {
+//     case MenuItem.TABLE:
+//       tripPresenter.init();
+//       // Скрыть статистику
+//       break;
+//     case MenuItem.STATISTICS:
+
+//       tripPresenter.destroy();
+//       // Показать статистику
+//       break;
+//   }
+// };
+
+// siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+//const tripContainer = document.querySelector('.page-body__container');
+//render(tripContainer, new StatisticsView(pointsModel.getPoints()));
