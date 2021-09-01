@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './utils/common.js';
 
+export const MenuItem = {
+  ADD_NEW_POINT: 'New event',
+  TABLE: 'Table',
+  STATISTICS: 'Stats',
+};
+
 export const filtersList = {
   everything: true,
   past: false,
