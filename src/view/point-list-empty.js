@@ -1,22 +1,6 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../constants.js';
 
-// const createEmptyListText = (filterValue) => {
-//   if (filterValue) {
-//     switch (filterValue) {
-//       case 'past':
-//         return 'There are no past events now';
-
-//       case 'future':
-//         return 'There are no future events now';
-
-//       default:
-//         return 'Click New Event to create your first point';
-//     }
-//   }
-//   return 'Click New Event to create your first point';
-// };
-
 const emptyListTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.PAST]: 'There are no past events now',
