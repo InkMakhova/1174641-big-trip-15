@@ -15,13 +15,13 @@ const createEmptyListPoints = (filterType) => {
 };
 
 export default class EmptyList extends AbstractView {
-  constructor (data) {
+  constructor (filterType) {
     super();
 
-    this._data = data;
+    this._filterType = filterType;
   }
 
   getTemplate() {
-    return createEmptyListPoints(this._data);
+    return createEmptyListPoints(this._filterType);
   }
 }
