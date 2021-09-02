@@ -13,18 +13,3 @@ export const getKeyByValue = (object, value) =>
     .find((key) => object[key] === value);
 
 export const isEscEvent = (evt) => ['Escape', 'Esc'].includes(evt.key);
-
-//в массиве заменяет один элемент на новый
-// export const updateItem = (items, update) => {
-//   const index = items.findIndex((item) => item.id === update.id);
-
-//   if (index === -1) {
-//     return items;
-//   }
-
-//   return [
-//     ...items.slice(0, index),
-//     update,
-//     ...items.slice(index + 1),
-//   ];
-// };
