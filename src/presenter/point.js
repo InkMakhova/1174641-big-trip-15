@@ -1,6 +1,7 @@
 import {
   UserAction,
-  UpdateType
+  UpdateType,
+  FormType
 } from '../constants.js';
 import {isEscEvent} from '../utils/common.js';
 import {
@@ -46,7 +47,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointFormView('edit', point, this._destinations);
+    this._pointEditComponent = new PointFormView(FormType.EDIT, point, this._destinations);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

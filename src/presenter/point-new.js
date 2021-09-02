@@ -1,7 +1,7 @@
 import PointFormView from '../view/add-edit-point.js';
 import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render.js';
-import {UserAction, UpdateType} from '../constants.js';
+import {UserAction, UpdateType, FormType} from '../constants.js';
 import PointNewModel from '../model/point-new.js';
 
 export default class PointNew {
@@ -28,7 +28,7 @@ export default class PointNew {
       return;
     }
 
-    this._pointEditComponent = new PointFormView('new', this._data, this._destinations);
+    this._pointEditComponent = new PointFormView(FormType.NEW, this._data, this._destinations);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);

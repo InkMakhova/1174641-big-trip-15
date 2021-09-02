@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './utils/common.js';
 
+export const FormType = {
+  NEW: 'new',
+  EDIT: 'edit',
+};
+
 export const MenuItem = {
   TABLE: 'Table',
   STATISTICS: 'Stats',

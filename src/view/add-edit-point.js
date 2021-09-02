@@ -6,7 +6,8 @@ import {
   offersNames,
   pointTypes,
   defaultType,
-  OffersSetByTypes
+  OffersSetByTypes,
+  FormType
 } from '../constants.js';
 import {
   capitalizeFirstLetter,
@@ -106,7 +107,7 @@ const offerListEditTemplate = (type, offers) => {
 };
 
 const createOffersSection = (type, offers, eventType) => {
-  if (eventType === 'new') {
+  if (eventType === FormType.NEW) {
     return offerListNewTemplate(offers);
   }
 
@@ -149,7 +150,7 @@ const createDestinationSection = (destination) => (
 const createPointFormTemplate = (eventType, data, destinations) => {
   const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
 
-  const isNewPoint = (eventType === 'new');
+  const isNewPoint = (eventType === FormType.NEW);
 
   const dataType = isNewPoint && !type ? defaultType : type;
   const capitalizedType = capitalizeFirstLetter(dataType);
@@ -171,8 +172,8 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 
   const offersSection =
     isNewPoint && !offer ?
-      createOffersSection(defaultType, OffersSetByTypes[defaultType], 'new') :
-      createOffersSection(type, offer, 'edit');
+      createOffersSection(defaultType, OffersSetByTypes[defaultType], FormType.NEW) :
+      createOffersSection(type, offer, FormType.EDIT);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
@@ -287,7 +288,7 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = 'edit', point, destinations) {
+  constructor (eventType = FormType.EDIT, point, destinations) {
     super();
 
     this._eventType = eventType;
