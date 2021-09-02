@@ -29,11 +29,10 @@ export default class SiteMenu extends AbstractView {
   }
 
   setMenuItem(menuItem) {
-    const itemActive = Array.from(this.getElement().querySelectorAll('a'))
-      .find((el) => el.innerText === menuItem);
+    const siteMenuItems = Array.from(this.getElement().querySelectorAll('a'));
 
-    const item = Array.from(this.getElement().querySelectorAll('a'))
-      .find((el) => el.innerText !== menuItem);
+    const itemActive = siteMenuItems.find((el) => el.innerText === menuItem);
+    const item = siteMenuItems.find((el) => el.innerText !== menuItem);
 
     if (itemActive !== null) {
       itemActive.classList.add('trip-tabs__btn--active');
