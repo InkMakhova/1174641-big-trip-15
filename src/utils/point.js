@@ -62,3 +62,9 @@ export const sortPointsDay = (pointA, pointB) => {
   return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
 };
 
+export const isDatesEqual = (dateA, dateB) =>
+  (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
+
+export const isPriceEqual = (priceA, priceB) =>
+  (priceA === null && priceB === null) ? true : priceA === priceB;
+

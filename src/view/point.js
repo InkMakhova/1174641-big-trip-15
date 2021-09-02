@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import he from 'he';
 import {FormatsDateTime} from '../constants.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import {
@@ -48,14 +49,14 @@ const formatTripDurationElement = (duration) => {
 };
 
 const createPointTemplate = (point) => {
-  const {id, dateFrom, dateTo, type, offer, destination, basePrice, duration, isFavorite} = point;
+  const {id, dateFrom, dateTo, type, offer, destination, basePrice, isFavorite} = point;
 
   const dateStart = dayjs(dateFrom);
   const dateFinish = dayjs(dateTo);
   const diffTime = {
     diffDays: dateFinish.diff(dateStart, 'day'),
     diffHours: dateFinish.diff(dateStart, 'hour'),
-    diffMinutes: duration,
+    diffMinutes: dateFinish.diff(dateStart, 'minute'),
   };
 
   const tripDuration = formatTripDurationElement(diffTime);
@@ -71,8 +72,8 @@ const createPointTemplate = (point) => {
       value="${id}">
       <time
         class="event__date"
-        datetime=${formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD)}>
-          ${formateDateTime(dateFrom, FormatsDateTime.MMM_D)}
+        datetime=${he.encode(formateDateTime(dateFrom, FormatsDateTime.YYYY_MM_DD))}>
+          ${he.encode(formateDateTime(dateFrom, FormatsDateTime.MMM_D))}
       </time>
       <div class="event__type">
         <img
@@ -83,7 +84,7 @@ const createPointTemplate = (point) => {
           alt="Event type icon">
       </div>
       <h3 class="event__title">
-        ${capitalizeFirstLetter(type)} ${destination.name}
+        ${capitalizeFirstLetter(type)} ${he.encode(destination.name)}
       </h3>
       <div class="event__schedule">
         <p class="event__time">
@@ -95,8 +96,8 @@ const createPointTemplate = (point) => {
           &mdash;
           <time
             class="event__end-time"
-            datetime=${formateDateTime(dateTo, FormatsDateTime.YYYY_MM_DD_TIME)}>
-              ${formateDateTime(dateTo, FormatsDateTime.HH_MM)}
+            datetime=${he.encode(formateDateTime(dateTo, FormatsDateTime.YYYY_MM_DD_TIME))}>
+              ${he.encode(formateDateTime(dateTo, FormatsDateTime.HH_MM))}
           </time>
         </p>
         <p class="event__duration">
@@ -106,7 +107,7 @@ const createPointTemplate = (point) => {
       <p class="event__price">
         &euro;&nbsp;
         <span class="event__price-value">
-          ${basePrice}
+          ${he.encode(String(basePrice))}
         </span>
       </p>
       ${createOffersList(offer)}

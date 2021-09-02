@@ -1,10 +1,26 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './utils/common.js';
 
+export const FormType = {
+  NEW: 'new',
+  EDIT: 'edit',
+};
+
+export const MenuItem = {
+  TABLE: 'Table',
+  STATISTICS: 'Stats',
+};
+
 export const filtersList = {
   everything: true,
   past: false,
   future: false,
+};
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  FUTURE: 'future',
 };
 
 export const SortType = {
@@ -15,7 +31,7 @@ export const SortType = {
   OFFER: 'offer',
 };
 
-export const defaultSortType = SortType.PRICE;
+export const defaultSortType = SortType.DAY;
 
 export const disabledSortFields = [
   SortType.EVENT,
@@ -173,7 +189,7 @@ export const destinations = [
   'San Francisco',
 ];
 
-export const now = dayjs();
+export const today = dayjs();
 
 export const FormatsDateTime = {
   YYYY_MM_DD: 'YYYY-MM-DD',
@@ -219,6 +235,18 @@ export const generateOffer = () => {
     type: type,
     offers: OffersSetByTypes[type].slice(getRandomInteger(0, OffersSetByTypes[type].length - 1)),
   };
+};
+
+export const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };
 
 
