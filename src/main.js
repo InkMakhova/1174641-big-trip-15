@@ -1,4 +1,3 @@
-import {filtersList} from './constants.js';
 import {getRandomInteger} from './utils/common.js';
 import {
   render,
@@ -7,13 +6,25 @@ import {
 import TripInfoView from './view/trip-info.js';
 import SiteMenuView from './view/site-menu.js';
 import PriceView from './view/price.js';
-import FiltersView from './view/filters';
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
+import PointsModel from './model/points.js';
+import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
+import {destinations} from './mock/destinations.js';
+import {MenuItem} from './constants.js';
+//import StatisticsView from './view/statistics.js';
+
+import NewPointButtonView from './view/button-new-point.js';
 
 const POINTS_NUMBER = 20;
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
+
+const pointsModel = new PointsModel();
+pointsModel.setPoints(points);
+
+const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -22,28 +33,49 @@ const filterElement = siteHeaderElement.querySelector('.trip-controls__filters')
 
 const tripInfoComponent = new TripInfoView();
 render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+
 render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
-render(siteMenuElement, new SiteMenuView());
+const siteMenuComponent = new SiteMenuView();
+render(siteMenuElement, siteMenuComponent);
 
-const filtersComponent = new FiltersView(filtersList);
-render(filterElement, filtersComponent);
+const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
+filterPresenter.init();
+
+const newPointButtonComponent = new NewPointButtonView();
+render(tripMainElement, newPointButtonComponent.getElement());
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-const loadDestinations = () => {
-  fetch('https://15.ecmascript.pages.academy/big-trip/destinations',
-    {headers: {'Authorization': 'Basic er883jdzbdw'}})
-    .then((response) => response.json())
-    .then((destinations) => {
-      const tripPresenter = new TripPresenter(tripContainerElement, destinations);
-      tripPresenter.init(points);
-    })
-    .catch(() => {
-      const tripPresenter = new TripPresenter(tripContainerElement);
-      tripPresenter.init(points);
-    });
+const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
+tripPresenter.init();
+
+const handleNewPointFormClose = () => {
+  siteMenuComponent.setMenuItem(MenuItem.TABLE);
+  newPointButtonComponent.activateButton();
 };
 
-loadDestinations();
+const handleNewPointButtonClick = () => {
+  tripPresenter.createPoint(handleNewPointFormClose);
+};
 
+newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+
+// const handleSiteMenuClick = (menuItem) => {
+//   switch (menuItem) {
+//     case MenuItem.TABLE:
+//       tripPresenter.init();
+//       // Скрыть статистику
+//       break;
+//     case MenuItem.STATISTICS:
+
+//       tripPresenter.destroy();
+//       // Показать статистику
+//       break;
+//   }
+// };
+
+// siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+//const tripContainer = document.querySelector('.page-body__container');
+//render(tripContainer, new StatisticsView(pointsModel.getPoints()));

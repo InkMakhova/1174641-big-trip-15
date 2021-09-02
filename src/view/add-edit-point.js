@@ -1,15 +1,15 @@
 import flatpickr from 'flatpickr';
+import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
   offersNames,
   pointTypes,
   defaultType,
-  offerOptions,
-  OffersSetByTypes
+  OffersSetByTypes,
+  FormType
 } from '../constants.js';
 import {
-  getRandomInteger,
   capitalizeFirstLetter,
   getKeyByValue
 } from '../utils/common.js';
@@ -23,13 +23,13 @@ const createPointTypesTemplate = (currentType) => (
     return `<div class="event__type-item">
       <input
         id="event-type-${type}-1"
-        class="event__type-input  visually-hidden"
+        class="event__type-input visually-hidden"
         type="radio"
         name="event-type"
         value="${type}"
         ${checkedStatus}>
       <label
-        class="event__type-label  event__type-label--${type}"
+        class="event__type-label event__type-label--${type}"
         for="event-type-${type}-1"
         >${capitalizeFirstLetter(type)}</label>
     </div>`;
@@ -62,8 +62,8 @@ const offerListNewTemplate = (offers) => {
         </label>
       </div>`;}).join('');
 
-  return `<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+  return `<section class="event__section event__section--offers">
+    <h3 class="event__section-title event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
         ${offerList}
       </div>
@@ -73,7 +73,8 @@ const offerListNewTemplate = (offers) => {
 const offerListEditTemplate = (type, offers) => {
   const offerList = OffersSetByTypes[type]
     .map((offer) => {
-      const el = offers.find((item) => (item.title === offer.title && item.price === offer.price));
+      const el = offers
+        .find((item) => (item.title === offer.title && item.price === offer.price));
       const isChecked = !!el;
 
       const offerTitle = getKeyByValue(offersNames, offer.title);
@@ -97,8 +98,8 @@ const offerListEditTemplate = (type, offers) => {
     </div>`;
     }).join('');
 
-  return `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+  return `<section class="event__section event__section--offers">
+      <h3 class="event__section-title event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
           ${offerList}
         </div>
@@ -106,7 +107,7 @@ const offerListEditTemplate = (type, offers) => {
 };
 
 const createOffersSection = (type, offers, eventType) => {
-  if (eventType === 'new') {
+  if (eventType === FormType.NEW) {
     return offerListNewTemplate(offers);
   }
 
@@ -149,35 +150,43 @@ const createDestinationSection = (destination) => (
 const createPointFormTemplate = (eventType, data, destinations) => {
   const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
 
-  const isNewPoint = (eventType === 'new');
+  const isNewPoint = (eventType === FormType.NEW);
 
-  const dataType = isNewPoint ? defaultType : type;
-
-  const capitalizedType = isNewPoint ? capitalizeFirstLetter(defaultType) : capitalizeFirstLetter(type);
+  const dataType = isNewPoint && !type ? defaultType : type;
+  const capitalizedType = capitalizeFirstLetter(dataType);
 
   const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
-  const destinationTitleEdit = !destination.name ? '' : destination.name;
-  const destinationTitle = isNewPoint ? '' : destinationTitleEdit;
+
+  const destinationTitle = isNewPoint && !data.destination ? '' : destination.name;
+
   const placeholderText = destinations.length > 0 ? '' : 'There is no destination data';
-  const destinationPlaceholder = isNewPoint ? '' : placeholderText;
+  const destinationPlaceholder = isNewPoint && destinations.length > 0 ? '' : placeholderText;
 
-  const dataDateFrom = isNewPoint ? '' : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
-  const dataDateTo = isNewPoint ? '' : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
+  const dataDateFrom =
+    isNewPoint && !data.dateFrom ? '' : formateDateTime(dateFrom, FormatsDateTime.DD_MM_YY_TIME);
 
-  const dataBasePrice = isNewPoint ? '' : basePrice;
+  const dataDateTo =
+    isNewPoint && !data.dateTo ? '' : formateDateTime(dateTo, FormatsDateTime.DD_MM_YY_TIME);
 
-  const offersSection = isNewPoint ? createOffersSection(offerOptions.slice(getRandomInteger(1, offerOptions.length - 1)), 'new') : createOffersSection(type, offer, 'edit');
+  const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
-  const destinationSectionEdit = !destinationTitleEdit ? '' : createDestinationSection(destination);
-  const destinationSection = isNewPoint ? '' : destinationSectionEdit;
+  const offersSection =
+    isNewPoint && !offer ?
+      createOffersSection(defaultType, OffersSetByTypes[defaultType], FormType.NEW) :
+      createOffersSection(type, offer, FormType.EDIT);
+
+  const destinationSection =
+    isNewPoint && !destination ? '' : createDestinationSection(destination);
 
   const isFavoriteValue = isNewPoint ? false : isFavorite;
+
+  const idValue = isNewPoint ? nanoid() : id;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <label class="event__type event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
           <img
             class="event__type-icon"
@@ -198,8 +207,8 @@ const createPointFormTemplate = (eventType, data, destinations) => {
         </div>
       </div>
 
-      <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
+      <div class="event__field-group event__field-group--destination">
+        <label class="event__label event__type-output" for="event-destination-1">
           ${capitalizedType}
         </label>
         <input
@@ -223,7 +232,9 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           id="event-start-time-1"
           type="text"
           name="event-start-time"
-          value="${dataDateFrom}">
+          value="${dataDateFrom}"
+          readonly
+          required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
         <input
@@ -231,10 +242,12 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           id="event-end-time-1"
           type="text"
           name="event-end-time"
-          value="${dataDateTo}">
+          value="${dataDateTo}"
+          readonly
+          required>
       </div>
 
-      <div class="event__field-group  event__field-group--price">
+      <div class="event__field-group event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
           &euro;
@@ -242,12 +255,15 @@ const createPointFormTemplate = (eventType, data, destinations) => {
         <input
           class="event__input event__input--price"
           id="event-price-1"
-          type="text"
+          type="number"
+          min="0"
+          step="1"
           name="event-price"
-          value="${dataBasePrice}">
+          value="${dataBasePrice}"
+          required>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn btn btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -263,16 +279,16 @@ const createPointFormTemplate = (eventType, data, destinations) => {
       name="event-favorite"
       value="${isFavoriteValue}">
     <input class="event__id visually-hidden"
-      id="event-${id}"
+      id="event-${idValue}"
       type="text"
-      name="event-${id}"
-      value="${id}">
+      name="event-id"
+      value="${idValue}">
   </form>
 </li>`;
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = 'edit', point, destinations) {
+  constructor (eventType = FormType.EDIT, point, destinations) {
     super();
 
     this._eventType = eventType;
@@ -282,15 +298,26 @@ export default class PointForm extends SmartView {
     this._data = PointForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._offerChooseHandler = this._offerChooseHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDateFromPicker();
     this._setDateToPicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(point) {
@@ -328,6 +355,12 @@ export default class PointForm extends SmartView {
     });
   }
 
+  _priceChangeHandler(evt) {
+    this.updateData({
+      basePrice: evt.target.value,
+    });
+  }
+
   _setDateFromPicker() {
     if (this._dateFromPicker) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -341,8 +374,9 @@ export default class PointForm extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
+        //defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateFromChangeHandler,
+        maxDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
@@ -360,7 +394,7 @@ export default class PointForm extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
+        //defaultDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateToChangeHandler,
         minDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
       },
@@ -375,6 +409,7 @@ export default class PointForm extends SmartView {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
+
     this.getElement()
       .querySelector('form')
       .addEventListener('submit', this._formSubmitHandler);
@@ -401,6 +436,7 @@ export default class PointForm extends SmartView {
 
   _offerChooseHandler(evt) {
     let offers = this._data.offer.slice();
+
     if (evt.target.checked === true) {
       const price = Number(evt.target.dataset.offerPrice);
 
@@ -453,6 +489,7 @@ export default class PointForm extends SmartView {
     this._setDateToPicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormCloseHandler(this._callback.formClose);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -464,11 +501,27 @@ export default class PointForm extends SmartView {
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
 
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._priceChangeHandler);
+
     if (this.getElement().querySelector('.event__section--offers')) {
       this.getElement().querySelectorAll('.event__offer-checkbox')
         .forEach((checkbox) => checkbox.addEventListener('change', this._offerChooseHandler));
     }
 
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement()
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {
