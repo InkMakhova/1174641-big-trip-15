@@ -3,6 +3,7 @@ import {
   render,
   RenderPosition
 } from './utils/render.js';
+import StatisticsView from './view/statistics.js';
 import TripInfoView from './view/trip-info.js';
 import SiteMenuView from './view/site-menu.js';
 import PriceView from './view/price.js';
@@ -48,7 +49,9 @@ render(tripMainElement, newPointButtonComponent.getElement());
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
 const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
-tripPresenter.init();
+
+//скрываем для удобства отображения статистики
+//tripPresenter.init();
 
 const handleNewPointFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
@@ -61,6 +64,7 @@ const handleNewPointButtonClick = () => {
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
+render(tripContainerElement, new StatisticsView(pointsModel.getPoints()));
 // const handleSiteMenuClick = (menuItem) => {
 //   switch (menuItem) {
 //     case MenuItem.TABLE:
