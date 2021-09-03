@@ -38,17 +38,19 @@ export const disabledSortFields = [
   SortType.OFFER,
 ];
 
-export const pointTypes = [
-  'taxi',
-  'bus',
-  'train',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'ship',
-  'drive',
-  'restaurant',
-];
+export const PointTypes = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  FLIGHT: 'flight',
+  CHECKIN: 'check-in',
+  SIGHTSEENG: 'sightseeing',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  RESTAURANT: 'restaurant',
+};
+
+export const TYPES = Object.values(PointTypes);
 
 export const offerOptions = [
   {
@@ -172,7 +174,7 @@ export const OffersSetByTypes = {
   'restaurant': [],
 };
 
-export const defaultType = pointTypes[3];
+export const defaultType = TYPES.FLIGHT;
 
 export const destinations = [
   'Amsterdam',
@@ -230,7 +232,7 @@ export const offersNames = {
 };
 
 export const generateOffer = () => {
-  const type = pointTypes[getRandomInteger(0, pointTypes.length - 1)];
+  const type = TYPES[getRandomInteger(0, TYPES.length - 1)];
   return {
     type: type,
     offers: OffersSetByTypes[type].slice(getRandomInteger(0, OffersSetByTypes[type].length - 1)),

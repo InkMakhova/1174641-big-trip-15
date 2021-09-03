@@ -4,7 +4,7 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
   offersNames,
-  pointTypes,
+  TYPES,
   defaultType,
   OffersSetByTypes,
   FormType
@@ -17,7 +17,7 @@ import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
 const createPointTypesTemplate = (currentType) => (
-  pointTypes.map((type) => {
+  TYPES.map((type) => {
     const checkedStatus = currentType === type ? 'checked' : '';
 
     return `<div class="event__type-item">

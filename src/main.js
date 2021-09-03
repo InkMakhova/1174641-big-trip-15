@@ -63,8 +63,10 @@ const handleNewPointButtonClick = () => {
 };
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
-
+console.log(points);
+//render(tripContainerElement, new StatisticsView(pointsModel.getPoints()));
 render(tripContainerElement, new StatisticsView(pointsModel.getPoints()));
+
 // const handleSiteMenuClick = (menuItem) => {
 //   switch (menuItem) {
 //     case MenuItem.TABLE:
