@@ -1,7 +1,8 @@
 import {getRandomInteger} from './utils/common.js';
 import {
   render,
-  RenderPosition
+  RenderPosition,
+  remove
 } from './utils/render.js';
 import StatisticsView from './view/statistics.js';
 import TripInfoView from './view/trip-info.js';
@@ -14,7 +15,6 @@ import FilterModel from './model/filter.js';
 import {generateDataPoint} from './mock/point-mock.js';
 import {destinations} from './mock/destinations.js';
 import {MenuItem} from './constants.js';
-//import StatisticsView from './view/statistics.js';
 
 import NewPointButtonView from './view/button-new-point.js';
 
@@ -51,7 +51,7 @@ const tripContainerElement = document.querySelector('.page-main').querySelector(
 const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
 
 //скрываем для удобства отображения статистики
-//tripPresenter.init();
+
 
 const handleNewPointFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
@@ -63,25 +63,24 @@ const handleNewPointButtonClick = () => {
 };
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
-console.log(points);
-//render(tripContainerElement, new StatisticsView(pointsModel.getPoints()));
-render(tripContainerElement, new StatisticsView(pointsModel.getPoints()));
 
-// const handleSiteMenuClick = (menuItem) => {
-//   switch (menuItem) {
-//     case MenuItem.TABLE:
-//       tripPresenter.init();
-//       // Скрыть статистику
-//       break;
-//     case MenuItem.STATISTICS:
+let statisticsComponent = null;
 
-//       tripPresenter.destroy();
-//       // Показать статистику
-//       break;
-//   }
-// };
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      remove(statisticsComponent);
+      tripPresenter.init();
+      break;
 
-// siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+    case MenuItem.STATISTICS:
+      tripPresenter.destroy();
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      render(tripContainerElement, statisticsComponent);
+      break;
+  }
+};
 
-//const tripContainer = document.querySelector('.page-body__container');
-//render(tripContainer, new StatisticsView(pointsModel.getPoints()));
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+tripPresenter.init();
