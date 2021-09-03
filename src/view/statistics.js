@@ -1,12 +1,15 @@
+import dayjs from 'dayjs';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
 import {
   countPointsByType,
   countCostsByType,
+  countDurationByType,
   makeItemsUniq,
   typeToHex
 } from '../utils/statistics.js';
+import {formatDurationElement} from '../utils/common.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
@@ -14,10 +17,12 @@ const BAR_HEIGHT = 55;
 const renderMoneyChart = (moneyCtx, points) => {
 
   const pointTypes = points.map((point) => point.type);
+
   const uniqTypes = makeItemsUniq(pointTypes);
-  console.log(uniqTypes);
   const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
   const pointByTypeCounts = uniqTypes.map((type) => countCostsByType(points, type));
+
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
   return new Chart(moneyCtx, {
@@ -28,7 +33,7 @@ const renderMoneyChart = (moneyCtx, points) => {
       datasets: [{
         data: pointByTypeCounts,
         backgroundColor: hexTypes,
-        hoverBackgroundColor: '#ffffff',
+        hoverBackgroundColor: '#c0c0c0',
         anchor: 'start',
       }],
     },
@@ -68,6 +73,7 @@ const renderMoneyChart = (moneyCtx, points) => {
           ticks: {
             display: false,
             beginAtZero: true,
+            padding: 5,
           },
           gridLines: {
             display: false,
@@ -88,9 +94,12 @@ const renderMoneyChart = (moneyCtx, points) => {
 
 const renderTypeChart = (typeCtx, points) => {
   const pointTypes = points.map((point) => point.type);
+
   const uniqTypes = makeItemsUniq(pointTypes);
-  const uniqTypesUpperCase = uniqTypes.forEach((type) => type.toUpperCase());
+  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
   const pointByTypeCounts = uniqTypes.map((type) => countPointsByType(points, type));
+
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
   return new Chart(typeCtx, {
@@ -101,7 +110,7 @@ const renderTypeChart = (typeCtx, points) => {
       datasets: [{
         data: pointByTypeCounts,
         backgroundColor: hexTypes,
-        hoverBackgroundColor: '#ffffff',
+        hoverBackgroundColor: '#c0c0c0',
         anchor: 'start',
       }],
     },
@@ -159,16 +168,39 @@ const renderTypeChart = (typeCtx, points) => {
   });
 };
 
-const renderTimeChart = (timeCtx, points) => (
-  new Chart(timeCtx, {
+const renderTimeChart = (timeCtx, points) => {
+  const pointTypes = points.map((point) => point.type);
+
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
+  const pointByDurationCounts = uniqTypes.map((type) => countDurationByType(points, type));
+
+  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+
+  const formatDuration = (duration) => {
+    const minutes = parseInt((duration / (1000 * 60)), 10);
+    const hours = parseInt((duration / (1000 * 60 * 60)), 10);
+    const days = parseInt((duration / (1000 * 60 * 60 * 24)), 10);
+
+    const diffTime = {
+      diffDays: days,
+      diffHours: hours,
+      diffMinutes: minutes,
+    };
+
+    return formatDurationElement(diffTime);
+  };
+
+  return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: uniqTypesUpperCase,
       datasets: [{
-        data: [4, 3, 2, 1, 1, 1],
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
+        data: pointByDurationCounts,
+        backgroundColor: hexTypes,
+        hoverBackgroundColor: '#c0c0c0',
         anchor: 'start',
       }],
     },
@@ -181,7 +213,7 @@ const renderTimeChart = (timeCtx, points) => (
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => `${val}x`,
+          formatter: (val) => `${formatDuration(val)}`,
         },
       },
       title: {
@@ -223,8 +255,8 @@ const renderTimeChart = (timeCtx, points) => (
         enabled: false,
       },
     },
-  })
-);
+  });
+};
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
