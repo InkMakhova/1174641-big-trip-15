@@ -50,8 +50,7 @@ const tripContainerElement = document.querySelector('.page-main').querySelector(
 
 const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
 
-//скрываем для удобства отображения статистики
-
+tripPresenter.init();
 
 const handleNewPointFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
@@ -70,6 +69,7 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       remove(statisticsComponent);
+      newPointButtonComponent.activateButton();
       tripPresenter.init();
       break;
 
@@ -77,10 +77,9 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(tripContainerElement, statisticsComponent);
+      newPointButtonComponent.deactivateButton();
       break;
   }
 };
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
-tripPresenter.init();
