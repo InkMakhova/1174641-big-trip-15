@@ -53,4 +53,44 @@ export default class Points extends AbstractObserver {
 
     this._notify(updateType);
   }
+
+  static adaptToClient(point) {
+    const adaptedPoint = Object.assign(
+      {},
+      point,
+      //вот тут дальше засада
+      {
+        dateFrom: point.dateFrom !== null ? new Date(point.dateFrom) : point.dateFrom,
+        dateTo: point.dateTo !== null ? new Date(point.dateTo) : point.dateTo, // На клиенте дата хранится как экземпляр Date
+        isFavorite: point['is_favorite'],
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedPoint['is_favorite'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
+  }
+
+  static adaptToServer(task) {
+    const adaptedTask = Object.assign(
+      {},
+      task,
+      {
+        'due_date': task.dueDate instanceof Date ? task.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
+        'is_archived': task.isArchive,
+        'is_favorite': task.isFavorite,
+        'repeating_days': task.repeating,
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedTask.dueDate;
+    delete adaptedTask.isArchive;
+    delete adaptedTask.isFavorite;
+    delete adaptedTask.repeating;
+
+    return adaptedTask;
+  }
 }
