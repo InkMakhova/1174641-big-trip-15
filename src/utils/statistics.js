@@ -2,15 +2,15 @@ import dayjs from 'dayjs';
 import {PointTypes} from '../constants.js';
 
 export const typeToHex = {
-  [PointTypes.TAXI]: '#FED6BC',
-  [PointTypes.BUS]: '#FFFADD',
-  [PointTypes.TRAIN]: '#DEF7FE',
-  [PointTypes.FLIGHT]: '#E7ECFF',
-  [PointTypes.CHECKIN]: '#C3FBD8',
-  [PointTypes.SIGHTSEENG]: '#FDEED9',
-  [PointTypes.SHIP]: '#F6FFF8',
-  [PointTypes.DRIVE]: '#B5F2EA',
-  [PointTypes.RESTAURANT]: '#C6D8FF',
+  [PointTypes.TAXI]: '#28b0ff',
+  [PointTypes.BUS]: '#49d1ff',
+  [PointTypes.TRAIN]: '#078ff0',
+  [PointTypes.FLIGHT]: '#004dae',
+  [PointTypes.CHECKIN]: '#006ecf',
+  [PointTypes.SIGHTSEENG]: '#5cd7e2',
+  [PointTypes.SHIP]: '#8bffff',
+  [PointTypes.DRIVE]: '#6af2ff',
+  [PointTypes.RESTAURANT]: '#40677f',
 };
 
 export const makeItemsUniq = (items) => [...new Set(items)];
