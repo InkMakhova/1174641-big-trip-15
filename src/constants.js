@@ -174,7 +174,7 @@ export const OffersSetByTypes = {
   'restaurant': [],
 };
 
-export const defaultType = TYPES.FLIGHT;
+export const defaultType = PointTypes.FLIGHT;
 
 export const destinations = [
   'Amsterdam',
