@@ -1,6 +1,7 @@
 import PointFormView from '../view/add-edit-point.js';
 import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render.js';
+import {isEscEvent} from '../utils/common.js';
 import {UserAction, UpdateType, FormType} from '../constants.js';
 import PointNewModel from '../model/point-new.js';
 
@@ -69,7 +70,7 @@ export default class PointNew {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscEvent) {
       evt.preventDefault();
       this.destroy();
     }
