@@ -14,12 +14,24 @@ import {generateDataPoint} from './mock/point-mock.js';
 import {destinations} from './mock/destinations.js';
 import {MenuItem} from './constants.js';
 //import StatisticsView from './view/statistics.js';
+import Api from './api.js';
 
 import NewPointButtonView from './view/button-new-point.js';
 
 const POINTS_NUMBER = 20;
+const AUTHORIZATION = 'Basic er883jdzbdw';
+const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
 const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+});
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
