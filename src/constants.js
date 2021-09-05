@@ -251,4 +251,9 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+export const Units = {
+  MONEY: '€ ',
+  TYPE: 'x',
+};
+
 

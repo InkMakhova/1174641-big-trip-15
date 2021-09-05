@@ -1,5 +1,5 @@
 import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {createChartTemplate} from '../utils/chart.js';
 import SmartView from './smart.js';
 import {
   countPointsByType,
@@ -9,6 +9,7 @@ import {
   typeToHex
 } from '../utils/statistics.js';
 import {formatDurationElement} from '../utils/common.js';
+import {Units} from '../constants.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
@@ -24,71 +25,7 @@ const renderMoneyChart = (moneyCtx, points) => {
 
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
-  return new Chart(moneyCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: uniqTypesUpperCase,
-      datasets: [{
-        data: pointByTypeCounts,
-        backgroundColor: hexTypes,
-        hoverBackgroundColor: '#c0c0c0',
-        anchor: 'start',
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (val) => `€ ${val}`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'MONEY',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          barThickness: 35,
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-            padding: 5,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          minBarLength: 50,
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
+  return new Chart(moneyCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.MONEY));
 };
 
 const renderTypeChart = (typeCtx, points) => {
@@ -101,70 +38,7 @@ const renderTypeChart = (typeCtx, points) => {
 
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
-  return new Chart(typeCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: uniqTypesUpperCase,
-      datasets: [{
-        data: pointByTypeCounts,
-        backgroundColor: hexTypes,
-        hoverBackgroundColor: '#c0c0c0',
-        anchor: 'start',
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (val) => `${val}x`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'TYPE',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          barThickness: 35,
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          minBarLength: 50,
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
+  return new Chart(typeCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TYPE));
 };
 
 const renderTimeChart = (timeCtx, points) => {
@@ -173,7 +47,7 @@ const renderTimeChart = (timeCtx, points) => {
   const uniqTypes = makeItemsUniq(pointTypes);
   const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
 
-  const pointByDurationCounts = uniqTypes.map((type) => countDurationByType(points, type));
+  const pointByTypeCounts = uniqTypes.map((type) => countDurationByType(points, type));
 
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
@@ -191,70 +65,7 @@ const renderTimeChart = (timeCtx, points) => {
     return formatDurationElement(diffTime);
   };
 
-  return new Chart(timeCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: uniqTypesUpperCase,
-      datasets: [{
-        data: pointByDurationCounts,
-        backgroundColor: hexTypes,
-        hoverBackgroundColor: '#c0c0c0',
-        anchor: 'start',
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (val) => `${formatDuration(val)}`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'TIME-SPEND',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          barThickness: 35,
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          minBarLength: 50,
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
+  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, null, formatDuration));
 };
 
 const createStatisticsTemplate = () => (
