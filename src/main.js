@@ -77,7 +77,7 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(tripContainerElement, statisticsComponent);
-      newPointButtonComponent.deactivateButton();
+      newPointButtonComponent.disableButton();
       break;
   }
 };
