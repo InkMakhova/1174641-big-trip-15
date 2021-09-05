@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 import he from 'he';
 import {FormatsDateTime} from '../constants.js';
-import {capitalizeFirstLetter} from '../utils/common.js';
 import {
-  formateDateTime,
-  humanizeTimeDuration
+  capitalizeFirstLetter,
+  formatDurationElement
+} from '../utils/common.js';
+import {
+  formateDateTime
 } from '../utils/point.js';
 import AbstractView from './abstract.js';
 
@@ -29,25 +31,6 @@ const createOffersList = (offers) => {
   return '';
 };
 
-const formatTripDurationElement = (duration) => {
-  let days = '';
-  let hours = '';
-  let minutes = '';
-
-  if (humanizeTimeDuration(duration).days !== 0) {
-    days = `0${humanizeTimeDuration(duration).days}D `.slice(-4);
-    hours = '00H ';
-  }
-
-  if (humanizeTimeDuration(duration).hours !== 0) {
-    hours = `0${humanizeTimeDuration(duration).hours}H `.slice(-4);
-  }
-
-  minutes = `0${humanizeTimeDuration(duration).minutes}M`.slice(-3);
-
-  return `${days}${hours}${minutes}`;
-};
-
 const createPointTemplate = (point) => {
   const {id, dateFrom, dateTo, type, offer, destination, basePrice, isFavorite} = point;
 
@@ -59,7 +42,7 @@ const createPointTemplate = (point) => {
     diffMinutes: dateFinish.diff(dateStart, 'minute'),
   };
 
-  const tripDuration = formatTripDurationElement(diffTime);
+  const tripDuration = formatDurationElement(diffTime);
 
   const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
