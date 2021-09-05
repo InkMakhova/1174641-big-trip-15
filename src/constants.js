@@ -50,7 +50,7 @@ export const PointTypes = {
   RESTAURANT: 'restaurant',
 };
 
-export const TYPES = Object.values(PointTypes);
+export const POINT_TYPES = Object.values(PointTypes);
 
 export const offerOptions = [
   {
@@ -232,7 +232,7 @@ export const offersNames = {
 };
 
 export const generateOffer = () => {
-  const type = TYPES[getRandomInteger(0, TYPES.length - 1)];
+  const type = POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)];
   return {
     type: type,
     offers: OffersSetByTypes[type].slice(getRandomInteger(0, OffersSetByTypes[type].length - 1)),
