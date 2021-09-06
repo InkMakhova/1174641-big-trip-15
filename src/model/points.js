@@ -60,37 +60,36 @@ export default class Points extends AbstractObserver {
       point,
       //вот тут дальше засада
       {
-        dateFrom: point.dateFrom !== null ? new Date(point.dateFrom) : point.dateFrom,
-        dateTo: point.dateTo !== null ? new Date(point.dateTo) : point.dateTo, // На клиенте дата хранится как экземпляр Date
-        isFavorite: point['is_favorite'],
+        basePrice: point.base_price,
+        dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+        dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
       },
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint['is_favorite'];
-    delete adaptedPoint['is_favorite'];
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
 
     return adaptedPoint;
   }
 
-  static adaptToServer(task) {
-    const adaptedTask = Object.assign(
+  static adaptToServer(point) {
+    const adaptedPoint = Object.assign(
       {},
-      task,
+      point,
       {
-        'due_date': task.dueDate instanceof Date ? task.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
-        'is_archived': task.isArchive,
-        'is_favorite': task.isFavorite,
-        'repeating_days': task.repeating,
+        'base_price': point.basePrice,
+        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
+        'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null, // На сервере дата хранится в ISO формате
       },
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedTask.dueDate;
-    delete adaptedTask.isArchive;
-    delete adaptedTask.isFavorite;
-    delete adaptedTask.repeating;
+    delete adaptedPoint.basePrice;
+    delete adaptedPoint.dateFrom;
+    delete adaptedPoint.dateTo;
 
-    return adaptedTask;
+    return adaptedPoint;
   }
 }
