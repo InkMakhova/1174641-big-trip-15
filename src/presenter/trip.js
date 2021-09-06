@@ -17,6 +17,7 @@ import {
 import {filter} from '../utils/filter.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
+import LoadingView from '../view/loading.js';
 import EmptyListView from '../view/point-list-empty.js';
 import PointPresenter from '../presenter/point.js';
 import PointNewPresenter from './point-new.js';
@@ -31,11 +32,13 @@ export default class Trip {
 
     this._filterType = FilterType.EVERYTHING;
     this._currentSortType = defaultSortType;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._emptyListComponent = null;
 
     this._pointListComponent = new PointListView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -132,6 +135,11 @@ export default class Trip {
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTrip();
+        break;
     }
   }
 
@@ -161,6 +169,10 @@ export default class Trip {
     points.forEach((point) => this._renderPoint(point));
   }
 
+  _renderLoading() {
+    render(this._tripComponent, this._loadingComponent);
+  }
+
   _renderEmptyList() {
     this._emptyListComponent = new EmptyListView(this._filterType);
     render(this._tripComponent, this._emptyListComponent);
@@ -172,6 +184,7 @@ export default class Trip {
     this._pointPresenters.clear();
 
     remove(this._sortComponent);
+    remove(this._loadingComponent);
 
     if (this._emptyListComponent) {
       remove(this._emptyListComponent);
@@ -184,6 +197,11 @@ export default class Trip {
 
   _renderTrip() {
     this._renderSort();
+
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
 
     const points = this._getPoints();
 
