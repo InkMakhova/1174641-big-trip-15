@@ -65,7 +65,6 @@ const tripPresenter = new TripPresenter(tripContainerElement, destinations, poin
 tripPresenter.init();
 
 const handleNewPointFormClose = () => {
-  siteMenuComponent.setMenuItem(MenuItem.TABLE);
   newPointButtonComponent.activateButton();
 };
 
@@ -81,12 +80,14 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       remove(statisticsComponent);
+      tripPresenter.destroy();
       newPointButtonComponent.activateButton();
       tripPresenter.init();
       break;
 
     case MenuItem.STATISTICS:
       tripPresenter.destroy();
+      remove(statisticsComponent);
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(tripContainerElement, statisticsComponent);
       newPointButtonComponent.disableButton();

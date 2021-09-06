@@ -22,6 +22,7 @@ const renderMoneyChart = (moneyCtx, points) => {
   const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
 
   const pointByTypeCounts = uniqTypes.map((type) => countCostsByType(points, type));
+  console.log(pointByTypeCounts);
 
   const hexTypes = uniqTypes.map((type) => typeToHex[type]);
 
