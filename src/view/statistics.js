@@ -65,7 +65,7 @@ const renderTimeChart = (timeCtx, points) => {
     return formatDurationElement(diffTime);
   };
 
-  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, null, formatDuration));
+  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TIME, formatDuration));
 };
 
 const createStatisticsTemplate = () => (

@@ -254,6 +254,7 @@ export const UpdateType = {
 export const Units = {
   MONEY: '€ ',
   TYPE: 'x',
+  TIME: '',
 };
 
 
