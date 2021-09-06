@@ -12,31 +12,21 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
-import {generateDataPoint} from './mock/point-mock.js';
 import {destinations} from './mock/destinations.js';
-import {MenuItem} from './constants.js';
+import {
+  MenuItem,
+  UpdateType,
+  FilterType
+} from './constants.js';
 import Api from './api.js';
-
 import NewPointButtonView from './view/button-new-point.js';
 
-const POINTS_NUMBER = 20;
 const AUTHORIZATION = 'Basic er883jdzbdw';
 const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
-const points = Array.from({length: POINTS_NUMBER}, () => generateDataPoint());
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getPoints().then((points) => {
-  console.log(points);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
-});
-
 const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -53,7 +43,6 @@ const siteMenuComponent = new SiteMenuView();
 render(siteMenuElement, siteMenuComponent);
 
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
-filterPresenter.init();
 
 const newPointButtonComponent = new NewPointButtonView();
 render(tripMainElement, newPointButtonComponent.getElement());
@@ -61,8 +50,6 @@ render(tripMainElement, newPointButtonComponent.getElement());
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
 const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
-
-tripPresenter.init();
 
 const handleNewPointFormClose = () => {
   newPointButtonComponent.activateButton();
@@ -81,8 +68,10 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       remove(statisticsComponent);
       tripPresenter.destroy();
-      newPointButtonComponent.activateButton();
+      //добавлен сброс фильтров
+      filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       tripPresenter.init();
+      newPointButtonComponent.activateButton();
       break;
 
     case MenuItem.STATISTICS:
@@ -96,3 +85,11 @@ const handleSiteMenuClick = (menuItem) => {
 };
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+filterPresenter.init();
+tripPresenter.init();
+
+api.getPoints().then((points) => {
+  console.log(points);
+  pointsModel.setPoints(points);
+});
