@@ -89,7 +89,13 @@ siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 filterPresenter.init();
 tripPresenter.init();
 
-api.getPoints().then((points) => {
-  console.log(points);
-  pointsModel.setPoints(points);
-});
+api.getPoints()
+  .then((points) => {
+    console.log(points);
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
+
+
