@@ -231,14 +231,6 @@ export const offersNames = {
   vip: 'Choose VIP area',
 };
 
-export const generateOffer = () => {
-  const type = POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)];
-  return {
-    type: type,
-    offers: OffersSetByTypes[type].slice(getRandomInteger(0, OffersSetByTypes[type].length - 1)),
-  };
-};
-
 export const UserAction = {
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD_POINT',
