@@ -122,7 +122,6 @@ export default class Point {
     );
   }
 
-  //_handleFormSubmit(point) {
   _handleFormSubmit(update) {
     //this._changeData(point);
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
