@@ -1,6 +1,72 @@
-import dayjs from 'dayjs';
-import flatpickr from 'flatpickr';
+import Chart from 'chart.js';
+import {createChartTemplate} from '../utils/chart.js';
 import SmartView from './smart.js';
+import {
+  countPointsByType,
+  countCostsByType,
+  countDurationByType,
+  makeItemsUniq,
+  typeToHex
+} from '../utils/statistics.js';
+import {formatDurationElement} from '../utils/common.js';
+import {Units} from '../constants.js';
+
+// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
+const BAR_HEIGHT = 55;
+
+const renderMoneyChart = (moneyCtx, points) => {
+
+  const pointTypes = points.map((point) => point.type);
+
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
+  const pointByTypeCounts = uniqTypes.map((type) => countCostsByType(points, type));
+
+  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+
+  return new Chart(moneyCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.MONEY));
+};
+
+const renderTypeChart = (typeCtx, points) => {
+  const pointTypes = points.map((point) => point.type);
+
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
+  const pointByTypeCounts = uniqTypes.map((type) => countPointsByType(points, type));
+
+  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+
+  return new Chart(typeCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TYPE));
+};
+
+const renderTimeChart = (timeCtx, points) => {
+  const pointTypes = points.map((point) => point.type);
+
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
+
+  const pointByTypeCounts = uniqTypes.map((type) => countDurationByType(points, type));
+
+  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+
+  const formatDuration = (duration) => {
+    const minutes = parseInt((duration / (1000 * 60)), 10);
+    const hours = parseInt((duration / (1000 * 60 * 60)), 10);
+    const days = parseInt((duration / (1000 * 60 * 60 * 24)), 10);
+
+    const diffTime = {
+      diffDays: days,
+      diffHours: hours,
+      diffMinutes: minutes,
+    };
+
+    return formatDurationElement(diffTime);
+  };
+
+  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, null, formatDuration));
+};
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
@@ -26,67 +92,48 @@ export default class Statistics extends SmartView {
 
     this._data = {
       points: points,
-      dateFrom: (() => {
-        const daysToFullWeek = 6;
-        return dayjs().subtract(daysToFullWeek, 'day').toDate();
-      })(),
-      dateTo: dayjs().toDate(),
     };
 
-    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._moneyChart = null;
+    this._typeChart = null;
+    this._timeChart = null;
 
     this._setCharts();
-    this._setDatepicker();
   }
 
   removeElement() {
     super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._data);
+    return createStatisticsTemplate();
   }
 
   restoreHandlers() {
     this._setCharts();
-    this._setDatepicker();
-  }
-
-  _dateChangeHandler([dateFrom, dateTo]) {
-    if (!dateFrom || !dateTo) {
-      return;
-    }
-
-    this.updateData({
-      dateFrom,
-      dateTo,
-    });
-  }
-
-  _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-
-    this._datepicker = flatpickr(
-      this.getElement().querySelector('.statistic__period-input'),
-      {
-        mode: 'range',
-        dateFormat: 'j F',
-        defaultDate: [this._data.dateFrom, this._data.dateTo],
-        onChange: this._dateChangeHandler,
-      },
-    );
   }
 
   _setCharts() {
-    // Нужно отрисовать два графика
+    if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
+      this._moneyChart = null;
+      this._typeChart = null;
+      this._timeChart = null;
+    }
+
+    const {points} = this._data;
+
+    const moneyCtx = this.getElement().querySelector('#money');
+    const typeCtx = this.getElement().querySelector('#type');
+    const timeCtx = this.getElement().querySelector('#time-spend');
+
+    moneyCtx.height = BAR_HEIGHT * 5;
+    typeCtx.height = BAR_HEIGHT * 5;
+    timeCtx.height = BAR_HEIGHT * 5;
+
+
+    this._moneyChart = renderMoneyChart(moneyCtx, points);
+    this._typeChart = renderTypeChart(typeCtx, points);
+    this._timeChart = renderTimeChart(timeCtx, points);
   }
 }
 

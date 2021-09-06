@@ -41,6 +41,10 @@ export default class NewPointButton extends AbstractView {
     this._restoreClickHandler();
   }
 
+  disableButton() {
+    this.getElement().disabled = true;
+  }
+
   _restoreClickHandler() {
     this.getElement().addEventListener('click', this._clickHandler);
   }
