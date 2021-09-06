@@ -35,12 +35,12 @@ const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigat
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 
 const tripInfoComponent = new TripInfoView();
-render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+//render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
-render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
+//render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
 const siteMenuComponent = new SiteMenuView();
-render(siteMenuElement, siteMenuComponent);
+//render(siteMenuElement, siteMenuComponent);
 
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
 
@@ -84,7 +84,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+//siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();
@@ -93,9 +93,17 @@ api.getPoints()
   .then((points) => {
     console.log(points);
     pointsModel.setPoints(UpdateType.INIT, points);
+    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
+    render(siteMenuElement, siteMenuComponent);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
+    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
+    render(siteMenuElement, siteMenuComponent);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
 
 
