@@ -23,7 +23,7 @@ import PointPresenter from '../presenter/point.js';
 import PointNewPresenter from './point-new.js';
 
 export default class Trip {
-  constructor(tripContainer, destinations, pointsModel, filterModel) {
+  constructor(tripContainer, destinations, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._destinations = destinations;
@@ -33,6 +33,7 @@ export default class Trip {
     this._filterType = FilterType.EVERYTHING;
     this._currentSortType = defaultSortType;
     this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = null;
     this._emptyListComponent = null;
@@ -111,7 +112,10 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        //this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);

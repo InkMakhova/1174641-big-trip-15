@@ -35,12 +35,8 @@ const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigat
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 
 const tripInfoComponent = new TripInfoView();
-//render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-
-//render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
 
 const siteMenuComponent = new SiteMenuView();
-//render(siteMenuElement, siteMenuComponent);
 
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
 
@@ -49,7 +45,7 @@ render(tripMainElement, newPointButtonComponent.getElement());
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripContainerElement, destinations, pointsModel, filterModel, api);
 
 const handleNewPointFormClose = () => {
   newPointButtonComponent.activateButton();
@@ -68,7 +64,6 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       remove(statisticsComponent);
       tripPresenter.destroy();
-      //добавлен сброс фильтров
       filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       tripPresenter.init();
       newPointButtonComponent.activateButton();
@@ -83,8 +78,6 @@ const handleSiteMenuClick = (menuItem) => {
       break;
   }
 };
-
-//siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();
