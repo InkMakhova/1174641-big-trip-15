@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from './utils/common.js';
 
 export const FormType = {
   NEW: 'new',
@@ -174,7 +173,7 @@ export const OffersSetByTypes = {
   'restaurant': [],
 };
 
-export const defaultType = PointTypes.FLIGHT;
+export const DEFAULT_TYPE = 'flight';
 
 export const destinations = [
   'Amsterdam',
