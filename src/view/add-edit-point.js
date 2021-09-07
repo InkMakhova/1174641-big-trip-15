@@ -5,8 +5,8 @@ import {
   FormatsDateTime,
   offersNames,
   POINT_TYPES,
-  defaultType,
-  OffersSetByTypes,
+  DEFAULT_TYPE,
+  //OffersSetByTypes,
   FormType
 } from '../constants.js';
 import {
@@ -70,8 +70,8 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const offerListEditTemplate = (type, offers) => {
-  const offerList = OffersSetByTypes[type]
+const offerListEditTemplate = (type, offers, offersOptions) => {
+  const offerList = offersOptions[type]
     .map((offer) => {
       const el = offers
         .find((item) => (item.title === offer.title && item.price === offer.price));
@@ -106,13 +106,14 @@ const offerListEditTemplate = (type, offers) => {
     </section>`;
 };
 
-const createOffersSection = (type, offers, eventType) => {
+const createOffersSection = (type, offers, offersOptions, eventType) => {
   if (eventType === FormType.NEW) {
     return offerListNewTemplate(offers);
   }
 
-  if (offers && OffersSetByTypes[type].length > 0) {
-    return offerListEditTemplate(type, offers);
+  //console.log(offers);
+  if (offers && offers[type].length > 0) {
+    return offerListEditTemplate(type, offers, offersOptions);
   }
 
   return '';
@@ -147,12 +148,12 @@ const createDestinationSection = (destination) => (
     ${createPhotoTemplate(destination)}
 </section>`);
 
-const createPointFormTemplate = (eventType, data, destinations) => {
-  const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
+const createPointFormTemplate = (eventType, data, destinations, offersOptions) => {
+  const {id, basePrice, dateFrom, dateTo, destination, offer: offers, type, isFavorite} = data;
 
   const isNewPoint = (eventType === FormType.NEW);
 
-  const dataType = isNewPoint && !type ? defaultType : type;
+  const dataType = isNewPoint && !type ? DEFAULT_TYPE : type;
   const capitalizedType = capitalizeFirstLetter(dataType);
 
   const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
@@ -170,10 +171,11 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 
   const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
+  const offersByDefaultType = offersOptions.find((option) => option.type === DEFAULT_TYPE).offers;
   const offersSection =
-    isNewPoint && !offer ?
-      createOffersSection(defaultType, OffersSetByTypes[defaultType], FormType.NEW) :
-      createOffersSection(type, offer, FormType.EDIT);
+    isNewPoint && (!offers || offers.length === 0) ?
+      createOffersSection(DEFAULT_TYPE, offersByDefaultType, null, FormType.NEW) :
+      createOffersSection(type, offers, offersOptions, FormType.EDIT);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
@@ -288,11 +290,12 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = FormType.EDIT, point, destinations) {
+  constructor (eventType = FormType.EDIT, point, destinations, offers) {
     super();
 
     this._eventType = eventType;
     this._destinations = destinations;
+    this._offers = offers;
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._data = PointForm.parsePointToData(point);
@@ -327,7 +330,7 @@ export default class PointForm extends SmartView {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._eventType, this._data, this._destinations);
+    return createPointFormTemplate(this._eventType, this._data, this._destinations, this._offers);
   }
 
   _dateFromChangeHandler([userDate]) {

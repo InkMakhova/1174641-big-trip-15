@@ -1,9 +1,9 @@
-import {defaultType} from '../constants.js';
+import {DEFAULT_TYPE} from '../constants.js';
 
 export default class PointNew {
   initData() {
     return {
-      type: defaultType,
+      type: DEFAULT_TYPE,
       offer: [],
       basePrice: 0,
     };

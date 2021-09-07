@@ -6,10 +6,10 @@ import {UserAction, UpdateType, FormType} from '../constants.js';
 import PointNewModel from '../model/point-new.js';
 
 export default class PointNew {
-  constructor(pointListContainer, changeData, destinations) {
+  constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
-    this._destinations = destinations;
+    this._destinations = [];
 
     this._pointEditComponent = null;
     this._destroyCallback = null;
@@ -22,14 +22,16 @@ export default class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(callback) {
+  init(callback, destinations, offers) {
     this._destroyCallback = callback;
+    this._destinations = destinations;
+    this._offers = offers;
 
     if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointEditComponent = new PointFormView(FormType.NEW, this._data, this._destinations);
+    this._pointEditComponent = new PointFormView(FormType.NEW, this._data, this._destinations, this._offers);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);

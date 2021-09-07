@@ -23,10 +23,12 @@ import PointPresenter from '../presenter/point.js';
 import PointNewPresenter from './point-new.js';
 
 export default class Trip {
-  constructor(tripContainer, destinations, pointsModel, filterModel, api) {
+  constructor(tripContainer, pointsModel, destinationsModel, offersModel, filterModel, api) {
     this._pointsModel = pointsModel;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._filterModel = filterModel;
-    this._destinations = destinations;
+
     this._tripComponent = tripContainer;
     this._pointPresenters = new Map();
 
@@ -46,7 +48,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._destinations);
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction);
   }
 
   init() {
@@ -54,6 +56,8 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._destinationsModel.addObserver(this._handleModelEvent);
+    this._offersModel.addObserver(this._handleModelEvent);
   }
 
   destroy() {
@@ -63,13 +67,14 @@ export default class Trip {
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
+    this._destinationsModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint(callback) {
     this._currentSortType = defaultSortType;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
-    this._pointNewPresenter.init(callback);
+    this._pointNewPresenter.init(callback, this._getDestinations(), this._getOffers());
   }
 
   _getPoints() {
@@ -91,6 +96,14 @@ export default class Trip {
         filtredPoints.sort(sortPointsDay);
     }
     return filtredPoints;
+  }
+
+  _getDestinations() {
+    return this._destinationsModel.getDestinations();
+  }
+
+  _getOffers() {
+    return this._offersModel.getOffers();
   }
 
   _handleSortTypeChange(sortType) {
@@ -129,7 +142,8 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenters.get(data.id).init(data, this._destinations);
+        //this._pointPresenters.get(data.id).init(data, this._destinations);
+        this._pointPresenters.get(data.id).init(data, this._getDestinations());
         break;
       case UpdateType.MINOR:
         this._clearTrip();
@@ -164,7 +178,11 @@ export default class Trip {
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(point, this._destinations);
+
+    const destinations = this._getDestinations();
+    const offers = this._getOffers();
+
+    pointPresenter.init(point, destinations, offers);
 
     this._pointPresenters.set(point.id, pointPresenter);
   }

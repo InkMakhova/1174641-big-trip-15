@@ -60,11 +60,12 @@ export default class Points extends AbstractObserver {
     const adaptedPoint = Object.assign(
       {},
       point,
-      //вот тут дальше засада
       {
         basePrice: point.base_price,
         dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
         dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
+        isFavorite: point.is_favorite,
+        //offer: point.offers,
       },
     );
 
@@ -72,6 +73,8 @@ export default class Points extends AbstractObserver {
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+    //delete adaptedPoint['offers'];
 
     return adaptedPoint;
   }
@@ -84,6 +87,8 @@ export default class Points extends AbstractObserver {
         'base_price': point.basePrice,
         'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
         'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null, // На сервере дата хранится в ISO формате
+        'is_favorite': point.isFavorite,
+        //'offers': point.offer,
       },
     );
 
@@ -91,6 +96,8 @@ export default class Points extends AbstractObserver {
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
+    delete adaptedPoint.isFavorite;
+    //delete adaptedPoint.offer;
 
     return adaptedPoint;
   }
