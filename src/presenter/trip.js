@@ -155,7 +155,7 @@ export default class Trip {
         break;
       case UpdateType.INIT:
         this._isLoading = false;
-        remove(this._loadingComponent);
+        this._clearTrip();
         this._renderTrip();
         break;
     }
@@ -218,8 +218,6 @@ export default class Trip {
   }
 
   _renderTrip() {
-    this._renderSort();
-
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -231,6 +229,8 @@ export default class Trip {
       this._renderEmptyList();
       return;
     }
+
+    this._renderSort();
 
     this._renderPointList();
 

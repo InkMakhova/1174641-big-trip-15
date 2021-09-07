@@ -70,27 +70,29 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const offerListEditTemplate = (type, offers, offersOptions) => {
-  const offerList = offersOptions[type]
+//const offerListEditTemplate = (type, offers, offersOptions) => {
+const offerListEditTemplate = (offers, offersOptions) => {
+  //const offerList = offersOptions[type]
+  const offerList = offersOptions
     .map((offer) => {
       const el = offers
         .find((item) => (item.title === offer.title && item.price === offer.price));
       const isChecked = !!el;
 
-      const offerTitle = getKeyByValue(offersNames, offer.title);
+      //const offerTitle = getKeyByValue(offersNames, offer.title);
 
       return `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
-        id="event-offer-${offerTitle}-1"
+        id="event-offer-${offer.title}-1"
         type="checkbox"
-        name="event-offer-${offerTitle}"
+        name="event-offer-${offer.title}"
         data-offer-title="${offer.title}"
         data-offer-price="${offer.price}"
         ${isChecked ? 'checked' : ''}>
       <label
         class="event__offer-label"
-        for="event-offer-${offerTitle}-1">
+        for="event-offer-${offer.title}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
@@ -111,9 +113,12 @@ const createOffersSection = (type, offers, offersOptions, eventType) => {
     return offerListNewTemplate(offers);
   }
 
-  //console.log(offers);
-  if (offers && offers[type].length > 0) {
-    return offerListEditTemplate(type, offers, offersOptions);
+  console.log(offers);
+  console.log(offersOptions);
+  console.log(type);
+  if (offers && offers.length > 0) {
+    //return offerListEditTemplate(type, offers, offersOptions);
+    return offerListEditTemplate(offers, offersOptions);
   }
 
   return '';
@@ -149,7 +154,7 @@ const createDestinationSection = (destination) => (
 </section>`);
 
 const createPointFormTemplate = (eventType, data, destinations, offersOptions) => {
-  const {id, basePrice, dateFrom, dateTo, destination, offer: offers, type, isFavorite} = data;
+  const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
 
   const isNewPoint = (eventType === FormType.NEW);
 
@@ -172,10 +177,12 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
   const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
   const offersByDefaultType = offersOptions.find((option) => option.type === DEFAULT_TYPE).offers;
+  const offersOptionsByType = offersOptions.find((option) => option.type === type).offers;
+  console.log(offer);
   const offersSection =
-    isNewPoint && (!offers || offers.length === 0) ?
+    isNewPoint && (!offer || offer.length === 0) ?
       createOffersSection(DEFAULT_TYPE, offersByDefaultType, null, FormType.NEW) :
-      createOffersSection(type, offers, offersOptions, FormType.EDIT);
+      createOffersSection(type, offer, offersOptionsByType, FormType.EDIT);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
