@@ -1,4 +1,5 @@
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
@@ -338,6 +339,11 @@ export default class PointForm extends SmartView {
     } else {
       this.updateData({
         dateFrom: userDate,
+        get duration() {
+          const dateStart = dayjs(this.dateFrom);
+          const dateFinish = dayjs(this.dateTo);
+          return dateFinish.diff(dateStart);
+        },
       });
     }
   }
@@ -354,6 +360,11 @@ export default class PointForm extends SmartView {
   _dateToChangeHandler([userDate]) {
     this.updateData({
       dateTo: userDate,
+      get duration() {
+        const dateStart = dayjs(this.dateFrom);
+        const dateFinish = dayjs(this.dateTo);
+        return dateFinish.diff(dateStart);
+      },
     });
   }
 
