@@ -105,8 +105,7 @@ api.getPoints()
     render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
     render(siteMenuElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
-  })
+  });
   // .catch(() => {
   //   pointsModel.setPoints(UpdateType.INIT, []);
   //   render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);

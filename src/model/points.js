@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import AbstractObserver from '../utils/abstract-observer.js';
 
 export default class Points extends AbstractObserver {
@@ -66,6 +67,11 @@ export default class Points extends AbstractObserver {
         dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
         isFavorite: point.is_favorite,
         offer: point.offers,
+        get duration() {
+          const dateStart = dayjs(this.dateFrom);
+          const dateFinish = dayjs(this.dateTo);
+          return dateFinish.diff(dateStart);
+        },
       },
     );
 
@@ -98,6 +104,7 @@ export default class Points extends AbstractObserver {
     delete adaptedPoint.dateTo;
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.offer;
+    delete adaptedPoint.duration;
 
     return adaptedPoint;
   }

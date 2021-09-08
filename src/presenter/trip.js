@@ -125,7 +125,6 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        //this._pointsModel.updatePoint(updateType, update);
         this._api.updatePoint(update).then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         });
@@ -142,7 +141,6 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        //this._pointPresenters.get(data.id).init(data, this._destinations);
         this._pointPresenters.get(data.id).init(data, this._getDestinations(), this._getOffers());
         break;
       case UpdateType.MINOR:
