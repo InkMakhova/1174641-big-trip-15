@@ -34,7 +34,7 @@ const createPointTypesTemplate = (currentType, isDisabled) => (
 
 const createDestinationsList = (destinationItems, isDisabled) => (
   destinationItems.map((item) =>
-    `<option value="${item.name} ${isDisabled ? 'disabled' : ''}">
+    `<option value="${item.name}" ${isDisabled ? 'disabled' : ''}>
     </option>`)
     .join('')
 );
@@ -509,12 +509,17 @@ export default class PointForm extends SmartView {
         destination: [],
       });
     } else {
-      Object.keys(this._destinations).map((key) => {
-        if (this._destinations[key].name === evt.target.value) {
-          description = this._destinations[key].description;
-          pictures = this._destinations[key].pictures;
-        }
-      });
+      const foundDestination = this._destinations.find((destination) => destination.name === evt.target.value);
+      description = foundDestination.description;
+      pictures = foundDestination.pictures;
+
+      // Object.keys(this._destinations).map((key) => {
+      //   console.log(evt.target.value);
+      //   if (this._destinations[key].name === evt.target.value) {
+      //     description = this._destinations[key].description;
+      //     pictures = this._destinations[key].pictures;
+      //  }
+      //});
 
       this.updateData({
         destination: {
