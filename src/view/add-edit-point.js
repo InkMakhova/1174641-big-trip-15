@@ -12,7 +12,7 @@ import {capitalizeFirstLetter} from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
-const createPointTypesTemplate = (currentType) => (
+const createPointTypesTemplate = (currentType, isDisabled) => (
   POINT_TYPES.map((type) => {
     const checkedStatus = currentType === type ? 'checked' : '';
 
@@ -23,7 +23,8 @@ const createPointTypesTemplate = (currentType) => (
         type="radio"
         name="event-type"
         value="${type}"
-        ${checkedStatus}>
+        ${checkedStatus}
+        ${isDisabled ? 'disabled' : ''}>
       <label
         class="event__type-label event__type-label--${type}"
         for="event-type-${type}-1"
@@ -31,12 +32,14 @@ const createPointTypesTemplate = (currentType) => (
     </div>`;
   }).join(''));
 
-const createDestinationsList = (destinationItems) => (
-  destinationItems.map((item) => `<option value="${item.name}"></option>`)
+const createDestinationsList = (destinationItems, isDisabled) => (
+  destinationItems.map((item) =>
+    `<option value="${item.name} ${isDisabled ? 'disabled' : ''}">
+    </option>`)
     .join('')
 );
 
-const offerListNewTemplate = (offers) => {
+const offerListNewTemplate = (offers, isDisabled) => {
   const offerList = offers
     .map((offer) => (
       `<div class="event__offer-selector">
@@ -46,7 +49,8 @@ const offerListNewTemplate = (offers) => {
           type="checkbox"
           name="event-offer-${offer.title}"
           data-offer-title="${offer.title}"
-          data-offer-price="${offer.price}">
+          data-offer-price="${offer.price}"
+          ${isDisabled ? 'disabled' : ''}>
         <label
           class="event__offer-label"
           for="event-offer-${offer.title}-1">
@@ -64,7 +68,7 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const offerListEditTemplate = (offers, offersOptions) => {
+const offerListEditTemplate = (offers, offersOptions, isDisabled) => {
   const offerList = offersOptions
     .map((offer) => {
       const checkedOffer = offers ?
@@ -80,7 +84,8 @@ const offerListEditTemplate = (offers, offersOptions) => {
         name="event-offer-${offer.title}"
         data-offer-title="${offer.title}"
         data-offer-price="${offer.price}"
-        ${isChecked ? 'checked' : ''}>
+        ${isChecked ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}>
       <label
         class="event__offer-label"
         for="event-offer-${offer.title}-1">
@@ -99,16 +104,16 @@ const offerListEditTemplate = (offers, offersOptions) => {
     </section>`;
 };
 
-const createOffersSection = (offers, offersOptions, eventType) => {
+const createOffersSection = (offers, offersOptions, eventType, isDisabled) => {
   if (eventType === FormType.NEW) {
     if (offersOptions !== null) {
-      return offerListNewTemplate(offersOptions);
+      return offerListNewTemplate(offersOptions, isDisabled);
     }
     return '';
   }
 
   if (offersOptions && offersOptions.length > 0) {
-    return offerListEditTemplate(offers, offersOptions);
+    return offerListEditTemplate(offers, offersOptions, isDisabled);
   }
 
   return '';
@@ -144,14 +149,25 @@ const createDestinationSection = (destination) => (
 </section>`);
 
 const createPointFormTemplate = (eventType, data, destinations, offersOptions) => {
-  const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
+  const {
+    id,
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination,
+    offer,
+    type,
+    isFavorite,
+    isDisabled,
+    isSaving,
+    isDeleting} = data;
 
   const isNewPoint = (eventType === FormType.NEW);
 
   const dataType = isNewPoint && !type ? DEFAULT_TYPE : type;
   const capitalizedType = capitalizeFirstLetter(dataType);
 
-  const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
+  const destinationList = destinations.length > 0 ? createDestinationsList(destinations, isDisabled) : '';
 
   const destinationTitle = isNewPoint && !data.destination ? '' : destination.name;
 
@@ -174,8 +190,8 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
 
   const offersSection =
     isNewPoint && (!offer || offer.length === 0) ?
-      createOffersSection(null, newPointOffersByType, FormType.NEW) :
-      createOffersSection(offer, offersOptionsByType, FormType.EDIT);
+      createOffersSection(null, newPointOffersByType, FormType.NEW, isDisabled) :
+      createOffersSection(offer, offersOptionsByType, FormType.EDIT, isDisabled);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
@@ -204,7 +220,7 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-              ${createPointTypesTemplate(dataType)}
+              ${createPointTypesTemplate(dataType, isDisabled)}
           </fieldset>
         </div>
       </div>
@@ -265,8 +281,18 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
           required>
       </div>
 
-      <button class="event__save-btn btn btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button
+        class="event__save-btn btn btn--blue"
+        type="submit"
+        ${isDisabled ? 'disabled' : ''}>
+        ${isSaving ? 'saving...' : 'Save'}
+      </button>
+      <button
+        class="event__reset-btn"
+        type="reset"
+        ${isDisabled ? 'disabled' : ''}>
+        ${isDeleting ? 'deleting...' : 'Delete'}
+      </button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -370,7 +396,7 @@ export default class PointForm extends SmartView {
 
   _priceChangeHandler(evt) {
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
   }
 
@@ -416,6 +442,10 @@ export default class PointForm extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    this.updateData({
+      isFavorite: false,
+    });
 
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
@@ -541,11 +571,20 @@ export default class PointForm extends SmartView {
     return Object.assign(
       {},
       point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }
