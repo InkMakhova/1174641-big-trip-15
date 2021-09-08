@@ -1,5 +1,4 @@
 import PointFormView from '../view/add-edit-point.js';
-//import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
 import {UserAction, UpdateType, FormType} from '../constants.js';
@@ -56,6 +55,13 @@ export default class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
@@ -65,7 +71,7 @@ export default class PointNew {
       //Object.assign({id: nanoid()}, point),
       point,
     );
-    this.destroy();
+    //this.destroy();
   }
 
   _handleDeleteClick() {
