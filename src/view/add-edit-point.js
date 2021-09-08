@@ -6,7 +6,6 @@ import {
   offersNames,
   POINT_TYPES,
   DEFAULT_TYPE,
-  //OffersSetByTypes,
   FormType
 } from '../constants.js';
 import {
@@ -42,25 +41,23 @@ const createDestinationsList = (destinationItems) => (
 
 const offerListNewTemplate = (offers) => {
   const offerList = offers
-    .map((offer) => {
-      const offerName = getKeyByValue(offersNames, offer.title);
-
-      return `<div class="event__offer-selector">
+    .map((offer) => (
+      `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offerName}-1"
+          id="event-offer-${offer.title}-1"
           type="checkbox"
-          name="event-offer-${offerName}"
+          name="event-offer-${offer.title}"
           data-offer-title="${offer.title}"
           data-offer-price="${offer.price}">
         <label
           class="event__offer-label"
-          for="event-offer-${offerName}-1">
+          for="event-offer-${offer.title}-1">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
         </label>
-      </div>`;}).join('');
+      </div>`)).join('');
 
   return `<section class="event__section event__section--offers">
     <h3 class="event__section-title event__section-title--offers">Offers</h3>
@@ -110,13 +107,13 @@ const offerListEditTemplate = (offers, offersOptions) => {
 
 const createOffersSection = (type, offers, offersOptions, eventType) => {
   if (eventType === FormType.NEW) {
-    return offerListNewTemplate(offers);
+    if (offersOptions !== null) {
+      return offerListNewTemplate(offersOptions);
+    }
+    return '';
   }
 
-  console.log(offers);
-  console.log(offersOptions);
-  console.log(type);
-  if (offers && offers.length > 0) {
+  if (offersOptions && offersOptions.length > 0) {
     //return offerListEditTemplate(type, offers, offersOptions);
     return offerListEditTemplate(offers, offersOptions);
   }
@@ -176,12 +173,15 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
 
   const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
-  const offersByDefaultType = offersOptions.find((option) => option.type === DEFAULT_TYPE).offers;
-  const offersOptionsByType = offersOptions.find((option) => option.type === type).offers;
-  console.log(offer);
+  const defaultOffers = offersOptions.find((option) => option.type === DEFAULT_TYPE);
+  const offersByDefaultType = defaultOffers ? defaultOffers.offers : null;
+
+  const foundOffersOptionsByType = offersOptions.find((option) => option.type === type);
+  const offersOptionsByType = foundOffersOptionsByType ? foundOffersOptionsByType.offers : null;
+
   const offersSection =
     isNewPoint && (!offer || offer.length === 0) ?
-      createOffersSection(DEFAULT_TYPE, offersByDefaultType, null, FormType.NEW) :
+      createOffersSection(DEFAULT_TYPE, null, offersByDefaultType, FormType.NEW) :
       createOffersSection(type, offer, offersOptionsByType, FormType.EDIT);
 
   const destinationSection =

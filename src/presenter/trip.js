@@ -143,7 +143,7 @@ export default class Trip {
     switch (updateType) {
       case UpdateType.PATCH:
         //this._pointPresenters.get(data.id).init(data, this._destinations);
-        this._pointPresenters.get(data.id).init(data, this._getDestinations());
+        this._pointPresenters.get(data.id).init(data, this._getDestinations(), this._getOffers());
         break;
       case UpdateType.MINOR:
         this._clearTrip();
