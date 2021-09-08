@@ -99,7 +99,6 @@ tripPresenter.init();
 
 api.getPoints()
   .then((points) => {
-    console.log(points);
     pointsModel.setPoints(UpdateType.INIT, points);
     render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
     render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
