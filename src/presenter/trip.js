@@ -19,7 +19,7 @@ import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import LoadingView from '../view/loading.js';
 import EmptyListView from '../view/point-list-empty.js';
-import PointPresenter from '../presenter/point.js';
+import PointPresenter, {State as PointPresenterViewState} from '../presenter/point.js';
 import PointNewPresenter from './point-new.js';
 
 export default class Trip {
@@ -125,6 +125,7 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this._pointPresenters.get(update.id).setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update).then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         });
@@ -135,6 +136,7 @@ export default class Trip {
         });
         break;
       case UserAction.DELETE_POINT:
+        this._pointPresenters.get(update.id).setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update).then(() => {
           this._pointsModel.deletePoint(updateType, update);
         });
