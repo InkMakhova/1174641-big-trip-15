@@ -1,5 +1,5 @@
 import PointFormView from '../view/add-edit-point.js';
-import {nanoid} from 'nanoid';
+//import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
 import {UserAction, UpdateType, FormType} from '../constants.js';
@@ -62,7 +62,8 @@ export default class PointNew {
       UpdateType.MINOR,
       // Пока у нас нет сервера, который бы после сохранения
       // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      Object.assign({id: nanoid()}, point),
+      //Object.assign({id: nanoid()}, point),
+      point,
     );
     this.destroy();
   }
