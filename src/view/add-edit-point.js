@@ -3,15 +3,11 @@ import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
-  offersNames,
   POINT_TYPES,
   DEFAULT_TYPE,
   FormType
 } from '../constants.js';
-import {
-  capitalizeFirstLetter,
-  getKeyByValue
-} from '../utils/common.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
@@ -67,16 +63,13 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-//const offerListEditTemplate = (type, offers, offersOptions) => {
 const offerListEditTemplate = (offers, offersOptions) => {
-  //const offerList = offersOptions[type]
   const offerList = offersOptions
     .map((offer) => {
-      const el = offers
-        .find((item) => (item.title === offer.title && item.price === offer.price));
-      const isChecked = !!el;
-
-      //const offerTitle = getKeyByValue(offersNames, offer.title);
+      const checkedOffer = offers ?
+        offers.find((item) => (item.title === offer.title && item.price === offer.price)) :
+        null;
+      const isChecked = !!checkedOffer;
 
       return `<div class="event__offer-selector">
       <input
@@ -105,7 +98,7 @@ const offerListEditTemplate = (offers, offersOptions) => {
     </section>`;
 };
 
-const createOffersSection = (type, offers, offersOptions, eventType) => {
+const createOffersSection = (offers, offersOptions, eventType) => {
   if (eventType === FormType.NEW) {
     if (offersOptions !== null) {
       return offerListNewTemplate(offersOptions);
@@ -114,7 +107,6 @@ const createOffersSection = (type, offers, offersOptions, eventType) => {
   }
 
   if (offersOptions && offersOptions.length > 0) {
-    //return offerListEditTemplate(type, offers, offersOptions);
     return offerListEditTemplate(offers, offersOptions);
   }
 
@@ -173,16 +165,16 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
 
   const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
-  const defaultOffers = offersOptions.find((option) => option.type === DEFAULT_TYPE);
-  const offersByDefaultType = defaultOffers ? defaultOffers.offers : null;
+  const newPointOffers = offersOptions.find((option) => option.type === dataType);
+  const newPointOffersByType = newPointOffers ? newPointOffers.offers : null;
 
   const foundOffersOptionsByType = offersOptions.find((option) => option.type === type);
   const offersOptionsByType = foundOffersOptionsByType ? foundOffersOptionsByType.offers : null;
 
   const offersSection =
     isNewPoint && (!offer || offer.length === 0) ?
-      createOffersSection(DEFAULT_TYPE, null, offersByDefaultType, FormType.NEW) :
-      createOffersSection(type, offer, offersOptionsByType, FormType.EDIT);
+      createOffersSection(null, newPointOffersByType, FormType.NEW) :
+      createOffersSection(offer, offersOptionsByType, FormType.EDIT);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
