@@ -50,9 +50,9 @@ export const PointTypes = {
   TRANSPORT: 'transport',
 };
 
-export const POINT_TYPES = Object.values(PointTypes);
-
 export const DEFAULT_TYPE = 'flight';
+
+export const POINT_TYPES = Object.values(PointTypes);
 
 export const destinations = [
   'Amsterdam',
