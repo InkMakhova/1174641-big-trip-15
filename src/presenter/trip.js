@@ -19,7 +19,7 @@ import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import LoadingView from '../view/loading.js';
 import EmptyListView from '../view/point-list-empty.js';
-import PointPresenter, {State as PointPresenterViewState} from '../presenter/point.js';
+import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import PointNewPresenter from './point-new.js';
 
 export default class Trip {
@@ -126,9 +126,7 @@ export default class Trip {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointPresenters.get(update.id).setViewState(PointPresenterViewState.SAVING);
-        // this._api.updatePoint(update).then((response) => {
-        //   this._pointsModel.updatePoint(updateType, response);
-        // });
+
         this._api.updatePoint(update)
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
@@ -137,11 +135,9 @@ export default class Trip {
             this._pointPresenters.get(update.id).setViewState(PointPresenterViewState.ABORTING);
           });
         break;
+
       case UserAction.ADD_POINT:
         this._pointNewPresenter.setSaving();
-        // this._api.addPoint(update).then((response) => {
-        //   this._pointsModel.addPoint(updateType, response);
-        // });
 
         this._api.addPoint(update)
           .then((response) => {
@@ -151,17 +147,12 @@ export default class Trip {
             this._pointNewPresenter.setAborting();
           });
         break;
+
       case UserAction.DELETE_POINT:
         this._pointPresenters.get(update.id).setViewState(PointPresenterViewState.DELETING);
-        // this._api.deletePoint(update).then(() => {
-        //   this._pointsModel.deletePoint(updateType, update);
-        // });
+
         this._api.deletePoint(update)
           .then(() => {
-            // Обратите внимание, метод удаления задачи на сервере
-            // ничего не возвращает. Это и верно,
-            // ведь что можно вернуть при удалении задачи?
-            // Поэтому в модель мы всё также передаем update
             this._pointsModel.deletePoint(updateType, update);
           })
           .catch(() => {

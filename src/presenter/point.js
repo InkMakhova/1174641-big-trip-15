@@ -72,7 +72,6 @@ export default class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      //replace(this._pointEditComponent, prevPointEditComponent);
       replace(this._pointComponent, prevPointEditComponent);
       this._mode = Mode.DEFAULT;
     }
@@ -165,7 +164,6 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
-    //this._changeData(point);
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -176,10 +174,8 @@ export default class Point {
     this._changeData(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
-      //point,
       update,
     );
-    //this._replaceFormToPoint();
   }
 
   _handleDeleteClick(point) {

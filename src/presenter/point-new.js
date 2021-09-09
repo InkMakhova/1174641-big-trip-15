@@ -1,7 +1,15 @@
-import PointFormView from '../view/add-edit-point.js';
-import {remove, render, RenderPosition} from '../utils/render.js';
+import {
+  UserAction,
+  UpdateType,
+  FormType
+} from '../constants.js';
+import {
+  remove,
+  render,
+  RenderPosition
+} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
-import {UserAction, UpdateType, FormType} from '../constants.js';
+import PointFormView from '../view/add-edit-point.js';
 import PointNewModel from '../model/point-new.js';
 
 export default class PointNew {
@@ -78,12 +86,8 @@ export default class PointNew {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      //Object.assign({id: nanoid()}, point),
       point,
     );
-    //this.destroy();
   }
 
   _handleDeleteClick() {

@@ -75,7 +75,7 @@ export default class Points extends AbstractObserver {
       },
     );
 
-    // Ненужные ключи мы удаляем
+    // Ненужные ключи удаляем
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
@@ -92,13 +92,13 @@ export default class Points extends AbstractObserver {
       {
         'base_price': point.basePrice,
         'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
-        'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null, // На сервере дата хранится в ISO формате
+        'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
         'is_favorite': point.isFavorite,
         'offers': point.offer,
       },
     );
 
-    // Ненужные ключи мы удаляем
+    // Ненужные ключи удаляем
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;

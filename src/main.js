@@ -1,3 +1,9 @@
+import Api from './api.js';
+import {
+  MenuItem,
+  UpdateType,
+  FilterType
+} from './constants.js';
 import {getRandomInteger} from './utils/common.js';
 import {
   render,
@@ -7,6 +13,7 @@ import {
 import StatisticsView from './view/statistics.js';
 import TripInfoView from './view/trip-info.js';
 import SiteMenuView from './view/site-menu.js';
+import NewPointButtonView from './view/button-new-point.js';
 import PriceView from './view/price.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
@@ -14,14 +21,6 @@ import PointsModel from './model/points.js';
 import DestinationsModel from './model/destinations.js';
 import OffersModel from './model/offers.js';
 import FilterModel from './model/filter.js';
-//import {destinations} from './mock/destinations.js';
-import {
-  MenuItem,
-  UpdateType,
-  FilterType
-} from './constants.js';
-import Api from './api.js';
-import NewPointButtonView from './view/button-new-point.js';
 
 const AUTHORIZATION = 'Basic er883jdzbdw';
 const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
@@ -105,11 +104,11 @@ api.getPoints()
     render(siteMenuElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
-  .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
-    render(siteMenuElement, siteMenuComponent);
-    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-  });
+  // .catch(() => {
+  //   pointsModel.setPoints(UpdateType.INIT, []);
+  //   render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+  //   render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
+  //   render(siteMenuElement, siteMenuComponent);
+  //   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  // });
 
