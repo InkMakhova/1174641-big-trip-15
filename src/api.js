@@ -19,23 +19,23 @@ export default class Api {
   }
 
   getPoints() {
-    return this._load({url: 'points'})
+    return this._fetch({url: 'points'})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getDestinations() {
-    return this._load({url: 'destinations'})
+    return this._fetch({url: 'destinations'})
       .then(Api.toJSON);
   }
 
   getOffers() {
-    return this._load({url: 'offers'})
+    return this._fetch({url: 'offers'})
       .then(Api.toJSON);
   }
 
   updatePoint(point) {
-    return this._load({
+    return this._fetch({
       url: `points/${point.id}`,
       method: Method.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
@@ -46,7 +46,7 @@ export default class Api {
   }
 
   addPoint(point) {
-    return this._load({
+    return this._fetch({
       url: 'points',
       method: Method.POST,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
@@ -57,13 +57,13 @@ export default class Api {
   }
 
   deletePoint(point) {
-    return this._load({
+    return this._fetch({
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
   }
 
-  _load({
+  _fetch({
     url,
     method = Method.GET,
     body = null,
