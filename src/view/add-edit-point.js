@@ -251,7 +251,6 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
           type="text"
           name="event-start-time"
           value="${dataDateFrom}"
-          readonly
           required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -261,7 +260,6 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
           type="text"
           name="event-end-time"
           value="${dataDateTo}"
-          readonly
           required>
       </div>
 
@@ -376,10 +374,13 @@ export default class PointForm extends SmartView {
 
   _setDateToValidity() {
     this.getElement()
-      .querySelector('#event-end-time-1')
-      .setCustomValidity('Дата начала не может быть больше даты окончания путешествия');
+      //.querySelector('#event-end-time-1')
+      .querySelector('#event-start-time-1')
+      .setCustomValidity('Дата начала не может быть больше даты окончания путешествия.');
+
     this.getElement()
-      .querySelector('#event-end-time-1')
+      //.querySelector('#event-end-time-1')
+      .querySelector('#event-start-time-1')
       .reportValidity();
   }
 
@@ -414,7 +415,6 @@ export default class PointForm extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         onChange: this._dateFromChangeHandler,
-        maxDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
