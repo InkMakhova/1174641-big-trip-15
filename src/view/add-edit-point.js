@@ -521,6 +521,7 @@ export default class PointForm extends SmartView {
       pictures = foundDestination.pictures;
 
       this.updateData({
+        offer: [],
         destination: {
           name: evt.target.value,
           description: description,
