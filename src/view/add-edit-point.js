@@ -1,22 +1,18 @@
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
-  offersNames,
   POINT_TYPES,
-  defaultType,
-  OffersSetByTypes,
+  DEFAULT_TYPE,
   FormType
 } from '../constants.js';
-import {
-  capitalizeFirstLetter,
-  getKeyByValue
-} from '../utils/common.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
-const createPointTypesTemplate = (currentType) => (
+const createPointTypesTemplate = (currentType, isDisabled) => (
   POINT_TYPES.map((type) => {
     const checkedStatus = currentType === type ? 'checked' : '';
 
@@ -27,7 +23,8 @@ const createPointTypesTemplate = (currentType) => (
         type="radio"
         name="event-type"
         value="${type}"
-        ${checkedStatus}>
+        ${checkedStatus}
+        ${isDisabled ? 'disabled' : ''}>
       <label
         class="event__type-label event__type-label--${type}"
         for="event-type-${type}-1"
@@ -35,32 +32,33 @@ const createPointTypesTemplate = (currentType) => (
     </div>`;
   }).join(''));
 
-const createDestinationsList = (destinationItems) => (
-  destinationItems.map((item) => `<option value="${item.name}"></option>`)
+const createDestinationsList = (destinationItems, isDisabled) => (
+  destinationItems.map((item) =>
+    `<option value="${item.name}" ${isDisabled ? 'disabled' : ''}>
+    </option>`)
     .join('')
 );
 
-const offerListNewTemplate = (offers) => {
+const offerListNewTemplate = (offers, isDisabled) => {
   const offerList = offers
-    .map((offer) => {
-      const offerName = getKeyByValue(offersNames, offer.title);
-
-      return `<div class="event__offer-selector">
+    .map((offer) => (
+      `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offerName}-1"
+          id="event-offer-${offer.title}-1"
           type="checkbox"
-          name="event-offer-${offerName}"
+          name="event-offer-${offer.title}"
           data-offer-title="${offer.title}"
-          data-offer-price="${offer.price}">
+          data-offer-price="${offer.price}"
+          ${isDisabled ? 'disabled' : ''}>
         <label
           class="event__offer-label"
-          for="event-offer-${offerName}-1">
+          for="event-offer-${offer.title}-1">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
         </label>
-      </div>`;}).join('');
+      </div>`)).join('');
 
   return `<section class="event__section event__section--offers">
     <h3 class="event__section-title event__section-title--offers">Offers</h3>
@@ -70,27 +68,27 @@ const offerListNewTemplate = (offers) => {
   </section>`;
 };
 
-const offerListEditTemplate = (type, offers) => {
-  const offerList = OffersSetByTypes[type]
+const offerListEditTemplate = (offers, offersOptions, isDisabled) => {
+  const offerList = offersOptions
     .map((offer) => {
-      const el = offers
-        .find((item) => (item.title === offer.title && item.price === offer.price));
-      const isChecked = !!el;
-
-      const offerTitle = getKeyByValue(offersNames, offer.title);
+      const checkedOffer = offers ?
+        offers.find((item) => (item.title === offer.title && item.price === offer.price)) :
+        null;
+      const isChecked = !!checkedOffer;
 
       return `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
-        id="event-offer-${offerTitle}-1"
+        id="event-offer-${offer.title}-1"
         type="checkbox"
-        name="event-offer-${offerTitle}"
+        name="event-offer-${offer.title}"
         data-offer-title="${offer.title}"
         data-offer-price="${offer.price}"
-        ${isChecked ? 'checked' : ''}>
+        ${isChecked ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}>
       <label
         class="event__offer-label"
-        for="event-offer-${offerTitle}-1">
+        for="event-offer-${offer.title}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
@@ -106,13 +104,16 @@ const offerListEditTemplate = (type, offers) => {
     </section>`;
 };
 
-const createOffersSection = (type, offers, eventType) => {
+const createOffersSection = (offers, offersOptions, eventType, isDisabled) => {
   if (eventType === FormType.NEW) {
-    return offerListNewTemplate(offers);
+    if (offersOptions !== null) {
+      return offerListNewTemplate(offersOptions, isDisabled);
+    }
+    return '';
   }
 
-  if (offers && OffersSetByTypes[type].length > 0) {
-    return offerListEditTemplate(type, offers);
+  if (offersOptions && offersOptions.length > 0) {
+    return offerListEditTemplate(offers, offersOptions, isDisabled);
   }
 
   return '';
@@ -147,15 +148,26 @@ const createDestinationSection = (destination) => (
     ${createPhotoTemplate(destination)}
 </section>`);
 
-const createPointFormTemplate = (eventType, data, destinations) => {
-  const {id, basePrice, dateFrom, dateTo, destination, offer, type, isFavorite} = data;
+const createPointFormTemplate = (eventType, data, destinations, offersOptions) => {
+  const {
+    id,
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination,
+    offer,
+    type,
+    isFavorite,
+    isDisabled,
+    isSaving,
+    isDeleting} = data;
 
   const isNewPoint = (eventType === FormType.NEW);
 
-  const dataType = isNewPoint && !type ? defaultType : type;
+  const dataType = isNewPoint && !type ? DEFAULT_TYPE : type;
   const capitalizedType = capitalizeFirstLetter(dataType);
 
-  const destinationList = destinations.length > 0 ? createDestinationsList(destinations) : '';
+  const destinationList = destinations.length > 0 ? createDestinationsList(destinations, isDisabled) : '';
 
   const destinationTitle = isNewPoint && !data.destination ? '' : destination.name;
 
@@ -170,10 +182,16 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 
   const dataBasePrice = isNewPoint && !basePrice ? '' : basePrice;
 
+  const newPointOffers = offersOptions.find((option) => option.type === dataType);
+  const newPointOffersByType = newPointOffers ? newPointOffers.offers : null;
+
+  const foundOffersOptionsByType = offersOptions.find((option) => option.type === type);
+  const offersOptionsByType = foundOffersOptionsByType ? foundOffersOptionsByType.offers : null;
+
   const offersSection =
-    isNewPoint && !offer ?
-      createOffersSection(defaultType, OffersSetByTypes[defaultType], FormType.NEW) :
-      createOffersSection(type, offer, FormType.EDIT);
+    isNewPoint && (!offer || offer.length === 0) ?
+      createOffersSection(null, newPointOffersByType, FormType.NEW, isDisabled) :
+      createOffersSection(offer, offersOptionsByType, FormType.EDIT, isDisabled);
 
   const destinationSection =
     isNewPoint && !destination ? '' : createDestinationSection(destination);
@@ -202,7 +220,7 @@ const createPointFormTemplate = (eventType, data, destinations) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-              ${createPointTypesTemplate(dataType)}
+              ${createPointTypesTemplate(dataType, isDisabled)}
           </fieldset>
         </div>
       </div>
@@ -233,7 +251,6 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           type="text"
           name="event-start-time"
           value="${dataDateFrom}"
-          readonly
           required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -243,7 +260,6 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           type="text"
           name="event-end-time"
           value="${dataDateTo}"
-          readonly
           required>
       </div>
 
@@ -263,8 +279,18 @@ const createPointFormTemplate = (eventType, data, destinations) => {
           required>
       </div>
 
-      <button class="event__save-btn btn btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button
+        class="event__save-btn btn btn--blue"
+        type="submit"
+        ${isDisabled ? 'disabled' : ''}>
+        ${isSaving ? 'saving...' : 'Save'}
+      </button>
+      <button
+        class="event__reset-btn"
+        type="reset"
+        ${isDisabled ? 'disabled' : ''}>
+        ${isDeleting ? 'deleting...' : 'Delete'}
+      </button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -288,11 +314,12 @@ const createPointFormTemplate = (eventType, data, destinations) => {
 };
 
 export default class PointForm extends SmartView {
-  constructor (eventType = FormType.EDIT, point, destinations) {
+  constructor (eventType = FormType.EDIT, point, destinations, offers) {
     super();
 
     this._eventType = eventType;
     this._destinations = destinations;
+    this._offers = offers;
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._data = PointForm.parsePointToData(point);
@@ -327,37 +354,58 @@ export default class PointForm extends SmartView {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._eventType, this._data, this._destinations);
+    return createPointFormTemplate(this._eventType, this._data, this._destinations, this._offers);
   }
 
   _dateFromChangeHandler([userDate]) {
     if (userDate > this._data.dateTo) {
-      this._setDateToValidity();
+      this._setDateFromValidity();
     } else {
       this.updateData({
         dateFrom: userDate,
+        get duration() {
+          const dateStart = dayjs(this.dateFrom);
+          const dateFinish = dayjs(this.dateTo);
+          return dateFinish.diff(dateStart);
+        },
+      });
+    }
+  }
+
+  _setDateFromValidity() {
+    const dateFromInputElement = this.getElement().querySelector('#event-start-time-1');
+
+    dateFromInputElement
+      .setCustomValidity('Дата начала путешествия не может быть позже даты окончания.');
+    dateFromInputElement.reportValidity();
+  }
+
+  _dateToChangeHandler([userDate]) {
+    if (userDate < this._data.dateFrom) {
+      this._setDateToValidity();
+    } else {
+      this.updateData({
+        dateTo: userDate,
+        get duration() {
+          const dateStart = dayjs(this.dateFrom);
+          const dateFinish = dayjs(this.dateTo);
+          return dateFinish.diff(dateStart);
+        },
       });
     }
   }
 
   _setDateToValidity() {
-    this.getElement()
-      .querySelector('#event-end-time-1')
-      .setCustomValidity('Дата начала не может быть больше даты окончания путешествия');
-    this.getElement()
-      .querySelector('#event-end-time-1')
-      .reportValidity();
-  }
+    const dateToInputElement = this.getElement().querySelector('#event-end-time-1');
 
-  _dateToChangeHandler([userDate]) {
-    this.updateData({
-      dateTo: userDate,
-    });
+    dateToInputElement
+      .setCustomValidity('Дата окончания путешествия не может быть раньше даты начала.');
+    dateToInputElement.reportValidity();
   }
 
   _priceChangeHandler(evt) {
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
   }
 
@@ -372,11 +420,10 @@ export default class PointForm extends SmartView {
     this._dateFromPicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
+        allowInput: true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        //defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateFromChangeHandler,
-        maxDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
@@ -392,17 +439,20 @@ export default class PointForm extends SmartView {
     this._dateToPicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
       {
+        allowInput: true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        //defaultDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateToChangeHandler,
-        minDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    this.updateData({
+      isFavorite: false,
+    });
 
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
@@ -466,14 +516,12 @@ export default class PointForm extends SmartView {
         destination: [],
       });
     } else {
-      Object.keys(this._destinations).map((key) => {
-        if (this._destinations[key].name === evt.target.value) {
-          description = this._destinations[key].description;
-          pictures = this._destinations[key].pictures;
-        }
-      });
+      const foundDestination = this._destinations.find((destination) => destination.name === evt.target.value);
+      description = foundDestination.description;
+      pictures = foundDestination.pictures;
 
       this.updateData({
+        offer: [],
         destination: {
           name: evt.target.value,
           description: description,
@@ -528,11 +576,20 @@ export default class PointForm extends SmartView {
     return Object.assign(
       {},
       point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }

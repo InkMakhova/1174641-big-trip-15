@@ -1,5 +1,5 @@
-import AbstractView from './abstract.js';
 import {FilterType} from '../constants.js';
+import AbstractView from './abstract.js';
 
 const emptyListTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',

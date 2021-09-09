@@ -1,5 +1,5 @@
-import AbstractView from './abstract.js';
 import {MenuItem} from '../constants.js';
+import AbstractView from './abstract.js';
 
 const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -20,6 +20,7 @@ export default class SiteMenu extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
+
     this.setMenuItem(evt.target.innerText);
     this._callback.menuClick(evt.target.innerText);
   }

@@ -1,6 +1,6 @@
 import Chart from 'chart.js';
+import {Units} from '../constants.js';
 import {createChartTemplate} from '../utils/chart.js';
-import SmartView from './smart.js';
 import {
   countPointsByType,
   countCostsByType,
@@ -9,7 +9,7 @@ import {
   typeToHex
 } from '../utils/statistics.js';
 import {formatDurationElement} from '../utils/common.js';
-import {Units} from '../constants.js';
+import SmartView from './smart.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
@@ -65,7 +65,7 @@ const renderTimeChart = (timeCtx, points) => {
     return formatDurationElement(diffTime);
   };
 
-  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, null, formatDuration));
+  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TIME, formatDuration));
 };
 
 const createStatisticsTemplate = () => (

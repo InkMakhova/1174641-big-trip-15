@@ -1,14 +1,15 @@
-import FilterView from '../view/filter.js';
+import {
+  FilterType,
+  UpdateType
+} from '../constants.js';
 import {
   render,
   replace,
   remove
 } from '../utils/render.js';
 import {filter} from '../utils/filter.js';
-import {
-  FilterType,
-  UpdateType
-} from '../constants.js';
+import FilterView from '../view/filter.js';
+
 export default class Filter {
   constructor(filterContainer, filterModel, pointsModel) {
     this._filterContainer = filterContainer;

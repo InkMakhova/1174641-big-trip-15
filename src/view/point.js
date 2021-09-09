@@ -5,9 +5,7 @@ import {
   capitalizeFirstLetter,
   formatDurationElement
 } from '../utils/common.js';
-import {
-  formateDateTime
-} from '../utils/point.js';
+import {formateDateTime} from '../utils/point.js';
 import AbstractView from './abstract.js';
 
 const createOffersList = (offers) => {
