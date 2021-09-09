@@ -359,7 +359,7 @@ export default class PointForm extends SmartView {
 
   _dateFromChangeHandler([userDate]) {
     if (userDate > this._data.dateTo) {
-      this._setDateToValidity();
+      this._setDateFromValidity();
     } else {
       this.updateData({
         dateFrom: userDate,
@@ -372,27 +372,35 @@ export default class PointForm extends SmartView {
     }
   }
 
-  _setDateToValidity() {
-    this.getElement()
-      //.querySelector('#event-end-time-1')
-      .querySelector('#event-start-time-1')
-      .setCustomValidity('Дата начала не может быть больше даты окончания путешествия.');
+  _setDateFromValidity() {
+    const dateFromInputElement = this.getElement().querySelector('#event-start-time-1');
 
-    this.getElement()
-      //.querySelector('#event-end-time-1')
-      .querySelector('#event-start-time-1')
-      .reportValidity();
+    dateFromInputElement
+      .setCustomValidity('Дата начала путешествия не может быть позже даты окончания.');
+    dateFromInputElement.reportValidity();
   }
 
   _dateToChangeHandler([userDate]) {
-    this.updateData({
-      dateTo: userDate,
-      get duration() {
-        const dateStart = dayjs(this.dateFrom);
-        const dateFinish = dayjs(this.dateTo);
-        return dateFinish.diff(dateStart);
-      },
-    });
+    if (userDate < this._data.dateFrom) {
+      this._setDateToValidity();
+    } else {
+      this.updateData({
+        dateTo: userDate,
+        get duration() {
+          const dateStart = dayjs(this.dateFrom);
+          const dateFinish = dayjs(this.dateTo);
+          return dateFinish.diff(dateStart);
+        },
+      });
+    }
+  }
+
+  _setDateToValidity() {
+    const dateToInputElement = this.getElement().querySelector('#event-end-time-1');
+
+    dateToInputElement
+      .setCustomValidity('Дата окончания путешествия не может быть раньше даты начала.');
+    dateToInputElement.reportValidity();
   }
 
   _priceChangeHandler(evt) {
@@ -412,6 +420,7 @@ export default class PointForm extends SmartView {
     this._dateFromPicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
+        allowInput: true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         onChange: this._dateFromChangeHandler,
@@ -430,10 +439,10 @@ export default class PointForm extends SmartView {
     this._dateToPicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
       {
+        allowInput: true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         onChange: this._dateToChangeHandler,
-        minDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
       },
     );
   }
