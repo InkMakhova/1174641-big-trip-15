@@ -1,6 +1,6 @@
 import Chart from 'chart.js';
+import {Units} from '../constants.js';
 import {createChartTemplate} from '../utils/chart.js';
-import SmartView from './smart.js';
 import {
   countPointsByType,
   countCostsByType,
@@ -9,7 +9,7 @@ import {
   typeToHex
 } from '../utils/statistics.js';
 import {formatDurationElement} from '../utils/common.js';
-import {Units} from '../constants.js';
+import SmartView from './smart.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;

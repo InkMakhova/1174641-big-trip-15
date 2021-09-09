@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import {FilterType, today} from '../constants.js';
+import {
+  FilterType,
+  today
+} from '../constants.js';
 
 const isActivePoint = (point) =>
   dayjs(point.dateFrom).isBefore(today, 'D') && !dayjs(point.dateTo).isBefore(today, 'D');

@@ -413,7 +413,6 @@ export default class PointForm extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        //defaultDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateFromChangeHandler,
         maxDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
       },
@@ -433,7 +432,6 @@ export default class PointForm extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        //defaultDate: formateDateTime(this._data.dateTo, FormatsDateTime.DD_MM_YY_TIME),
         onChange: this._dateToChangeHandler,
         minDate: formateDateTime(this._data.dateFrom, FormatsDateTime.DD_MM_YY_TIME),
       },
@@ -512,14 +510,6 @@ export default class PointForm extends SmartView {
       const foundDestination = this._destinations.find((destination) => destination.name === evt.target.value);
       description = foundDestination.description;
       pictures = foundDestination.pictures;
-
-      // Object.keys(this._destinations).map((key) => {
-      //   console.log(evt.target.value);
-      //   if (this._destinations[key].name === evt.target.value) {
-      //     description = this._destinations[key].description;
-      //     pictures = this._destinations[key].pictures;
-      //  }
-      //});
 
       this.updateData({
         destination: {
