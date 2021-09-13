@@ -1010,7 +1010,11 @@ main {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 50px;
-  height: 30px;
+  width: 30%;
+  height: 25px;
+}
+
+.toast-item {
   background-color: red;
+  font-size: 20px;
 }
