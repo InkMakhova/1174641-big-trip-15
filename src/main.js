@@ -112,3 +112,10 @@ api.getPoints()
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
 
+window.addEventListener('load', () => {
+  //проверка сделана для старых браузеров, в которых нет поддержки serviceWorker
+  //if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+  //}
+});
+
