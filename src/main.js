@@ -28,7 +28,7 @@ import Api from './api/api.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
 
-const AUTHORIZATION = 'Basic er883jdzbdu';
+const AUTHORIZATION = 'Basic er883jdzbdi';
 const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
 const POINTS_PREFIX = 'points';
@@ -88,6 +88,7 @@ const handleNewPointFormClose = () => {
   if (!isOnline()) {
     toast('You can\'t create new point offline');
   }
+
   newPointButtonComponent.activateButton();
 };
 
