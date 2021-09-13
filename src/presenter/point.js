@@ -3,7 +3,10 @@ import {
   UpdateType,
   FormType
 } from '../constants.js';
-import {isEscEvent} from '../utils/common.js';
+import {
+  isOnline,
+  isEscEvent
+} from '../utils/common.js';
 import {
   render,
   replace,
@@ -13,6 +16,7 @@ import {
   isDatesEqual,
   isPriceEqual
 } from '../utils/point.js';
+import {toast} from '../utils/toast.js';
 import PointView from '../view/point.js';
 import PointFormView from '../view/add-edit-point.js';
 
@@ -146,6 +150,11 @@ export default class Point {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+      return;
+    }
+
     this._replacePointToForm();
   }
 
@@ -164,6 +173,10 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast('You can\'t save point offline');
+      return;
+    }
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -179,6 +192,11 @@ export default class Point {
   }
 
   _handleDeleteClick(point) {
+    if (!isOnline()) {
+      toast('You can\'t delete point offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
