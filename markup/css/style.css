@@ -979,12 +979,4 @@ main {
 .statistics__item:not(:last-child) {
   margin-bottom: 78px; }
 
-.toast-container {
-  display: block;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 50px;
-  height: 30px;
-  background-color: red;
-}
+
