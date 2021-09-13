@@ -2,7 +2,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {Units} from '../constants.js';
 import {getKeyByValue} from '../utils/common.js';
 
-export const createChartTemplate = (labels, data, colors, unit, formatter) => {
+export const createChartTemplate = (labels, data, unit, formatter) => {
   const chartTitle = getKeyByValue(Units, unit);
 
   const formatMoney = () => unit === Units.MONEY ? Units.MONEY : '';
@@ -15,7 +15,7 @@ export const createChartTemplate = (labels, data, colors, unit, formatter) => {
       labels: labels,
       datasets: [{
         data: data,
-        backgroundColor: colors,
+        backgroundColor: '#ffffff',
         hoverBackgroundColor: '#c0c0c0',
         anchor: 'start',
       }],

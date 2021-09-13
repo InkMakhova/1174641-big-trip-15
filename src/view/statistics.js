@@ -5,8 +5,7 @@ import {
   countPointsByType,
   countCostsByType,
   countDurationByType,
-  makeItemsUniq,
-  typeToHex
+  makeItemsUniq
 } from '../utils/statistics.js';
 import {formatDurationElement} from '../utils/common.js';
 import SmartView from './smart.js';
@@ -19,37 +18,64 @@ const renderMoneyChart = (moneyCtx, points) => {
   const pointTypes = points.map((point) => point.type);
 
   const uniqTypes = makeItemsUniq(pointTypes);
-  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
 
-  const pointByTypeCounts = uniqTypes.map((type) => countCostsByType(points, type));
+  const pointsByTypeCounts = uniqTypes.map((type) => {
+    const costsByType = countCostsByType(points, type);
 
-  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+    return {
+      'type': type,
+      'costs': costsByType,
+    };
+  });
 
-  return new Chart(moneyCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.MONEY));
+  const sortedPointsByCosts = pointsByTypeCounts.slice().sort((a, b) => b.costs-a.costs);
+
+  const labels = sortedPointsByCosts.map((point) => point.type.toUpperCase());
+  const costs = sortedPointsByCosts.map((point) => point.costs);
+
+  return new Chart(moneyCtx, createChartTemplate(labels, costs, Units.MONEY));
 };
 
 const renderTypeChart = (typeCtx, points) => {
   const pointTypes = points.map((point) => point.type);
 
   const uniqTypes = makeItemsUniq(pointTypes);
-  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
 
-  const pointByTypeCounts = uniqTypes.map((type) => countPointsByType(points, type));
+  const pointsByTypeCounts = uniqTypes.map((type) => {
+    const number = countPointsByType(points, type);
 
-  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+    return {
+      'type': type,
+      'numberOfTimes': number,
+    };
+  });
 
-  return new Chart(typeCtx, createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TYPE));
+  const sortedPointsByNumber = pointsByTypeCounts.slice().sort((a, b) => b.numberOfTimes-a.numberOfTimes);
+
+  const labels = sortedPointsByNumber.map((point) => point.type.toUpperCase());
+  const numberOfTimes = sortedPointsByNumber.map((point) => point.numberOfTimes);
+
+  return new Chart(typeCtx, createChartTemplate(labels, numberOfTimes, Units.TYPE));
 };
 
 const renderTimeChart = (timeCtx, points) => {
   const pointTypes = points.map((point) => point.type);
 
   const uniqTypes = makeItemsUniq(pointTypes);
-  const uniqTypesUpperCase = uniqTypes.map((type) => type.toUpperCase());
 
-  const pointByTypeCounts = uniqTypes.map((type) => countDurationByType(points, type));
+  const pointsByTypeCounts = uniqTypes.map((type) => {
+    const duration = countDurationByType(points, type);
 
-  const hexTypes = uniqTypes.map((type) => typeToHex[type]);
+    return {
+      'type': type,
+      'duration': duration,
+    };
+  });
+
+  const sortedPointsByDuration = pointsByTypeCounts.slice().sort((a, b) => b.duration-a.duration);
+
+  const labels = sortedPointsByDuration.map((point) => point.type.toUpperCase());
+  const timeSpend = sortedPointsByDuration.map((point) => point.duration);
 
   const formatDuration = (duration) => {
     const minutes = parseInt((duration / (1000 * 60)), 10);
@@ -65,7 +91,7 @@ const renderTimeChart = (timeCtx, points) => {
     return formatDurationElement(diffTime);
   };
 
-  return new Chart(timeCtx,  createChartTemplate(uniqTypesUpperCase, pointByTypeCounts, hexTypes, Units.TIME, formatDuration));
+  return new Chart(timeCtx,  createChartTemplate(labels, timeSpend, Units['TIME-SPEND'], formatDuration));
 };
 
 const createStatisticsTemplate = () => (
