@@ -28,7 +28,7 @@ import Api from './api/api.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
 
-const AUTHORIZATION = 'Basic er883jdzbdw';
+const AUTHORIZATION = 'Basic er883jdzbdu';
 const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
 const POINTS_PREFIX = 'points';
@@ -71,20 +71,18 @@ render(tripMainElement, newPointButtonComponent.getElement());
 
 const tripContainerElement = document.querySelector('.page-main').querySelector('.trip-events');
 
-//api.getDestinations()
 apiDestinationsWithProvider.getDestinations()
   .then((destinations) => {
     destinationsModel.setDestinations(UpdateType.INIT, destinations);
   });
 
-//api.getOffers()
 apiOffersWithProvider.getOffers()
   .then((offers) => {
     offersModel.setOffers(UpdateType.INIT, offers);
   });
 
 const tripPresenter =
-  new TripPresenter(tripContainerElement, pointsModel, destinationsModel, offersModel, filterModel, api);
+  new TripPresenter(tripContainerElement, pointsModel, destinationsModel, offersModel, filterModel, apiPointsWithProvider);
 
 const handleNewPointFormClose = () => {
   if (!isOnline()) {
@@ -124,7 +122,6 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 tripPresenter.init();
 
-//api.getPoints()
 apiPointsWithProvider.getPoints()
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
@@ -132,20 +129,17 @@ apiPointsWithProvider.getPoints()
     render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
     render(siteMenuElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
+    render(siteMenuElement, siteMenuComponent);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
-  // .catch(() => {
-  //   pointsModel.setPoints(UpdateType.INIT, []);
-  //   render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-  //   render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
-  //   render(siteMenuElement, siteMenuComponent);
-  //   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-  // });
 
 window.addEventListener('load', () => {
-  //проверка сделана для старых браузеров, в которых нет поддержки serviceWorker
-  //if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
-  //}
 });
 
 window.addEventListener('online', () => {

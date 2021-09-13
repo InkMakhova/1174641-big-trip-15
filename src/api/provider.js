@@ -35,7 +35,6 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getPoints()
         .then((points) => {
-          console.log(points);
           const items = createStoreStructure(points.map(PointsModel.adaptToServer));
           this._store.setItems(items);
           return points;
