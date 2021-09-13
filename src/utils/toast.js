@@ -1,4 +1,4 @@
-const SHOW_TIME = 5000;
+const SHOW_TIME = 2000;
 
 const toastContainer = document.createElement('div');
 toastContainer.classList.add('toast-container');

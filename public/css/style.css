@@ -1009,12 +1009,16 @@ main {
   display: block;
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 35%;
   width: 30%;
-  height: 25px;
+  height: 50px;
+  border-radius: 10px;
+  text-align: center;
 }
 
 .toast-item {
-  background-color: red;
-  font-size: 20px;
+  padding: 5px;
+  background-color:rgba(179, 15, 3, 0.8);
+  font-size: 30px;
+  color: white;
 }
