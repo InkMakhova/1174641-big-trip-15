@@ -86,6 +86,10 @@ const handleFetch = (evt) => {
             // Если ответа нет, или ответ со статусом отличным от 200 OK,
             // или ответ небезопасного типа (не basic), тогда просто передаём
             // ответ дальше, никак не обрабатываем
+            if (request.method !== 'GET') {
+              return response;
+            }
+
             if (!response || response.status !== HTTP_STATUS_OK || response.type !== RESPONSE_SAFE_TYPE) {
               return response;
             }
