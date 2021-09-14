@@ -85,6 +85,11 @@ const handleNewPointFormClose = () => {
 };
 
 const handleNewPointButtonClick = () => {
+  if (!isOnline()) {
+    toast('You can\'t create new point offline');
+    return;
+  }
+
   tripPresenter.createPoint(handleNewPointFormClose);
 };
 
