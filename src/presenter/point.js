@@ -14,7 +14,7 @@ import {
 } from '../utils/render.js';
 import {
   isDatesEqual,
-  isPriceEqual
+  isEqual
 } from '../utils/point.js';
 import {toast} from '../utils/toast.js';
 import PointView from '../view/point.js';
@@ -177,12 +177,15 @@ export default class Point {
       toast('You can\'t save point offline');
       return;
     }
+
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
       !isDatesEqual(this._point.dateFrom, update.dateFrom) ||
       !isDatesEqual(this._point.dateTo, update.dateTo) ||
-      !isPriceEqual(this._point.basePrice, update.basePrice);
+      !isEqual(this._point.basePrice, update.basePrice) ||
+      !isEqual(this._point.destination.name, update.destination.name) ||
+      !isEqual(this._point.offer, update.offer);
 
     this._changeData(
       UserAction.UPDATE_POINT,
