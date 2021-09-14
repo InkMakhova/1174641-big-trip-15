@@ -3,21 +3,15 @@ import {
   UpdateType,
   FilterType
 } from './constants.js';
-import {
-  isOnline,
-  getRandomInteger
-} from './utils/common.js';
+import {isOnline} from './utils/common.js';
 import {
   render,
-  RenderPosition,
   remove
 } from './utils/render.js';
 import {toast} from './utils/toast.js';
 import StatisticsView from './view/statistics.js';
-import TripInfoView from './view/trip-info.js';
 import SiteMenuView from './view/site-menu.js';
 import NewPointButtonView from './view/button-new-point.js';
-import PriceView from './view/price.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
@@ -60,8 +54,6 @@ const tripMainElement = siteHeaderElement.querySelector('.trip-main');
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 const filterElement = siteHeaderElement.querySelector('.trip-controls__filters');
 
-const tripInfoComponent = new TripInfoView();
-
 const siteMenuComponent = new SiteMenuView();
 
 const filterPresenter = new FilterPresenter(filterElement, filterModel, pointsModel);
@@ -82,7 +74,7 @@ apiOffersWithProvider.getOffers()
   });
 
 const tripPresenter =
-  new TripPresenter(tripContainerElement, pointsModel, destinationsModel, offersModel, filterModel, apiPointsWithProvider);
+  new TripPresenter(tripContainerElement, pointsModel, destinationsModel, offersModel, filterModel, apiPointsWithProvider, tripMainElement);
 
 const handleNewPointFormClose = () => {
   if (!isOnline()) {
@@ -112,6 +104,7 @@ const handleSiteMenuClick = (menuItem) => {
 
     case MenuItem.STATISTICS:
       tripPresenter.destroy();
+      tripPresenter.renderTripInfo(pointsModel.getPoints());
       remove(statisticsComponent);
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(tripContainerElement, statisticsComponent);
@@ -126,15 +119,11 @@ tripPresenter.init();
 apiPointsWithProvider.getPoints()
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
-    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
     render(siteMenuElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
-    render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(tripInfoComponent, new PriceView(getRandomInteger(200, 1000)));
     render(siteMenuElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
