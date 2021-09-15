@@ -24,7 +24,6 @@ const createOffersStoreStructure = (items) =>
       [current.type]: current,
     }), {});
 
-
 export default class Provider {
   constructor(api, store) {
     this._api = api;
