@@ -18,7 +18,7 @@ import {
 } from '../utils/point.js';
 import {toast} from '../utils/toast.js';
 import PointView from '../view/point.js';
-import PointFormView from '../view/add-edit-point.js';
+import AddEditPointView from '../view/add-edit-point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -58,7 +58,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointFormView(FormType.EDIT, point, this._destinations, this._offers);
+    this._pointEditComponent = new AddEditPointView(FormType.EDIT, point, this._destinations, this._offers);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

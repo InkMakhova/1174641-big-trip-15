@@ -150,7 +150,7 @@ const createDestinationSection = (destination) => (
     ${createPhotoTemplate(destination)}
 </section>`);
 
-const createPointFormTemplate = (eventType, data, destinations, offersOptions) => {
+const createAddEditPointTemplate = (eventType, data, destinations, offersOptions) => {
   const {
     id,
     basePrice,
@@ -316,7 +316,7 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
 </li>`;
 };
 
-export default class PointForm extends SmartView {
+export default class AddEditPoint extends SmartView {
   constructor (eventType = FormType.EDIT, point, destinations, offers) {
     super();
 
@@ -325,7 +325,7 @@ export default class PointForm extends SmartView {
     this._offers = offers;
     this._dateFromPicker = null;
     this._dateToPicker = null;
-    this._data = PointForm.parsePointToData(point);
+    this._data = AddEditPoint.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -352,12 +352,12 @@ export default class PointForm extends SmartView {
 
   reset(point) {
     this.updateData(
-      PointForm.parsePointToData(point),
+      AddEditPoint.parsePointToData(point),
     );
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._eventType, this._data, this._destinations, this._offers);
+    return createAddEditPointTemplate(this._eventType, this._data, this._destinations, this._offers);
   }
 
   _dateFromChangeHandler([userDate]) {
@@ -461,7 +461,7 @@ export default class PointForm extends SmartView {
       basePrice: Number(price),
     });
 
-    this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
+    this._callback.formSubmit(AddEditPoint.parseDataToPoint(this._data));
 
   }
 
@@ -570,7 +570,7 @@ export default class PointForm extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
+    this._callback.deleteClick(AddEditPoint.parseDataToPoint(this._data));
   }
 
   setDeleteClickHandler(callback) {
