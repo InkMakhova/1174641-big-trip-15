@@ -2,6 +2,8 @@ import {humanizeTimeDuration} from '../utils/point.js';
 
 export const isOnline = () => window.navigator.onLine;
 
+export const isInteger = (number) => (number ^ 0) === number;
+
 export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
 

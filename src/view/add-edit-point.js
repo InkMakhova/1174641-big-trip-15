@@ -8,7 +8,10 @@ import {
   DEFAULT_TYPE,
   FormType
 } from '../constants.js';
-import {capitalizeFirstLetter} from '../utils/common.js';
+import {
+  capitalizeFirstLetter,
+  isInteger
+} from '../utils/common.js';
 import {formateDateTime} from '../utils/point.js';
 import SmartView from './smart.js';
 
@@ -251,6 +254,7 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
           type="text"
           name="event-start-time"
           value="${dataDateFrom}"
+          autocomplete="off"
           required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -260,6 +264,7 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
           type="text"
           name="event-end-time"
           value="${dataDateTo}"
+          autocomplete="off"
           required>
       </div>
 
@@ -271,11 +276,10 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
         <input
           class="event__input event__input--price"
           id="event-price-1"
-          type="number"
-          min="0"
-          step="1"
           name="event-price"
+          type="number"
           value="${dataBasePrice}"
+          autocomplete="off"
           required>
       </div>
 
@@ -404,9 +408,20 @@ export default class PointForm extends SmartView {
   }
 
   _priceChangeHandler(evt) {
-    this.updateData({
-      basePrice: Number(evt.target.value),
-    });
+    if (Number(evt.target.value) <= 0 || !isInteger(Number(evt.target.value))) {
+      this._setPriceValidity();
+    } else {
+      this.updateData({
+        basePrice: Number(evt.target.value),
+      });
+    }
+  }
+
+  _setPriceValidity() {
+    const priceInputElement = this.getElement().querySelector('#event-price-1');
+
+    priceInputElement.setCustomValidity('Цена должна быть целым положительным числом');
+    priceInputElement.reportValidity();
   }
 
   _setDateFromPicker() {
