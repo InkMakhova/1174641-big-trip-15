@@ -178,8 +178,6 @@ export default class Point {
       return;
     }
 
-    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
-    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
       !isDatesEqual(this._point.dateFrom, update.dateFrom) ||
       !isDatesEqual(this._point.dateTo, update.dateTo) ||

@@ -10,7 +10,6 @@ import {
 import {formatDurationElement} from '../utils/common.js';
 import SmartView from './smart.js';
 
-// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyCtx, points) => {

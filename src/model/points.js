@@ -75,7 +75,6 @@ export default class Points extends AbstractObserver {
       },
     );
 
-    // Ненужные ключи удаляем
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
@@ -98,7 +97,6 @@ export default class Points extends AbstractObserver {
       },
     );
 
-    // Ненужные ключи удаляем
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
