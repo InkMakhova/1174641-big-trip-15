@@ -7,14 +7,12 @@ import AbstractView from './abstract.js';
 
 const getTripInfo = (destinations) => {
   const getSecondPoint = () => {
-    switch (true) {
-      case (destinations.length < 3):
-        return '&mdash;';
-      case (destinations.length === 3):
-        return `&mdash; ${destinations[1]} &mdash;`;
-      case (destinations.length > 3):
-        return '&mdash; ... &mdash;';
+    if (destinations.length < 3) {
+      return '&mdash;';
+    } else if (destinations.length === 3) {
+      return `&mdash; ${destinations[1]} &mdash;`;
     }
+    return '&mdash; ... &mdash;';
   };
 
   return {
