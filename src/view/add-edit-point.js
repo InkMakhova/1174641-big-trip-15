@@ -1,6 +1,5 @@
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {
   FormatsDateTime,
@@ -201,7 +200,7 @@ const createPointFormTemplate = (eventType, data, destinations, offersOptions) =
 
   const isFavoriteValue = isNewPoint ? false : isFavorite;
 
-  const idValue = isNewPoint ? nanoid() : id;
+  const idValue = isNewPoint ? '' : id;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -380,7 +379,7 @@ export default class PointForm extends SmartView {
     const dateFromInputElement = this.getElement().querySelector('#event-start-time-1');
 
     dateFromInputElement
-      .setCustomValidity('Дата начала путешествия не может быть позже даты окончания.');
+      .setCustomValidity('The start date can not be later than the end date.');
     dateFromInputElement.reportValidity();
   }
 
@@ -403,31 +402,22 @@ export default class PointForm extends SmartView {
     const dateToInputElement = this.getElement().querySelector('#event-end-time-1');
 
     dateToInputElement
-      .setCustomValidity('Дата окончания путешествия не может быть раньше даты начала.');
+      .setCustomValidity('The end date can not be earlier than the start date.');
     dateToInputElement.reportValidity();
   }
 
   _priceChangeHandler(evt) {
-    if (Number(evt.target.value) <= 0 || !isInteger(Number(evt.target.value))) {
-      this._setPriceValidity();
-    } else {
-      this.updateData({
-        basePrice: Number(evt.target.value),
-      });
-    }
-  }
-
-  _setPriceValidity() {
     const priceInputElement = this.getElement().querySelector('#event-price-1');
 
-    priceInputElement.setCustomValidity('Цена должна быть целым положительным числом');
-    priceInputElement.reportValidity();
+    if (Number(evt.target.value) <= 0 || !isInteger(Number(evt.target.value))) {
+      priceInputElement.setCustomValidity('The price has to be positive integer');
+    } else {
+      priceInputElement.setCustomValidity('');
+    }
   }
 
   _setDateFromPicker() {
     if (this._dateFromPicker) {
-      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-      // которые создает flatpickr при инициализации
       this._dateFromPicker.destroy();
       this._dateFromPicker = null;
     }
@@ -445,8 +435,6 @@ export default class PointForm extends SmartView {
 
   _setDateToPicker() {
     if (this._dateToPicker) {
-      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-      // которые создает flatpickr при инициализации
       this._dateToPicker.destroy();
       this._dateToPicker = null;
     }
@@ -465,11 +453,16 @@ export default class PointForm extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
 
+    const priceInputElement = evt.target.querySelector('#event-price-1');
+    const price = priceInputElement.value;
+
     this.updateData({
       isFavorite: false,
+      basePrice: Number(price),
     });
 
     this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
+
   }
 
   setFormSubmitHandler(callback) {
@@ -566,7 +559,7 @@ export default class PointForm extends SmartView {
 
     this.getElement()
       .querySelector('.event__input--price')
-      .addEventListener('change', this._priceChangeHandler);
+      .addEventListener('input', this._priceChangeHandler);
 
     if (this.getElement().querySelector('.event__section--offers')) {
       this.getElement().querySelectorAll('.event__offer-checkbox')
