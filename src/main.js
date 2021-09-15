@@ -114,6 +114,7 @@ const handleSiteMenuClick = (menuItem) => {
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(tripContainerElement, statisticsComponent);
       newPointButtonComponent.disableButton();
+      filterPresenter.getView().disableFilters();
       break;
   }
 };

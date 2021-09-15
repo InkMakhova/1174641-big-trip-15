@@ -74,4 +74,8 @@ export default class Filter {
       },
     ];
   }
+
+  getView() {
+    return this._filterComponent;
+  }
 }

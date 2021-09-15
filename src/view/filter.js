@@ -52,4 +52,10 @@ export default class Filters extends AbstractView {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener('change', this._filterTypeChangeHandler);
   }
+
+  disableFilters() {
+    this.getElement().querySelectorAll('.trip-filters__filter-input').forEach((filter) => {
+      filter.disabled = true;
+    });
+  }
 }
