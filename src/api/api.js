@@ -81,7 +81,7 @@ export default class Api {
     body = null,
     headers = new Headers(),
   }) {
-    headers.append('Authorization', this._authorization);
+    headers.set('Authorization', this._authorization);
 
     return fetch(
       `${this._endPoint}/${url}`,
