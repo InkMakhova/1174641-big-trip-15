@@ -108,7 +108,7 @@ const offerListEditTemplate = (offers, offersOptions, isDisabled) => {
 
 const createOffersSection = (offers, offersOptions, eventType, isDisabled) => {
   if (eventType === FormType.NEW) {
-    if (offersOptions !== null) {
+    if (offersOptions.length > 0) {
       return offerListNewTemplate(offersOptions, isDisabled);
     }
     return '';
@@ -409,10 +409,15 @@ export default class AddEditPoint extends SmartView {
   _priceChangeHandler(evt) {
     const priceInputElement = this.getElement().querySelector('#event-price-1');
 
-    if (Number(evt.target.value) <= 0 || !isInteger(Number(evt.target.value))) {
+    const price = Number(evt.target.value);
+
+    if (price <= 0 || !isInteger(price)) {
       priceInputElement.setCustomValidity('The price has to be positive integer');
     } else {
       priceInputElement.setCustomValidity('');
+      this.updateData({
+        basePrice: price,
+      }, false);
     }
   }
 
@@ -453,12 +458,8 @@ export default class AddEditPoint extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
 
-    const priceInputElement = evt.target.querySelector('#event-price-1');
-    const price = priceInputElement.value;
-
     this.updateData({
       isFavorite: false,
-      basePrice: Number(price),
     });
 
     this._callback.formSubmit(AddEditPoint.parseDataToPoint(this._data));
@@ -525,8 +526,12 @@ export default class AddEditPoint extends SmartView {
       });
     } else {
       const foundDestination = this._destinations.find((destination) => destination.name === evt.target.value);
-      description = foundDestination.description;
-      pictures = foundDestination.pictures;
+      if (foundDestination.description) {
+        description = foundDestination.description;
+      }
+      if (foundDestination.pictures) {
+        pictures = foundDestination.pictures;
+      }
 
       this.updateData({
         offer: [],
