@@ -59,12 +59,11 @@ export const sortPointsDay = (pointA, pointB) => {
     return weight;
   }
 
-  return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+  return dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 };
 
 export const isDatesEqual = (dateA, dateB) =>
   (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB);
 
-export const isPriceEqual = (priceA, priceB) =>
-  (priceA === null && priceB === null) ? true : priceA === priceB;
-
+export const isEqual = (A, B) =>
+  (A === null && B === null) ? true : A === B;

@@ -7,7 +7,8 @@ import {
 } from '../constants.js';
 import {
   render,
-  remove
+  remove,
+  RenderPosition
 } from '../utils/render.js';
 import {
   sortPointsTime,
@@ -15,6 +16,7 @@ import {
   sortPointsDay
 } from '../utils/point.js';
 import {filter} from '../utils/filter.js';
+import TripInfoView from '../view/trip-info.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import LoadingView from '../view/loading.js';
@@ -23,13 +25,14 @@ import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import PointNewPresenter from './point-new.js';
 
 export default class Trip {
-  constructor(tripContainer, pointsModel, destinationsModel, offersModel, filterModel, api) {
+  constructor(tripContainer, pointsModel, destinationsModel, offersModel, filterModel, api, infoContainer) {
     this._pointsModel = pointsModel;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._filterModel = filterModel;
 
     this._tripComponent = tripContainer;
+    this._tripInfoComponent = infoContainer;
     this._pointPresenters = new Map();
 
     this._filterType = FilterType.EVERYTHING;
@@ -39,6 +42,7 @@ export default class Trip {
 
     this._sortComponent = null;
     this._emptyListComponent = null;
+    this._infoComponent = null;
 
     this._pointListComponent = new PointListView();
     this._loadingComponent = new LoadingView();
@@ -222,6 +226,11 @@ export default class Trip {
     render(this._tripComponent, this._emptyListComponent);
   }
 
+  renderTripInfo(points) {
+    this._infoComponent = new TripInfoView(points);
+    render(this._tripInfoComponent, this._infoComponent.getElement(), RenderPosition.AFTERBEGIN);
+  }
+
   _clearTrip({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
     this._pointPresenters.forEach((presenter) => presenter.destroy());
@@ -229,6 +238,7 @@ export default class Trip {
 
     remove(this._sortComponent);
     remove(this._loadingComponent);
+    remove(this._infoComponent);
 
     if (this._emptyListComponent) {
       remove(this._emptyListComponent);
@@ -251,6 +261,8 @@ export default class Trip {
       this._renderEmptyList();
       return;
     }
+
+    this.renderTripInfo(points);
 
     this._renderSort();
 

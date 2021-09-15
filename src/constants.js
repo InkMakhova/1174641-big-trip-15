@@ -54,26 +54,12 @@ export const DEFAULT_TYPE = 'flight';
 
 export const POINT_TYPES = Object.values(PointTypes);
 
-export const destinations = [
-  'Amsterdam',
-  'Munich',
-  'Vienna',
-  'Rome',
-  'Prague',
-  'Barcelona',
-  'Oslo',
-  'Stockholm',
-  'Reykjavik',
-  'Helsinki',
-  'Charleston',
-  'San Francisco',
-];
-
 export const today = dayjs();
 
 export const FormatsDateTime = {
   YYYY_MM_DD: 'YYYY-MM-DD',
   MMM_D: 'MMM D',
+  D_MMM: 'D MMM',
   YYYY_MM_DD_TIME: 'YYYY-MM-DDTHH:mm',
   DD_MM_YY_TIME: 'DD/MM/YY HH:mm',
   HH_MM: 'HH:mm',
@@ -97,7 +83,7 @@ export const UpdateType = {
 export const Units = {
   MONEY: '€ ',
   TYPE: 'x',
-  TIME: '',
+  'TIME-SPEND': '',
 };
 
 

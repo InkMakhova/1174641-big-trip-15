@@ -1,3 +1,4 @@
+import {isOnline} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
 const createNewPointButtonTemplate = () => (
@@ -24,9 +25,10 @@ export default class NewPointButton extends AbstractView {
 
     this._callback.buttonClick();
 
-    this.getElement().disabled = true;
-
-    this.getElement().removeEventListener('click', this._clickHandler);
+    if (isOnline()) {
+      this.disableButton();
+      this.getElement().removeEventListener('click', this._clickHandler);
+    }
   }
 
   setClickHandler(callback) {

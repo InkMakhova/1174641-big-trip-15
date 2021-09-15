@@ -1,4 +1,4 @@
-import PointsModel from './model/points.js';
+import PointsModel from '../model/points.js';
 
 const Method = {
   GET: 'GET',
@@ -11,6 +11,8 @@ const SuccessHTTPStatusRange = {
   MIN: 200,
   MAX: 299,
 };
+
+const apiHeaders = new Headers({'Content-Type': 'application/json'});
 
 export default class Api {
   constructor(endPoint, authorization) {
@@ -39,7 +41,7 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: apiHeaders,
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
@@ -50,7 +52,7 @@ export default class Api {
       url: 'points',
       method: Method.POST,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: apiHeaders,
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
@@ -61,6 +63,16 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._fetch({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: apiHeaders,
+    })
+      .then(Api.toJSON);
   }
 
   _fetch({
