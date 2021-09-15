@@ -11,7 +11,7 @@ import {
 import {toast} from './utils/toast.js';
 import StatisticsView from './view/statistics.js';
 import SiteMenuView from './view/site-menu.js';
-import NewPointButtonView from './view/button-new-point.js';
+import NewPointButtonView from './view/new-point-button.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
