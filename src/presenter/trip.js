@@ -20,7 +20,7 @@ import TripInfoView from '../view/trip-info.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import LoadingView from '../view/loading.js';
-import EmptyListView from '../view/point-list-empty.js';
+import EmptyListView from '../view/empty-list.js';
 import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import PointNewPresenter from './point-new.js';
 
