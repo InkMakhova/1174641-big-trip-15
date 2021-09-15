@@ -12,6 +12,8 @@ const SuccessHTTPStatusRange = {
   MAX: 299,
 };
 
+const apiHeaders = new Headers({'Content-Type': 'application/json'});
+
 export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
@@ -39,7 +41,7 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: apiHeaders,
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
@@ -50,7 +52,7 @@ export default class Api {
       url: 'points',
       method: Method.POST,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: apiHeaders,
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
@@ -68,7 +70,7 @@ export default class Api {
       url: 'points/sync',
       method: Method.POST,
       body: JSON.stringify(data),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: apiHeaders,
     })
       .then(Api.toJSON);
   }
