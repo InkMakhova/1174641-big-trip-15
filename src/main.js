@@ -23,7 +23,7 @@ import Store from './api/store.js';
 import Provider from './api/provider.js';
 
 const AUTHORIZATION = 'Basic er883jdzbdi';
-const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
 const POINTS_PREFIX = 'points';
 const DESTINATIONS_PREFIX = 'destinations';
