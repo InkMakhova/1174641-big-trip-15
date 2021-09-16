@@ -2,14 +2,14 @@ import {humanizeTimeDuration} from '../utils/point.js';
 
 export const isOnline = () => window.navigator.onLine;
 
-export const isInteger = (number) => (number ^ 0) === number;
+export const isInteger = (num) => (num ^ 0) === num;
 
 export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
-export const getKeyByValue = (object, value) =>
-  Object.keys(object)
-    .find((key) => object[key] === value);
+export const getKeyByValue = (data, value) =>
+  Object.keys(data)
+    .find((key) => data[key] === value);
 
 export const isEscEvent = (evt) => ['Escape', 'Esc'].includes(evt.key);
 
