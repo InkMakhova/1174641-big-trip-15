@@ -143,6 +143,14 @@ window.addEventListener('online', () => {
   apiPointsWithProvider.sync();
 });
 
+const webIndicatorElement = siteHeaderElement.querySelector('.web_indicator');
+
 window.addEventListener('offline', () => {
   document.title += ' [offline]';
+  webIndicatorElement.classList.remove('web_indicator--hidden');
 });
+
+window.addEventListener('online', () => {
+  webIndicatorElement.classList.add('web_indicator--hidden');
+});
+
