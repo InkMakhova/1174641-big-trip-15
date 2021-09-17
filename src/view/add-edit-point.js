@@ -520,7 +520,7 @@ export default class AddEditPoint extends SmartView {
     let description;
     let pictures;
 
-    if (!this._destinations) {
+    if (!this._destinations || evt.target.value === '') {
       this.updateData({
         destination: [],
       });
