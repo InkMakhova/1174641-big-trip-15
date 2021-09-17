@@ -178,6 +178,8 @@ export default class Point {
       return;
     }
 
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+
     const isMinorUpdate =
       !isDatesEqual(this._point.dateFrom, update.dateFrom) ||
       !isDatesEqual(this._point.dateTo, update.dateTo) ||
