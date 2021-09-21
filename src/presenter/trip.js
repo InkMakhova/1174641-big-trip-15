@@ -255,19 +255,20 @@ export default class Trip {
       return;
     }
 
-    const points = this._getPoints();
+    const allTripPoints = this._pointsModel.getPoints();
 
-    if (points.length === 0) {
+    const filteredPoints = this._getPoints();
+
+    if (allTripPoints.length === 0) {
       this._renderEmptyList();
-      return;
+    } else if (allTripPoints.length > 0 && filteredPoints.length === 0) {
+      this.renderTripInfo(allTripPoints);
+      this._renderEmptyList();
+    } else {
+      this.renderTripInfo(allTripPoints);
+      this._renderSort();
+      this._renderPointList();
+      this._renderPoints(filteredPoints);
     }
-
-    this.renderTripInfo(points);
-
-    this._renderSort();
-
-    this._renderPointList();
-
-    this._renderPoints(points);
   }
 }
